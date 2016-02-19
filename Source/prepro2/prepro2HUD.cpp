@@ -68,7 +68,7 @@ void Aprepro2HUD::DrawHUD()
 	{
 		TileItem.Position = BombPosition;
 		TileItem.Position.X += i*(mBombTextureWidth + 5.0f);
-		if (i == bombIndex - 1)
+		if (i == player->GetBombSelected())
 		{
 			TileItem.Texture = mBombSelected->Resource;
 		}
