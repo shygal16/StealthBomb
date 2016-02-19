@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <None Include="..\..\prepro2.uproject" />
+    <Filter Include="Source">
+      <UniqueIdentifier>{3B8412D4-5943-4BE6-8633-78F2FF8BC9B3}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\prepro2.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <None Include="..\..\Source\prepro2Editor.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <Filter Include="Config">
+      <UniqueIdentifier>{BDEECD21-86BA-494E-80F5-FF77404101ED}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Config\DefaultEditor.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultEditorPerProjectUserSettings.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultEngine.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultGame.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultInput.ini">
+      <Filter>Config</Filter>
+    </None>
+    <Filter Include="Source\prepro2">
+      <UniqueIdentifier>{8F2F3B6D-D6FE-460B-B09D-CC08E7C0E418}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\prepro2\prepro2.Build.cs">
+      <Filter>Source\prepro2</Filter>
+    </None>
+    <ClCompile Include="..\..\Source\prepro2\prepro2.cpp">
+      <Filter>Source\prepro2</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\prepro2\prepro2.h">
+      <Filter>Source\prepro2</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\prepro2\prepro2Character.cpp">
+      <Filter>Source\prepro2</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\prepro2\prepro2Character.h">
+      <Filter>Source\prepro2</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\prepro2\prepro2GameMode.cpp">
+      <Filter>Source\prepro2</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\prepro2\prepro2GameMode.h">
+      <Filter>Source\prepro2</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\prepro2\prepro2HUD.cpp">
+      <Filter>Source\prepro2</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\prepro2\prepro2HUD.h">
+      <Filter>Source\prepro2</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\prepro2\prepro2Projectile.cpp">
+      <Filter>Source\prepro2</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\prepro2\prepro2Projectile.h">
+      <Filter>Source\prepro2</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Source\prepro2\Explosive.h">
+      <Filter>Source\prepro2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\prepro2\DetonateBomb.h">
+      <Filter>Source\prepro2</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Source\prepro2\Explosive.cpp">
+      <Filter>Source\prepro2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\prepro2\DetonateBomb.cpp">
+      <Filter>Source\prepro2</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
