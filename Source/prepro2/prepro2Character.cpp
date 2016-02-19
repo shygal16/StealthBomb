@@ -279,7 +279,6 @@ void Aprepro2Character::Tick(float DeltaTime)
 	{
 		if (!mBombs[i]->IsActive())
 		{
-			mBombs[i]->SetActive(false);
 			mBombsIndex--;
 			ADetonateBomb* temp = mBombs[i];
 			for (int j = i; j < mBombsIndex; ++j)
@@ -295,20 +294,16 @@ void Aprepro2Character::TriggerAllBombs()
 {
 	for (int i = 0; i < mBombsIndex; ++i)
 	{
-		if (!mBombs[i]->IsExploded() && !mBombs[i]->IsBombTriggered())
-		{
+		
 			mBombs[i]->TriggerBomb();
-		}
+		
 	}
 }
 void Aprepro2Character::DetonateAllBombs()
 {
 	for (int i = 0; i < mBombsIndex; ++i)
 	{
-		if (!mBombs[i]->IsExploded() && !mBombs[i]->IsBombTriggered())
-		{
 			mBombs[i]->Explode();
-		}
 	}
 }
 
@@ -317,6 +312,7 @@ void Aprepro2Character::TriggerBomb()
 	if (mBombSelected != -1)
 	{
 		mBombs[mBombSelected]->TriggerBomb();
+		//mBombSelected = (mBombSelected + 1 == mBombsIndex) ? 0 : mBombSelected + 1;
 	}
 }
 void Aprepro2Character::DetonateBomb()
@@ -324,6 +320,7 @@ void Aprepro2Character::DetonateBomb()
 	if (mBombSelected != -1)
 	{
 		mBombs[mBombSelected]->Explode();
+		//mBombSelected = (mBombSelected + 1 == mBombsIndex) ? 0 : mBombSelected + 1;
 	}
 }
 

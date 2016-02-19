@@ -19,10 +19,21 @@ AExplosive::AExplosive()
 
 void AExplosive::Explode()
 {
-	mParticleSystem->ActivateSystem();
-	mRadForce->FireImpulse();
-	mExploded = true;
-	mExplosionTimer = mExplosionDelay;
-	mBombTriggered = false;
+	if(!mExploded && !mBombTriggered)
+	{
+		mParticleSystem->ActivateSystem();
+		mRadForce->FireImpulse();
+		mExploded = true;
+		mExplosionTimer = mExplosionDelay;
+		mBombTriggered = false;
+	}
+}
+
+void AExplosive::TriggerBomb()
+{
+	if(!mExploded && !mBombTriggered)
+	{
+		mBombTriggered = true;
+	}
 }
 

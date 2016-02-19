@@ -11,7 +11,8 @@ UXrayMode::UXrayMode()
 	// off to improve performance if you don't need them.
 	bWantsBeginPlay = true;
 	PrimaryComponentTick.bCanEverTick = true;
-
+	
+	
 	// ...
 }
 
@@ -20,9 +21,9 @@ UXrayMode::UXrayMode()
 void UXrayMode::BeginPlay()
 {
 	Super::BeginPlay();
-	
 	// ...
 	
+	mParentMesh=Cast<UPrimitiveComponent>(GetOwner()->GetComponents()[0]);
 }
 
 
@@ -30,6 +31,15 @@ void UXrayMode::BeginPlay()
 void UXrayMode::TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction )
 {
 	Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
+	
+		if(GetOwner()->GetVelocity().Size() > 0)
+		{
+		mParentMesh->SetRenderCustomDepth(true);
+		}
+		else
+		{
+			mParentMesh->SetRenderCustomDepth(false);
+		}
 	
 	// ...
 }

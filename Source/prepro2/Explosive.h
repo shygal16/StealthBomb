@@ -30,7 +30,7 @@ public:
 	bool IsExploded()	{ return mExploded; }
 	bool IsBombTriggered()	{ return mBombTriggered; }
 
-	void TriggerBomb()	{ mBombTriggered = true; }
+	void TriggerBomb();
 
 protected:
 	bool mBombTriggered;
