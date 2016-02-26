@@ -25,6 +25,9 @@ class Aprepro2Character : public ACharacter
 public:
 	Aprepro2Character();
 
+	void Sprint();
+	void StopSprint();
+
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseTurnRate;
@@ -137,11 +140,15 @@ public:
 	FORCEINLINE class USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	/** Returns FirstPersonCameraComponent subobject **/
 	FORCEINLINE class UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
+	float sprintSpeed=1.5f;
 
 private:
 	ADetonateBomb** mBombs;
 	int mBombsIndex;
 	int mBombSelected;
 	void InitBombs();
+	
+	float SpeedMult=1;
+	
 };
 

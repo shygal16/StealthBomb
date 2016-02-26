@@ -72,7 +72,9 @@ void Aprepro2Character::SetupPlayerInputComponent(class UInputComponent* InputCo
 	InputComponent->BindAction("TriggerBomb", IE_Pressed, this, &Aprepro2Character::TriggerBomb);
 	InputComponent->BindAction("DetonateBomb", IE_Pressed, this, &Aprepro2Character::DetonateBomb);
 	InputComponent->BindAction("SelectBomb", IE_Pressed, this, &Aprepro2Character::SelectBomb);
-
+	
+	InputComponent->BindAction("Sprint", IE_Pressed, this, &Aprepro2Character::Sprint);
+	InputComponent->BindAction("Sprint", IE_Released, this, &Aprepro2Character::StopSprint);
 
 	//InputComponent->BindTouch(EInputEvent::IE_Pressed, this, &Aprepro2Character::TouchStarted);
 	if( EnableTouchscreenMovement(InputComponent) == false )
@@ -81,6 +83,7 @@ void Aprepro2Character::SetupPlayerInputComponent(class UInputComponent* InputCo
 	}
 	
 	InputComponent->BindAxis("MoveForward", this, &Aprepro2Character::MoveForward);
+
 	InputComponent->BindAxis("MoveRight", this, &Aprepro2Character::MoveRight);
 	
 	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
@@ -130,7 +133,14 @@ void Aprepro2Character::OnFire()
 
 
 }
-
+void Aprepro2Character::Sprint()
+{
+	SpeedMult=sprintSpeed;
+}
+void Aprepro2Character::StopSprint()
+{
+	SpeedMult=1;
+}
 void Aprepro2Character::BeginTouch(const ETouchIndex::Type FingerIndex, const FVector Location)
 {
 	if( TouchItem.bIsPressed == true )
@@ -196,7 +206,7 @@ void Aprepro2Character::MoveForward(float Value)
 	if (Value != 0.0f)
 	{
 		// add movement in that direction
-		AddMovementInput(GetActorForwardVector(), Value);
+		AddMovementInput(GetActorForwardVector(), Value*SpeedMult);
 	}
 }
 
@@ -205,7 +215,7 @@ void Aprepro2Character::MoveRight(float Value)
 	if (Value != 0.0f)
 	{
 		// add movement in that direction
-		AddMovementInput(GetActorRightVector(), Value);
+		AddMovementInput(GetActorRightVector(), Value*SpeedMult);
 	}
 }
 
@@ -320,7 +330,8 @@ void Aprepro2Character::DetonateBomb()
 	if (mBombSelected != -1)
 	{
 		mBombs[mBombSelected]->Explode();
-		//mBombSelected = (mBombSelected + 1 == mBombsIndex) ? 0 : mBombSelected + 1;
+		mBombSelected = (mBombSelected + 1 == mBombsIndex) ? 0 : mBombSelected + 1;
+		
 	}
 }
 
