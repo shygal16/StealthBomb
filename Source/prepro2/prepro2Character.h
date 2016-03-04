@@ -76,7 +76,8 @@ public:
 	int GetBombSelected() const		{ return mBombSelected; }
 
 protected:
-	
+	void StartCrouch();
+	void EndCrouch();
 	/** Fires a projectile. */
 	void OnFire();
 
@@ -140,15 +141,20 @@ public:
 	FORCEINLINE class USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	/** Returns FirstPersonCameraComponent subobject **/
 	FORCEINLINE class UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
-	float sprintSpeed=1.5f;
+	
+	//How much faster you go while sprinting
+	UPROPERTY(Category="Character Movement: Walking", EditAnywhere, BlueprintReadWrite, meta=(ClampMin="0", UIMin="0"))
+	float SpeedMult=2;
 
 private:
 	ADetonateBomb** mBombs;
 	int mBombsIndex;
 	int mBombSelected;
 	void InitBombs();
+
+	float sprintSpeed;
+	float WalkSpeed;
 	
-	float SpeedMult=1;
 	
 };
 

@@ -22,6 +22,8 @@ Aprepro2Character::Aprepro2Character()
 	// set our turn rates for input
 	BaseTurnRate = 45.f;
 	BaseLookUpRate = 45.f;
+	WalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
+	sprintSpeed=WalkSpeed*SpeedMult;
 
 	// Create a CameraComponent	
 	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
@@ -75,6 +77,9 @@ void Aprepro2Character::SetupPlayerInputComponent(class UInputComponent* InputCo
 	
 	InputComponent->BindAction("Sprint", IE_Pressed, this, &Aprepro2Character::Sprint);
 	InputComponent->BindAction("Sprint", IE_Released, this, &Aprepro2Character::StopSprint);
+
+	InputComponent->BindAction("Crouch", IE_Pressed, this, &Aprepro2Character::StartCrouch);
+    InputComponent->BindAction("Crouch", IE_Released, this, &Aprepro2Character::EndCrouch);
 
 	//InputComponent->BindTouch(EInputEvent::IE_Pressed, this, &Aprepro2Character::TouchStarted);
 	if( EnableTouchscreenMovement(InputComponent) == false )
@@ -135,11 +140,19 @@ void Aprepro2Character::OnFire()
 }
 void Aprepro2Character::Sprint()
 {
-	SpeedMult=sprintSpeed;
+	GetCharacterMovement()->MaxWalkSpeed=sprintSpeed;
 }
 void Aprepro2Character::StopSprint()
 {
-	SpeedMult=1;
+	GetCharacterMovement()->MaxWalkSpeed=WalkSpeed;
+}
+void Aprepro2Character::StartCrouch()
+{
+	Crouch();
+}
+void Aprepro2Character::EndCrouch()
+{
+	UnCrouch();
 }
 void Aprepro2Character::BeginTouch(const ETouchIndex::Type FingerIndex, const FVector Location)
 {
@@ -206,7 +219,7 @@ void Aprepro2Character::MoveForward(float Value)
 	if (Value != 0.0f)
 	{
 		// add movement in that direction
-		AddMovementInput(GetActorForwardVector(), Value*SpeedMult);
+		AddMovementInput(GetActorForwardVector(), Value);
 	}
 }
 
@@ -215,7 +228,7 @@ void Aprepro2Character::MoveRight(float Value)
 	if (Value != 0.0f)
 	{
 		// add movement in that direction
-		AddMovementInput(GetActorRightVector(), Value*SpeedMult);
+		AddMovementInput(GetActorRightVector(), Value);
 	}
 }
 
