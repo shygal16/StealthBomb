@@ -69,6 +69,7 @@ void ADetonateBomb::SetActive(bool active)
 		return;
 	}
 
+	
 	mIsActive = active;
 
 	SetActorHiddenInGame(!active);
@@ -94,4 +95,5 @@ void ADetonateBomb::SetActive(bool active)
 			UNavigationSystem::OnComponentUnregistered(meshComp);
 		}
 	}
+	
 }

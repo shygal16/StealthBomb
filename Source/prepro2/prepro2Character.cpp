@@ -277,14 +277,18 @@ void Aprepro2Character::InitBombs()
 	mBombs = new ADetonateBomb* [mMaxBombs];
 	const FVector tempLocation = GetActorLocation();
 	const FRotator tempRotation = { 0, 0, 0 };
+	verify(BombClass != NULL && "bomb class doesnt exist");
 	for (int i = 0; i < mMaxBombs; i++)
 	{
 		UWorld* const World = GetWorld();
 		if (World != NULL)
 		{
+			
 			// spawn the projectile at the muzzle
 			mBombs[i] = World->SpawnActor<ADetonateBomb>(BombClass, tempLocation, tempRotation);
+			
 			mBombs[i]->SetActive(false);
+	
 		}
 	}
 }
