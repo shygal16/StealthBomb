@@ -2,6 +2,7 @@
 
 #include "prepro2.h"
 #include "prepro2Character.h"
+#include "Engine.h"
 #include "prepro2Projectile.h"
 #include "Animation/AnimInstance.h"
 #include "GameFramework/InputSettings.h"
@@ -77,6 +78,8 @@ void Aprepro2Character::SetupPlayerInputComponent(class UInputComponent* InputCo
 	
 	InputComponent->BindAction("Sprint", IE_Pressed, this, &Aprepro2Character::Sprint);
 	InputComponent->BindAction("Sprint", IE_Released, this, &Aprepro2Character::StopSprint);
+
+	InputComponent->BindAction("Xray", IE_Released, this, &Aprepro2Character::ToggleXray);
 
 	InputComponent->BindAction("Crouch", IE_Pressed, this, &Aprepro2Character::StartCrouch);
     InputComponent->BindAction("Crouch", IE_Released, this, &Aprepro2Character::EndCrouch);
@@ -256,7 +259,18 @@ bool Aprepro2Character::EnableTouchscreenMovement(class UInputComponent* InputCo
 	}
 	return bResult;
 }
+void Aprepro2Character::ToggleXray()
+{
+	if (XrayOn)
+	{
+		XrayOn = false;
+	}
+	else
+	{
+		XrayOn = true;
+	}
 
+}
 void Aprepro2Character::Bomb()
 {
 	if (mBombsIndex != mMaxBombs)
@@ -302,6 +316,7 @@ void Aprepro2Character::BeginPlay()
 // Called every frame
 void Aprepro2Character::Tick(float DeltaTime)
 {
+	
 	for (int i = mBombsIndex - 1; i >= 0; --i)
 	{
 		if (!mBombs[i]->IsActive())

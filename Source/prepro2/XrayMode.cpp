@@ -2,7 +2,7 @@
 
 #include "prepro2.h"
 #include "XrayMode.h"
-
+#include "Engine.h"
 
 // Sets default values for this component's properties
 UXrayMode::UXrayMode()
@@ -12,9 +12,9 @@ UXrayMode::UXrayMode()
 	bWantsBeginPlay = true;
 	PrimaryComponentTick.bCanEverTick = true;
 	
-	
 	// ...
 }
+
 
 
 // Called when the game starts
@@ -31,15 +31,16 @@ void UXrayMode::BeginPlay()
 void UXrayMode::TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction )
 {
 	Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
-	
-		if(GetOwner()->GetVelocity().Size() == 0)
-		{
-		mParentMesh->SetRenderCustomDepth(true);
-		}
-		else
-		{
-			mParentMesh->SetRenderCustomDepth(false);
-		}
+	GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, XrayOn ? "True" : "False");
+	mParentMesh->SetRenderCustomDepth(XrayOn);
+		//if(XrayOn)//GetOwner()->GetVelocity().Size() == 0)
+		//{
+		//mParentMesh->SetRenderCustomDepth(true);
+		//}
+		//else
+		//{
+		//	mParentMesh->SetRenderCustomDepth(false);
+		//}
 	
 	// ...
 }

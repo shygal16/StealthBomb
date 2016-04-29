@@ -80,7 +80,7 @@ protected:
 	void EndCrouch();
 	/** Fires a projectile. */
 	void OnFire();
-
+	void ToggleXray();
 	//Throw a bomb
 	void Bomb();
 
