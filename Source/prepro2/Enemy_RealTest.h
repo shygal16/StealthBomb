@@ -26,6 +26,10 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 
+	//sensing stuff
+	UFUNCTION()
+	void SenseStuff(TArray<AActor*> testActors);
+
 	UAIPerceptionComponent* perceptionComponent;
 
 	UAISenseConfig_Sight* sightConfig;
