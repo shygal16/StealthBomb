@@ -6,6 +6,6 @@ public class prepro2 : ModuleRules
 {
 	public prepro2(TargetInfo Target)
 	{
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" , "AIModule"});
 	}
 }
