@@ -2,6 +2,7 @@
 
 #include "prepro2.h"
 #include "Explosive.h"
+#include "XrayMode.h"
 
 // Sets default values
 AExplosive::AExplosive()

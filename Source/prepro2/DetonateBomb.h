@@ -32,6 +32,8 @@ public:
 
 	bool IsActive()		{ return mIsActive; }
 
+	void XRayBomb(bool On);
+
 protected:
 	bool mIsActive;
 

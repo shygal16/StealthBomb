@@ -12,11 +12,15 @@ DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 //////////////////////////////////////////////////////////////////////////
 // Aprepro2Character
 
+bool Globals::XrayOn;
+
 Aprepro2Character::Aprepro2Character()
 	: mBombsIndex(0)
 	, mMaxBombs(5)
 	, mBombSelected(-1)
 {
+	XrayOn = Globals::XrayOn;
+
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 
@@ -261,16 +265,16 @@ bool Aprepro2Character::EnableTouchscreenMovement(class UInputComponent* InputCo
 }
 void Aprepro2Character::ToggleXray()
 {
-/*
-	if (XrayOn)
+	GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, Globals::XrayOn ? "True" : "False");
+	if (Globals::XrayOn )
 	{
-		XrayOn = false;
+		Globals::XrayOn = false;
 	}
 	else
 	{
-		XrayOn = true;
+		Globals::XrayOn = true;
 	}
-*/
+
 
 }
 void Aprepro2Character::Bomb()
@@ -312,13 +316,28 @@ void Aprepro2Character::InitBombs()
 void Aprepro2Character::BeginPlay()
 {
 	Super::BeginPlay();
+	VisionBar = VisionBarMax;
 	InitBombs();
 }
 
 // Called every frame
 void Aprepro2Character::Tick(float DeltaTime)
 {
-	
+	XrayOn = Globals::XrayOn;
+	if (VisionBar < VisionBarMax && !XrayOn)
+	{
+		VisionBar+=DeltaTime;
+	}
+	else if (XrayOn)
+	{
+		VisionBar-=DeltaTime;
+		if (VisionBar <= 0)
+		{
+			ToggleXray();
+		}
+	}
+
+	GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, FString::FromInt(VisionBar));
 	for (int i = mBombsIndex - 1; i >= 0; --i)
 	{
 		if (!mBombs[i]->IsActive())
@@ -374,5 +393,6 @@ void Aprepro2Character::SelectBomb()
 	if (mBombsIndex != 0)
 	{
 		mBombSelected = (mBombSelected + 1 == mBombsIndex) ? 0 : mBombSelected + 1;
+		
 	}
 }

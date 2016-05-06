@@ -5,5 +5,10 @@
 
 #include "EngineMinimal.h"
 
+ struct Globals
+{
+public:
+	static bool XrayOn;
+};
 
 #endif

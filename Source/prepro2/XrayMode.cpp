@@ -3,7 +3,7 @@
 #include "prepro2.h"
 #include "XrayMode.h"
 #include "Engine.h"
-
+//bool Globals::XrayOn;
 // Sets default values for this component's properties
 UXrayMode::UXrayMode()
 {
@@ -31,16 +31,22 @@ void UXrayMode::BeginPlay()
 void UXrayMode::TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction )
 {
 	Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
-	//GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, XrayOn ? "True" : "False");
-//	mParentMesh->SetRenderCustomDepth(XrayOn);
-		//if(XrayOn)//GetOwner()->GetVelocity().Size() == 0)
-		//{
-		//mParentMesh->SetRenderCustomDepth(true);
-		//}
-		//else
-		//{
-		//	mParentMesh->SetRenderCustomDepth(false);
-		//}
+	
+	
+	
+
+		if(Globals::XrayOn)//GetOwner()->GetVelocity().Size() == 0)
+		{
+			//if (GetOwner()->GetVelocity().Size() == 0)
+			{
+				mParentMesh->SetRenderCustomDepth(true);
+				mParentMesh->CustomDepthStencilValue = 100;
+			}
+		}
+		else
+		{
+			mParentMesh->SetRenderCustomDepth(false);
+		}
 	
 	// ...
 }

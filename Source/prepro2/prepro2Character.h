@@ -57,6 +57,9 @@ public:
 	/** Bomb class to spawn */
 	UPROPERTY(EditAnywhere, Category = Bomb)
 		TSubclassOf<class ADetonateBomb> BombClass;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = VisionMode)
+	float VisionBarMax = 5;
 
 	UPROPERTY(EditFixedSize)
 	uint8 mMaxBombs;
@@ -145,12 +148,13 @@ public:
 	//How much faster you go while sprinting
 	UPROPERTY(Category="Character Movement: Walking", EditAnywhere, BlueprintReadWrite, meta=(ClampMin="0", UIMin="0"))
 	float SpeedMult=2;
-
 private:
+	bool XrayOn;
 	ADetonateBomb** mBombs;
 	int mBombsIndex;
 	int mBombSelected;
 	void InitBombs();
+	float VisionBar;
 
 	float sprintSpeed;
 	float WalkSpeed;
