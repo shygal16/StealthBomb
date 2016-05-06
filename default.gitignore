@@ -112,3 +112,5 @@ DerivedDataCache/*
 *.swp
 *.swo
 .ctrlp_cache/
+
+*.opendb

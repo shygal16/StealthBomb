@@ -31,8 +31,8 @@ void UXrayMode::BeginPlay()
 void UXrayMode::TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction )
 {
 	Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
-	GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, XrayOn ? "True" : "False");
-	mParentMesh->SetRenderCustomDepth(XrayOn);
+	//GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, XrayOn ? "True" : "False");
+//	mParentMesh->SetRenderCustomDepth(XrayOn);
 		//if(XrayOn)//GetOwner()->GetVelocity().Size() == 0)
 		//{
 		//mParentMesh->SetRenderCustomDepth(true);

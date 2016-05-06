@@ -261,6 +261,7 @@ bool Aprepro2Character::EnableTouchscreenMovement(class UInputComponent* InputCo
 }
 void Aprepro2Character::ToggleXray()
 {
+/*
 	if (XrayOn)
 	{
 		XrayOn = false;
@@ -269,6 +270,7 @@ void Aprepro2Character::ToggleXray()
 	{
 		XrayOn = true;
 	}
+*/
 
 }
 void Aprepro2Character::Bomb()
