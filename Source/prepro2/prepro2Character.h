@@ -149,7 +149,7 @@ public:
 	UPROPERTY(Category="Character Movement: Walking", EditAnywhere, BlueprintReadWrite, meta=(ClampMin="0", UIMin="0"))
 	float SpeedMult=2;
 private:
-	bool XrayOn;
+	bool* XrayOn;
 	ADetonateBomb** mBombs;
 	int mBombsIndex;
 	int mBombSelected;
