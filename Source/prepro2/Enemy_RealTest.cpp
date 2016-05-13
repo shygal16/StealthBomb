@@ -45,8 +45,8 @@ AEnemy_RealTest::AEnemy_RealTest()
 void AEnemy_RealTest::BeginPlay()
 {
 	Super::BeginPlay();
-	UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, sightConfig->GetSenseImplementation(), Controller->GetControlledPawn());
-	UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, soundConfig->GetSenseImplementation(), Controller->GetControlledPawn());
+	UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, sightConfig->GetSenseImplementation(), Controller->GetPawn());
+	UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, soundConfig->GetSenseImplementation(), Controller->GetPawn());
 	
 }
 

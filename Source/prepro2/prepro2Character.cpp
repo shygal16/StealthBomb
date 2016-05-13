@@ -83,7 +83,7 @@ void Aprepro2Character::SetupPlayerInputComponent(class UInputComponent* InputCo
 	InputComponent->BindAction("Sprint", IE_Pressed, this, &Aprepro2Character::Sprint);
 	InputComponent->BindAction("Sprint", IE_Released, this, &Aprepro2Character::StopSprint);
 
-	InputComponent->BindAction("Xray", IE_Released, this, &Aprepro2Character::ToggleXray);
+	InputComponent->BindAction("Xray", IE_Pressed, this, &Aprepro2Character::ToggleXray);
 
 	InputComponent->BindAction("Crouch", IE_Pressed, this, &Aprepro2Character::StartCrouch);
     InputComponent->BindAction("Crouch", IE_Released, this, &Aprepro2Character::EndCrouch);
@@ -323,6 +323,7 @@ void Aprepro2Character::BeginPlay()
 // Called every frame
 void Aprepro2Character::Tick(float DeltaTime)
 {
+	GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, FString::FromInt(VisionBar));
 	XrayOn = Globals::XrayOn;
 	if (VisionBar < VisionBarMax && !XrayOn)
 	{
@@ -337,7 +338,6 @@ void Aprepro2Character::Tick(float DeltaTime)
 		}
 	}
 
-	GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, FString::FromInt(VisionBar));
 	for (int i = mBombsIndex - 1; i >= 0; --i)
 	{
 		if (!mBombs[i]->IsActive())
