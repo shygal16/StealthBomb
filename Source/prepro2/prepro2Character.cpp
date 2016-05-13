@@ -20,7 +20,7 @@ Aprepro2Character::Aprepro2Character()
 	, mBombSelected(-1)
 {
 	XrayOn = &Globals::XrayOn;
-
+	SprintBar = SprintBarMax;
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 
@@ -147,10 +147,12 @@ void Aprepro2Character::OnFire()
 }
 void Aprepro2Character::Sprint()
 {
+	Sprinting = true;
 	GetCharacterMovement()->MaxWalkSpeed=sprintSpeed;
 }
 void Aprepro2Character::StopSprint()
 {
+	Sprinting = false;
 	GetCharacterMovement()->MaxWalkSpeed=WalkSpeed;
 }
 void Aprepro2Character::StartCrouch()
@@ -323,14 +325,11 @@ void Aprepro2Character::BeginPlay()
 // Called every frame
 void Aprepro2Character::Tick(float DeltaTime)
 {
-<<<<<<< HEAD
+
 	//*XrayOn = Globals::XrayOn;
+
+	//GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, FString::FromInt(VisionBar));
 	if (VisionBar < VisionBarMax && !*XrayOn)
-=======
-	GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, FString::FromInt(VisionBar));
-	XrayOn = Globals::XrayOn;
-	if (VisionBar < VisionBarMax && !XrayOn)
->>>>>>> 9566ddf10d14405c6f595934f9b5e4a0a9b12dca
 	{
 		VisionBar+=DeltaTime;
 	}
@@ -343,10 +342,20 @@ void Aprepro2Character::Tick(float DeltaTime)
 		}
 	}
 
-<<<<<<< HEAD
+	if (!Sprinting && SprintBar<SprintBarMax)
+	{
+		SprintBar += DeltaTime;
+	}
+	else if(Sprinting)
+	{
+		SprintBar -= DeltaTime;
+		if (SprintBar <= 0)
+		{
+			StopSprint();
+		}
+	}
 	//GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, FString::FromInt(VisionBar));
-=======
->>>>>>> 9566ddf10d14405c6f595934f9b5e4a0a9b12dca
+
 	for (int i = mBombsIndex - 1; i >= 0; --i)
 	{
 		if (!mBombs[i]->IsActive())

@@ -58,8 +58,11 @@ public:
 	UPROPERTY(EditAnywhere, Category = Bomb)
 		TSubclassOf<class ADetonateBomb> BombClass;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = VisionMode)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Custom)
 	float VisionBarMax = 5;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Custom)
+	float SprintBarMax = 5;
 
 	UPROPERTY(EditFixedSize)
 	uint8 mMaxBombs;
@@ -146,7 +149,7 @@ public:
 	FORCEINLINE class UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 	
 	//How much faster you go while sprinting
-	UPROPERTY(Category="Character Movement: Walking", EditAnywhere, BlueprintReadWrite, meta=(ClampMin="0", UIMin="0"))
+	UPROPERTY(Category = Custom, EditAnywhere, BlueprintReadWrite, meta=(ClampMin="0", UIMin="0"))
 	float SpeedMult=2;
 private:
 	bool* XrayOn;
@@ -156,6 +159,8 @@ private:
 	void InitBombs();
 	float VisionBar;
 
+	float SprintBar;
+	bool Sprinting;
 	float sprintSpeed;
 	float WalkSpeed;
 	
