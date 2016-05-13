@@ -48,17 +48,17 @@ void AEnemy_RealTest::BeginPlay()
 	Super::BeginPlay();
 
 	// UGameplayStatics::GetPlayerCharacter(GetWorld(),0) vs Controller->GetControlledPawn()
-	UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, sightConfig->GetSenseImplementation(), this);
+	//UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, sightConfig->GetSenseImplementation(), this);
 	//UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, sightConfig->GetSenseImplementation(), UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-	//UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, soundConfig->GetSenseImplementation(), Controller->GetControlledPawn());
+	//UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, soundConfig->GetSenseImplementation(),this);
 	
 }
-
 // Called every frame
 void AEnemy_RealTest::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
-
+	FRotator rot = FRotator(0, 1, 0);
+	SetActorRotation(GetActorRotation()+rot);
 }
 
 // Called to bind functionality to input
@@ -72,4 +72,9 @@ void AEnemy_RealTest::SenseStuff(TArray<AActor*> testActors)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, "I see you!");
 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Blue, "I hear you!");
+
+	FVector Movement=GetActorLocation()-testActors[0]->GetActorLocation();
+
+	Movement /= 3;
+	SetActorLocation(GetActorLocation() - Movement);
 }
