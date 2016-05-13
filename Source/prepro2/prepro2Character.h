@@ -159,6 +159,8 @@ private:
 	void InitBombs();
 	float VisionBar;
 
+	bool PlantingBomb=false;
+
 	float SprintBar;
 	bool Sprinting;
 	float sprintSpeed;

@@ -72,6 +72,7 @@ void Aprepro2Character::SetupPlayerInputComponent(class UInputComponent* InputCo
 	InputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
 	InputComponent->BindAction("Bomb", IE_Pressed, this, &Aprepro2Character::Bomb);
+	//InputComponent->BindAction("Bomb", IE_Released, this, &Aprepro2Character::Bomb);
 
 	InputComponent->BindAction("TriggerAllBombs", IE_Pressed, this, &Aprepro2Character::TriggerAllBombs);
 	InputComponent->BindAction("DetonateAllBombs", IE_Pressed, this, &Aprepro2Character::DetonateAllBombs);
@@ -401,8 +402,7 @@ void Aprepro2Character::DetonateBomb()
 	if (mBombSelected != -1)
 	{
 		mBombs[mBombSelected]->Explode();
-		mBombSelected = (mBombSelected + 1 == mBombsIndex) ? 0 : mBombSelected + 1;
-		
+		SelectBomb();		
 	}
 }
 
@@ -410,7 +410,8 @@ void Aprepro2Character::SelectBomb()
 {
 	if (mBombsIndex != 0)
 	{
-		mBombSelected = (mBombSelected + 1 == mBombsIndex) ? 0 : mBombSelected + 1;
-		
+		mBombs[mBombSelected]->XRayBomb(false);
+			mBombSelected = (mBombSelected + 1 == mBombsIndex) ? 0 : mBombSelected + 1;
+		mBombs[mBombSelected]->XRayBomb(true);
 	}
 }

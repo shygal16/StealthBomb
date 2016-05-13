@@ -26,13 +26,14 @@ void ADetonateBomb::BeginPlay()
 	Super::BeginPlay();
 	
 	mOriginalMesh = mBombModel->DestructibleMesh;
+	
 }
 
 // Called every frame
 void ADetonateBomb::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
-
+	
 	if (mExplosionTimer < 0)
 	{
 		Explode();
@@ -100,6 +101,5 @@ void ADetonateBomb::SetActive(bool active)
 
 void ADetonateBomb::XRayBomb(bool On)
 {
-	//mOriginalMesh->SetRenderCustomDepth(true);
-
+	
 }
