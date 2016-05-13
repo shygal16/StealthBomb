@@ -17,7 +17,7 @@ AEnemy_RealTest::AEnemy_RealTest()
  
 	
 	perceptionComponent->OnPerceptionUpdated.AddDynamic(this, &AEnemy_RealTest::SenseStuff);
-
+	
 	sightConfig->SightRadius = 4000.0f;
 	sightConfig->LoseSightRadius = 4020.f;
 	sightConfig->PeripheralVisionAngleDegrees = 360.0f;
@@ -31,8 +31,8 @@ AEnemy_RealTest::AEnemy_RealTest()
 	soundConfig->DetectionByAffiliation.bDetectNeutrals = true;
 	soundConfig->DetectionByAffiliation.bDetectFriendlies = true;
 	
-	perceptionComponent->ConfigureSense(*sightConfig);
 	perceptionComponent->ConfigureSense(*soundConfig);
+	perceptionComponent->ConfigureSense(*sightConfig);
 
 	perceptionComponent->SetDominantSense(sightConfig->GetSenseImplementation());
 
@@ -66,6 +66,6 @@ void AEnemy_RealTest::SetupPlayerInputComponent(class UInputComponent* InputComp
 
 void AEnemy_RealTest::SenseStuff(TArray<AActor*> testActors)
 {
-	GEngine->AddOnScreenDebugMessage(-2, 15.0f, FColor::Red, "I see you!");
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, "I see you!");
 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Blue, "I hear you!");
 }
