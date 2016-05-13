@@ -7,6 +7,10 @@
 #include "Animation/AnimInstance.h"
 #include "GameFramework/InputSettings.h"
 
+#include "Perception/AISenseConfig_Sight.h"
+#include "Perception/AISenseConfig_Hearing.h"
+#include "Perception/AIPerceptionComponent.h"
+
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
 //////////////////////////////////////////////////////////////////////////
@@ -320,6 +324,7 @@ void Aprepro2Character::BeginPlay()
 	Super::BeginPlay();
 	VisionBar = VisionBarMax;
 	InitBombs();
+	//UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, UAISenseConfig_Sight::GetSenseImplementation(),)
 }
 
 // Called every frame
