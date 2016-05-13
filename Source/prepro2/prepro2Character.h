@@ -64,6 +64,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Custom)
 	float SprintBarMax = 5;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Custom)
+		float PlantTime = 2;
+
+	//How much faster you go while sprinting
+	UPROPERTY(Category = Custom, EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", UIMin = "0"))
+		float SpeedMult = 2;
+
 	UPROPERTY(EditFixedSize)
 	uint8 mMaxBombs;
 
@@ -148,9 +155,7 @@ public:
 	/** Returns FirstPersonCameraComponent subobject **/
 	FORCEINLINE class UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 	
-	//How much faster you go while sprinting
-	UPROPERTY(Category = Custom, EditAnywhere, BlueprintReadWrite, meta=(ClampMin="0", UIMin="0"))
-	float SpeedMult=2;
+	
 private:
 	bool* XrayOn;
 	ADetonateBomb** mBombs;
@@ -159,7 +164,11 @@ private:
 	void InitBombs();
 	float VisionBar;
 
+
+	void BombPlant();
+	void BombStopPlant();
 	bool PlantingBomb=false;
+	float PlantProgress=0;
 
 	float SprintBar;
 	bool Sprinting;
