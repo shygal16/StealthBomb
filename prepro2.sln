@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.22310.1
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Engine", "Engine", "{A724BB3F-2B02-4776-BC2D-F5F19BC75A8C}"
 EndProject
@@ -25,6 +25,26 @@ Global
 		Shipping|Win64 = Shipping|Win64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FAF66FBF-66B3-4F73-9367-0FDD2540ECF2}.DebugGame Editor|Win32.ActiveCfg = BuiltWithUnrealBuildTool|Win32
+		{FAF66FBF-66B3-4F73-9367-0FDD2540ECF2}.DebugGame Editor|Win32.Build.0 = BuiltWithUnrealBuildTool|Win32
+		{FAF66FBF-66B3-4F73-9367-0FDD2540ECF2}.DebugGame Editor|Win64.ActiveCfg = BuiltWithUnrealBuildTool|Win32
+		{FAF66FBF-66B3-4F73-9367-0FDD2540ECF2}.DebugGame Editor|Win64.Build.0 = BuiltWithUnrealBuildTool|Win32
+		{FAF66FBF-66B3-4F73-9367-0FDD2540ECF2}.DebugGame|Win32.ActiveCfg = BuiltWithUnrealBuildTool|Win32
+		{FAF66FBF-66B3-4F73-9367-0FDD2540ECF2}.DebugGame|Win32.Build.0 = BuiltWithUnrealBuildTool|Win32
+		{FAF66FBF-66B3-4F73-9367-0FDD2540ECF2}.DebugGame|Win64.ActiveCfg = BuiltWithUnrealBuildTool|Win32
+		{FAF66FBF-66B3-4F73-9367-0FDD2540ECF2}.DebugGame|Win64.Build.0 = BuiltWithUnrealBuildTool|Win32
+		{FAF66FBF-66B3-4F73-9367-0FDD2540ECF2}.Development Editor|Win32.ActiveCfg = BuiltWithUnrealBuildTool|Win32
+		{FAF66FBF-66B3-4F73-9367-0FDD2540ECF2}.Development Editor|Win32.Build.0 = BuiltWithUnrealBuildTool|Win32
+		{FAF66FBF-66B3-4F73-9367-0FDD2540ECF2}.Development Editor|Win64.ActiveCfg = BuiltWithUnrealBuildTool|Win32
+		{FAF66FBF-66B3-4F73-9367-0FDD2540ECF2}.Development Editor|Win64.Build.0 = BuiltWithUnrealBuildTool|Win32
+		{FAF66FBF-66B3-4F73-9367-0FDD2540ECF2}.Development|Win32.ActiveCfg = BuiltWithUnrealBuildTool|Win32
+		{FAF66FBF-66B3-4F73-9367-0FDD2540ECF2}.Development|Win32.Build.0 = BuiltWithUnrealBuildTool|Win32
+		{FAF66FBF-66B3-4F73-9367-0FDD2540ECF2}.Development|Win64.ActiveCfg = BuiltWithUnrealBuildTool|Win32
+		{FAF66FBF-66B3-4F73-9367-0FDD2540ECF2}.Development|Win64.Build.0 = BuiltWithUnrealBuildTool|Win32
+		{FAF66FBF-66B3-4F73-9367-0FDD2540ECF2}.Shipping|Win32.ActiveCfg = BuiltWithUnrealBuildTool|Win32
+		{FAF66FBF-66B3-4F73-9367-0FDD2540ECF2}.Shipping|Win32.Build.0 = BuiltWithUnrealBuildTool|Win32
+		{FAF66FBF-66B3-4F73-9367-0FDD2540ECF2}.Shipping|Win64.ActiveCfg = BuiltWithUnrealBuildTool|Win32
+		{FAF66FBF-66B3-4F73-9367-0FDD2540ECF2}.Shipping|Win64.Build.0 = BuiltWithUnrealBuildTool|Win32
 		{8CD0FE44-40AD-438F-8361-123A4773328F}.DebugGame Editor|Win32.ActiveCfg = DebugGame_Editor|Win32
 		{8CD0FE44-40AD-438F-8361-123A4773328F}.DebugGame Editor|Win32.Build.0 = DebugGame_Editor|Win32
 		{8CD0FE44-40AD-438F-8361-123A4773328F}.DebugGame Editor|Win64.ActiveCfg = DebugGame_Editor|x64

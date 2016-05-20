@@ -22,8 +22,9 @@ void UXrayMode::BeginPlay()
 {
 	Super::BeginPlay();
 	// ...
-	
-	mParentMesh=Cast<UPrimitiveComponent>(GetOwner()->GetComponents()[0]);
+
+	mParentMesh = Cast<UPrimitiveComponent>(GetOwner()->FindComponentByClass<UPrimitiveComponent>());//GetOwner()->GetComponents()[0]);
+
 }
 
 
@@ -32,20 +33,21 @@ void UXrayMode::TickComponent( float DeltaTime, ELevelTick TickType, FActorCompo
 {
 	Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
 	
-	
-	
 
 		if(Globals::XrayOn)//GetOwner()->GetVelocity().Size() == 0)
 		{
-			//if (GetOwner()->GetVelocity().Size() == 0)
+			//if(GetOwner()->GetVelocity().Size() > 0)
+			if(mXrayOn==false) 
 			{
 				mParentMesh->SetRenderCustomDepth(true);
 				mParentMesh->CustomDepthStencilValue = 100;
+				mXrayOn = true;
 			}
 		}
-		else
+		else if(mXrayOn)
 		{
 			mParentMesh->SetRenderCustomDepth(false);
+			mXrayOn = false;
 		}
 	
 	// ...

@@ -20,7 +20,7 @@ public:
 	
 	// Called every frame
 	virtual void TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction ) override;
-	UPrimitiveComponent* mParentMesh;	
+	UPrimitiveComponent* mParentMesh; //a primitive component is the holder of static meshes 	
 private:
-	bool XrayOn;
+	bool mXrayOn=false;
 };
