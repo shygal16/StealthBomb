@@ -11,6 +11,7 @@
 #include "Perception/AISenseConfig_Hearing.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISense_Sight.h"
+#include "Perception/AISense_Hearing.h"
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
 //////////////////////////////////////////////////////////////////////////
@@ -234,6 +235,10 @@ void Aprepro2Character::MoveForward(float Value)
 	{
 		// add movement in that direction
 		AddMovementInput(GetActorForwardVector(), Value);
+		if (GetCharacterMovement()->MaxWalkSpeed == sprintSpeed)
+		{
+			MakeNoise(1.0f, this, GetActorLocation());
+		}
 	}
 }
 
@@ -243,6 +248,10 @@ void Aprepro2Character::MoveRight(float Value)
 	{
 		// add movement in that direction
 		AddMovementInput(GetActorRightVector(), Value);
+		if (GetCharacterMovement()->MaxWalkSpeed == sprintSpeed)
+		{
+			MakeNoise(1.0f, this, GetActorLocation());
+		}
 	}
 }
 
@@ -307,6 +316,7 @@ void Aprepro2Character::BombPlant()
 {
 	PlantingBomb = true;
 	StartCrouch();
+
 }
 void Aprepro2Character::BombStopPlant()
 {
@@ -343,6 +353,7 @@ void Aprepro2Character::BeginPlay()
 	InitBombs();
 	//UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, UAISenseConfig_Sight::GetSenseImplementation(),)
 	UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, UAISense_Sight::StaticClass(),this);
+	UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, UAISense_Hearing::StaticClass(), this);
 
 }
 
