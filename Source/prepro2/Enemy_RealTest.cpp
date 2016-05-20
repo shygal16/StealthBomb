@@ -4,40 +4,18 @@
 
 #include "Engine.h"
 #include "Enemy_RealTest.h"
+#include "Perception/AISense_Sight.h"
+#include "Perception/AISense_Hearing.h"
 //#include "Runtime/Engine/Classes/GameFramework/Controller.h"
 
 
 
 // Sets default values
 AEnemy_RealTest::AEnemy_RealTest()
-	: perceptionComponent(CreateDefaultSubobject< UAIPerceptionComponent >(TEXT("PerceptionComp")))
-	, sightConfig(CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("AI Sight")))
-	, soundConfig(CreateDefaultSubobject<UAISenseConfig_Hearing>(TEXT("AI Hearing")))
 	//, mController(CreateDefaultSubobject<AAIController>(TEXT("AI Controller")))
 {
-	
-	perceptionComponent->ConfigureSense(*sightConfig);
-	perceptionComponent->ConfigureSense(*soundConfig);
-	perceptionComponent->SetDominantSense(sightConfig->GetSenseImplementation());
-	
-	perceptionComponent->OnPerceptionUpdated.AddDynamic(this, &AEnemy_RealTest::SenseStuff);
-	
-	sightConfig->SightRadius = 3000.0f;
-	sightConfig->LoseSightRadius = 3500.f;
-	sightConfig->PeripheralVisionAngleDegrees = 90.0f;
-	sightConfig->DetectionByAffiliation.bDetectEnemies = true;
-	sightConfig->DetectionByAffiliation.bDetectNeutrals = true;
-	sightConfig->DetectionByAffiliation.bDetectFriendlies = true;
 
-	perceptionComponent->ConfigureSense(*sightConfig);
-
-	soundConfig->HearingRange = 400.0f;
-	soundConfig->bUseLoSHearing = false;
-	soundConfig->DetectionByAffiliation.bDetectEnemies = true;
-	soundConfig->DetectionByAffiliation.bDetectNeutrals = true;
-	soundConfig->DetectionByAffiliation.bDetectFriendlies = true;
-
-	perceptionComponent->ConfigureSense(*soundConfig);
+	
 
 	PrimaryActorTick.bCanEverTick = true;
 	//mController->SetPawn(this);
@@ -47,7 +25,6 @@ AEnemy_RealTest::AEnemy_RealTest()
 void AEnemy_RealTest::BeginPlay()
 {
 	Super::BeginPlay();
-	mController = GetController();
 	mTargetPos = GetActorLocation();
 	// UGameplayStatics::GetPlayerCharacter(GetWorld(),0) vs Controller->GetControlledPawn()
 	//UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, sightConfig->GetSenseImplementation(), this);
@@ -69,17 +46,4 @@ void AEnemy_RealTest::SetupPlayerInputComponent(class UInputComponent* InputComp
 {
 	Super::SetupPlayerInputComponent(InputComponent);
 
-}
-
-void AEnemy_RealTest::SenseStuff(TArray<AActor*> testActors)
-{
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, "I see you!");
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Blue, "I hear you!");
-//	mController->MoveToActor(testActors[0]);
-	//mTargetPos = testActors[0]->GetActorLocation();
-	//UNavigationSystem::SimpleMoveToActor(GetController(), testActors[0]);
-	UNavigationSystem::SimpleMoveToLocation(mController,testActors[0]->GetActorLocation());
-	//FVector Movement = GetActorLocation() - testActors[0]->GetActorLocation();
-	//Movement /= 3;
-	//SetActorLocation(GetActorLocation() - Movement);
 }

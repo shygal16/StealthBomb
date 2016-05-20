@@ -28,7 +28,7 @@ void ADetonateBomb::BeginPlay()
 	
 	mOriginalMesh = mBombModel->DestructibleMesh;
 
-	UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, UAISense_Hearing::StaticClass(), this);
+	//UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, UAISense_Hearing::StaticClass(), this);
 	
 }
 

@@ -11,7 +11,7 @@
 
 UCLASS()
 class PREPRO2_API AEnemy_RealTest : public ACharacter
-{
+{	
 	GENERATED_BODY()
 
 public:
@@ -27,18 +27,12 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 
-	//sensing stuff
-	UFUNCTION()
-	void SenseStuff(TArray<AActor*> testActors);
+	
 
 	
 	UPROPERTY(EditAnywhere, Category=Behavior)
 	class UBehaviorTree* BehaviorTree;
 
-	UAIPerceptionComponent* perceptionComponent;
-	AController* mController;
-	UAISenseConfig_Sight* sightConfig;
-	UAISenseConfig_Hearing* soundConfig;
 	FVector mTargetPos;
 
 };

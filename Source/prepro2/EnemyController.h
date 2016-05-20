@@ -3,6 +3,9 @@
 #pragma once
 
 #include "AIController.h"
+#include "Perception/AISenseConfig_Sight.h"
+#include "Perception/AISenseConfig_Hearing.h"
+#include "Perception/AIPerceptionComponent.h"
 #include "EnemyController.generated.h"
 
 /**
@@ -22,6 +25,14 @@ class PREPRO2_API AEnemyController : public AAIController
 
 	virtual void BeginInactiveState() override;
 
-	void SetTargetEnemy(APawn * Target);
+	void SetTargetEnemy(APawn * Target);	
+
+	UAIPerceptionComponent* perceptionComponent;
+	UAISenseConfig_Sight* sightConfig;
+	UAISenseConfig_Hearing* soundConfig;
+
+	//sensing stuff
+	UFUNCTION()
+		void SenseStuff(TArray<AActor*> testActors);
 
 };
