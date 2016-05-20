@@ -104,5 +104,5 @@ void ADetonateBomb::SetActive(bool active)
 
 void ADetonateBomb::XRayBomb(bool On)
 {
-	
+	mBombModel->SetRenderCustomDepth(On);
 }

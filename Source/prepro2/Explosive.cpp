@@ -27,7 +27,6 @@ void AExplosive::Explode()
 		mExploded = true;
 		mExplosionTimer = mExplosionDelay;
 		mBombTriggered = false;
-		MakeNoise(1.f, this, GetActorLocation());
 	}
 }
 
