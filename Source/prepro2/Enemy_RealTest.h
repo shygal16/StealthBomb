@@ -5,6 +5,7 @@
 #include "GameFramework/Character.h"
 #include "Perception/AISenseConfig_Sight.h"
 #include "Perception/AISenseConfig_Hearing.h"
+#include "AIController.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Enemy_RealTest.generated.h"
 
@@ -30,9 +31,14 @@ public:
 	UFUNCTION()
 	void SenseStuff(TArray<AActor*> testActors);
 
-	UAIPerceptionComponent* perceptionComponent;
+	
+	UPROPERTY(EditAnywhere, Category=Behavior)
+	class UBehaviorTree* BehaviorTree;
 
+	UAIPerceptionComponent* perceptionComponent;
+	AController* mController;
 	UAISenseConfig_Sight* sightConfig;
 	UAISenseConfig_Hearing* soundConfig;
-	
+	FVector mTargetPos;
+
 };

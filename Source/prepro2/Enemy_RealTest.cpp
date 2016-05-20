@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "prepro2.h"
-#include "AIController.h"
+
 #include "Engine.h"
 #include "Enemy_RealTest.h"
 //#include "Runtime/Engine/Classes/GameFramework/Controller.h"
@@ -13,14 +13,15 @@ AEnemy_RealTest::AEnemy_RealTest()
 	: perceptionComponent(CreateDefaultSubobject< UAIPerceptionComponent >(TEXT("PerceptionComp")))
 	, sightConfig(CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("AI Sight")))
 	, soundConfig(CreateDefaultSubobject<UAISenseConfig_Hearing>(TEXT("AI Hearing")))
+	//, mController(CreateDefaultSubobject<AAIController>(TEXT("AI Controller")))
 {
-
+	
 	perceptionComponent->ConfigureSense(*sightConfig);
 	perceptionComponent->ConfigureSense(*soundConfig);
 	perceptionComponent->SetDominantSense(sightConfig->GetSenseImplementation());
-
+	
 	perceptionComponent->OnPerceptionUpdated.AddDynamic(this, &AEnemy_RealTest::SenseStuff);
-
+	
 	sightConfig->SightRadius = 3000.0f;
 	sightConfig->LoseSightRadius = 3500.f;
 	sightConfig->PeripheralVisionAngleDegrees = 90.0f;
@@ -39,14 +40,15 @@ AEnemy_RealTest::AEnemy_RealTest()
 	perceptionComponent->ConfigureSense(*soundConfig);
 
 	PrimaryActorTick.bCanEverTick = true;
-
+	//mController->SetPawn(this);
 }
 
 // Called when the game starts or when spawned
 void AEnemy_RealTest::BeginPlay()
 {
 	Super::BeginPlay();
-
+	mController = GetController();
+	mTargetPos = GetActorLocation();
 	// UGameplayStatics::GetPlayerCharacter(GetWorld(),0) vs Controller->GetControlledPawn()
 	//UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, sightConfig->GetSenseImplementation(), this);
 	//UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, sightConfig->GetSenseImplementation(), UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
@@ -59,6 +61,7 @@ void AEnemy_RealTest::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	FRotator rot = FRotator(0, 1, 0);
 	SetActorRotation(GetActorRotation() + rot);
+	
 }
 
 // Called to bind functionality to input
@@ -72,9 +75,11 @@ void AEnemy_RealTest::SenseStuff(TArray<AActor*> testActors)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, "I see you!");
 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Blue, "I hear you!");
-
-	FVector Movement = GetActorLocation() - testActors[0]->GetActorLocation();
-
-	Movement /= 3;
-	SetActorLocation(GetActorLocation() - Movement);
+//	mController->MoveToActor(testActors[0]);
+	//mTargetPos = testActors[0]->GetActorLocation();
+	//UNavigationSystem::SimpleMoveToActor(GetController(), testActors[0]);
+	UNavigationSystem::SimpleMoveToLocation(mController,testActors[0]->GetActorLocation());
+	//FVector Movement = GetActorLocation() - testActors[0]->GetActorLocation();
+	//Movement /= 3;
+	//SetActorLocation(GetActorLocation() - Movement);
 }
