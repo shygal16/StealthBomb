@@ -15,28 +15,27 @@ AEnemy_RealTest::AEnemy_RealTest()
 	, soundConfig(CreateDefaultSubobject<UAISenseConfig_Hearing>(TEXT("AI Hearing")))
 {
  
-	perceptionComponent->ConfigureSense(*sightConfig);
-	perceptionComponent->ConfigureSense(*soundConfig);
-	perceptionComponent->SetDominantSense(sightConfig->GetSenseImplementation());
-
+	
 	perceptionComponent->OnPerceptionUpdated.AddDynamic(this, &AEnemy_RealTest::SenseStuff);
 	
-	sightConfig->SightRadius = 3000.0f;
-	sightConfig->LoseSightRadius = 3500.f;
-	sightConfig->PeripheralVisionAngleDegrees = 90.0f;
+	sightConfig->SightRadius = 4000.0f;
+	sightConfig->LoseSightRadius = 4020.f;
+	sightConfig->PeripheralVisionAngleDegrees = 360.0f;
 	sightConfig->DetectionByAffiliation.bDetectEnemies = true;
 	sightConfig->DetectionByAffiliation.bDetectNeutrals = true;
 	sightConfig->DetectionByAffiliation.bDetectFriendlies = true;
 
-	perceptionComponent->ConfigureSense(*sightConfig);
-
-	soundConfig->HearingRange = 400.0f;
+	soundConfig->HearingRange = 4000.0f;
 	soundConfig->bUseLoSHearing = false;
 	soundConfig->DetectionByAffiliation.bDetectEnemies = true;
 	soundConfig->DetectionByAffiliation.bDetectNeutrals = true;
 	soundConfig->DetectionByAffiliation.bDetectFriendlies = true;
 	
 	perceptionComponent->ConfigureSense(*soundConfig);
+	perceptionComponent->ConfigureSense(*sightConfig);
+
+	perceptionComponent->SetDominantSense(sightConfig->GetSenseImplementation());
+
 
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -46,19 +45,16 @@ AEnemy_RealTest::AEnemy_RealTest()
 void AEnemy_RealTest::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// UGameplayStatics::GetPlayerCharacter(GetWorld(),0) vs Controller->GetControlledPawn()
-	//UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, sightConfig->GetSenseImplementation(), this);
-	//UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, sightConfig->GetSenseImplementation(), UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-	//UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, soundConfig->GetSenseImplementation(),this);
+	UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, sightConfig->GetSenseImplementation(), Controller->GetPawn());
+	UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, soundConfig->GetSenseImplementation(), Controller->GetPawn());
 	
 }
+
 // Called every frame
 void AEnemy_RealTest::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
-	FRotator rot = FRotator(0, 1, 0);
-	SetActorRotation(GetActorRotation()+rot);
+
 }
 
 // Called to bind functionality to input
@@ -72,9 +68,4 @@ void AEnemy_RealTest::SenseStuff(TArray<AActor*> testActors)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, "I see you!");
 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Blue, "I hear you!");
-
-	FVector Movement=GetActorLocation()-testActors[0]->GetActorLocation();
-
-	Movement /= 3;
-	SetActorLocation(GetActorLocation() - Movement);
 }

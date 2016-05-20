@@ -75,7 +75,8 @@ void Aprepro2Character::SetupPlayerInputComponent(class UInputComponent* InputCo
 	InputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	InputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
-	InputComponent->BindAction("Bomb", IE_Pressed, this, &Aprepro2Character::Bomb);
+	InputComponent->BindAction("Bomb", IE_Pressed, this, &Aprepro2Character::BombPlant);
+	InputComponent->BindAction("Bomb", IE_Released, this, &Aprepro2Character::BombStopPlant);
 
 	InputComponent->BindAction("TriggerAllBombs", IE_Pressed, this, &Aprepro2Character::TriggerAllBombs);
 	InputComponent->BindAction("DetonateAllBombs", IE_Pressed, this, &Aprepro2Character::DetonateAllBombs);
@@ -229,7 +230,7 @@ void Aprepro2Character::TouchUpdate(const ETouchIndex::Type FingerIndex, const F
 
 void Aprepro2Character::MoveForward(float Value)
 {
-	if (Value != 0.0f)
+	if (Value != 0.0f && !PlantingBomb)
 	{
 		// add movement in that direction
 		AddMovementInput(GetActorForwardVector(), Value);
@@ -238,7 +239,7 @@ void Aprepro2Character::MoveForward(float Value)
 
 void Aprepro2Character::MoveRight(float Value)
 {
-	if (Value != 0.0f)
+	if (Value != 0.0f && !PlantingBomb)
 	{
 		// add movement in that direction
 		AddMovementInput(GetActorRightVector(), Value);
@@ -248,13 +249,17 @@ void Aprepro2Character::MoveRight(float Value)
 void Aprepro2Character::TurnAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
-	AddControllerYawInput(Rate * BaseTurnRate * GetWorld()->GetDeltaSeconds());
+	float ModifiedTurn = PlantingBomb ? 0 : BaseTurnRate;
+	AddControllerYawInput(Rate * ModifiedTurn * GetWorld()->GetDeltaSeconds());
+	
 }
 
 void Aprepro2Character::LookUpAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
-	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
+	float ModifiedTurn = PlantingBomb ? 0 : BaseTurnRate;
+		AddControllerPitchInput(Rate * ModifiedTurn * GetWorld()->GetDeltaSeconds());
+	
 }
 
 bool Aprepro2Character::EnableTouchscreenMovement(class UInputComponent* InputComponent)
@@ -296,6 +301,18 @@ void Aprepro2Character::Bomb()
 
 		mBombSelected = curr;
 	}
+}
+
+void Aprepro2Character::BombPlant()
+{
+	PlantingBomb = true;
+	StartCrouch();
+}
+void Aprepro2Character::BombStopPlant()
+{
+	PlantingBomb = false;
+	PlantProgress = 0;
+	EndCrouch();
 }
 
 void Aprepro2Character::InitBombs()
@@ -361,6 +378,18 @@ void Aprepro2Character::Tick(float DeltaTime)
 			StopSprint();
 		}
 	}
+
+	if (PlantingBomb)
+	{
+		PlantProgress += DeltaTime;
+		if (PlantProgress >= PlantTime)
+		{
+			Bomb();
+			PlantingBomb = false;
+			EndCrouch();
+			PlantProgress = 0;
+		}
+	}
 	//GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, FString::FromInt(VisionBar));
 
 	for (int i = mBombsIndex - 1; i >= 0; --i)
@@ -408,8 +437,7 @@ void Aprepro2Character::DetonateBomb()
 	if (mBombSelected != -1)
 	{
 		mBombs[mBombSelected]->Explode();
-		mBombSelected = (mBombSelected + 1 == mBombsIndex) ? 0 : mBombSelected + 1;
-		
+		SelectBomb();		
 	}
 }
 
@@ -417,7 +445,8 @@ void Aprepro2Character::SelectBomb()
 {
 	if (mBombsIndex != 0)
 	{
-		mBombSelected = (mBombSelected + 1 == mBombsIndex) ? 0 : mBombSelected + 1;
-		
+		mBombs[mBombSelected]->XRayBomb(false);
+			mBombSelected = (mBombSelected + 1 == mBombsIndex) ? 0 : mBombSelected + 1;
+		mBombs[mBombSelected]->XRayBomb(true);
 	}
 }
