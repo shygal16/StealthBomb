@@ -2,6 +2,7 @@
 
 #include "prepro2.h"
 #include "Explosive.h"
+
 #include "XrayMode.h"
 
 // Sets default values
@@ -27,7 +28,7 @@ void AExplosive::Explode()
 		mExploded = true;
 		mExplosionTimer = mExplosionDelay;
 		mBombTriggered = false;
-
+		UGameplayStatics::ApplyRadialDamage(GetWorld(), 100, GetActorLocation(), 500.0, UDamageType::StaticClass(), TArray<AActor*>());
 		MakeNoise(1.f, this, GetActorLocation(),800.0f);
 	}
 }

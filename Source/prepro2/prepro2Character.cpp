@@ -24,6 +24,7 @@ Aprepro2Character::Aprepro2Character()
 	, mMaxBombs(5)
 	, mBombSelected(-1)
 {
+	
 	XrayOn = &Globals::XrayOn;
 	SprintBar = SprintBarMax;
 	// Set size for collision capsule
