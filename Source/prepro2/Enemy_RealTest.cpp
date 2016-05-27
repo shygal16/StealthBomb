@@ -12,42 +12,36 @@
 
 // Sets default values
 AEnemy_RealTest::AEnemy_RealTest()
-<<<<<<< HEAD
-	: perceptionComponent(CreateDefaultSubobject< UAIPerceptionComponent >(TEXT("PerceptionComp")))
+{
+	/*: perceptionComponent(CreateDefaultSubobject< UAIPerceptionComponent >(TEXT("PerceptionComp")))
 	, sightConfig(CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("AI Sight")))
-	, soundConfig(CreateDefaultSubobject<UAISenseConfig_Hearing>(TEXT("AI Hearing")))
+	, soundConfig(CreateDefaultSubobject<UAISenseConfig_Hearing>(TEXT("AI Hearing")))*/
 	//, mController(CreateDefaultSubobject<AAIController>(TEXT("AI Controller")))
-{
 	
 	//perceptionComponent->ConfigureSense(*sightConfig);
-	perceptionComponent->ConfigureSense(*soundConfig);
-	//perceptionComponent->SetDominantSense(sightConfig->GetSenseImplementation());
-	
-	perceptionComponent->OnPerceptionUpdated.AddDynamic(this, &AEnemy_RealTest::SenseStuff);
-	
-	sightConfig->SightRadius = 3000.0f;
-	sightConfig->LoseSightRadius = 3500.f;
-	sightConfig->PeripheralVisionAngleDegrees = 90.0f;
-	sightConfig->DetectionByAffiliation.bDetectEnemies = true;
-	sightConfig->DetectionByAffiliation.bDetectNeutrals = true;
-	sightConfig->DetectionByAffiliation.bDetectFriendlies = true;
+	//perceptionComponent->ConfigureSense(*soundConfig);
+	////perceptionComponent->SetDominantSense(sightConfig->GetSenseImplementation());
+	//
+	//perceptionComponent->OnPerceptionUpdated.AddDynamic(this, &AEnemy_RealTest::SenseStuff);
+	//
+	//sightConfig->SightRadius = 3000.0f;
+	//sightConfig->LoseSightRadius = 3500.f;
+	//sightConfig->PeripheralVisionAngleDegrees = 90.0f;
+	//sightConfig->DetectionByAffiliation.bDetectEnemies = true;
+	//sightConfig->DetectionByAffiliation.bDetectNeutrals = true;
+	//sightConfig->DetectionByAffiliation.bDetectFriendlies = true;
 
-	//perceptionComponent->ConfigureSense(*sightConfig);
+	////perceptionComponent->ConfigureSense(*sightConfig);
 
-	soundConfig->HearingRange = 4000.0f;
-	soundConfig->bUseLoSHearing = false;
-	soundConfig->DetectionByAffiliation.bDetectEnemies = true;
-	soundConfig->DetectionByAffiliation.bDetectNeutrals = true;
-	soundConfig->DetectionByAffiliation.bDetectFriendlies = true;
+	//soundConfig->HearingRange = 4000.0f;
+	//soundConfig->bUseLoSHearing = false;
+	//soundConfig->DetectionByAffiliation.bDetectEnemies = true;
+	//soundConfig->DetectionByAffiliation.bDetectNeutrals = true;
+	//soundConfig->DetectionByAffiliation.bDetectFriendlies = true;
 
-	perceptionComponent->ConfigureSense(*soundConfig);
-=======
+	//perceptionComponent->ConfigureSense(*soundConfig);
 	//, mController(CreateDefaultSubobject<AAIController>(TEXT("AI Controller")))
-{
-
 	
->>>>>>> refs/remotes/origin/master
-
 	PrimaryActorTick.bCanEverTick = true;
 	//mController->SetPawn(this);
 }
@@ -56,10 +50,7 @@ AEnemy_RealTest::AEnemy_RealTest()
 void AEnemy_RealTest::BeginPlay()
 {
 	Super::BeginPlay();
-<<<<<<< HEAD
-	mController = GetController();
-=======
->>>>>>> refs/remotes/origin/master
+
 	mTargetPos = GetActorLocation();
 	// UGameplayStatics::GetPlayerCharacter(GetWorld(),0) vs Controller->GetControlledPawn()
 	//UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, sightConfig->GetSenseImplementation(), this);
@@ -81,20 +72,18 @@ void AEnemy_RealTest::SetupPlayerInputComponent(class UInputComponent* InputComp
 {
 	Super::SetupPlayerInputComponent(InputComponent);
 
-<<<<<<< HEAD
+
 }
 
 void AEnemy_RealTest::SenseStuff(TArray<AActor*> testActors)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, "I see you!");
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Blue, "I hear you!");
-//	mController->MoveToActor(testActors[0]);
-	//mTargetPos = testActors[0]->GetActorLocation();
-	//UNavigationSystem::SimpleMoveToActor(GetController(), testActors[0]);
-	UNavigationSystem::SimpleMoveToLocation(mController,testActors[0]->GetActorLocation());
-	//FVector Movement = GetActorLocation() - testActors[0]->GetActorLocation();
-	//Movement /= 3;
-	//SetActorLocation(GetActorLocation() - Movement);
-=======
->>>>>>> refs/remotes/origin/master
+//	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, "I see you!");
+//	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Blue, "I hear you!");
+////	mController->MoveToActor(testActors[0]);
+//	//mTargetPos = testActors[0]->GetActorLocation();
+//	//UNavigationSystem::SimpleMoveToActor(GetController(), testActors[0]);
+//	UNavigationSystem::SimpleMoveToLocation(mController,testActors[0]->GetActorLocation());
+//	//FVector Movement = GetActorLocation() - testActors[0]->GetActorLocation();
+//	//Movement /= 3;
+//	//SetActorLocation(GetActorLocation() - Movement);
 }
