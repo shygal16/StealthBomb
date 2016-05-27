@@ -4,12 +4,15 @@
 
 #include "Engine.h"
 #include "Enemy_RealTest.h"
+#include "Perception/AISense_Sight.h"
+#include "Perception/AISense_Hearing.h"
 //#include "Runtime/Engine/Classes/GameFramework/Controller.h"
 
 
 
 // Sets default values
 AEnemy_RealTest::AEnemy_RealTest()
+<<<<<<< HEAD
 	: perceptionComponent(CreateDefaultSubobject< UAIPerceptionComponent >(TEXT("PerceptionComp")))
 	, sightConfig(CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("AI Sight")))
 	, soundConfig(CreateDefaultSubobject<UAISenseConfig_Hearing>(TEXT("AI Hearing")))
@@ -38,6 +41,12 @@ AEnemy_RealTest::AEnemy_RealTest()
 	soundConfig->DetectionByAffiliation.bDetectFriendlies = true;
 
 	perceptionComponent->ConfigureSense(*soundConfig);
+=======
+	//, mController(CreateDefaultSubobject<AAIController>(TEXT("AI Controller")))
+{
+
+	
+>>>>>>> refs/remotes/origin/master
 
 	PrimaryActorTick.bCanEverTick = true;
 	//mController->SetPawn(this);
@@ -47,7 +56,10 @@ AEnemy_RealTest::AEnemy_RealTest()
 void AEnemy_RealTest::BeginPlay()
 {
 	Super::BeginPlay();
+<<<<<<< HEAD
 	mController = GetController();
+=======
+>>>>>>> refs/remotes/origin/master
 	mTargetPos = GetActorLocation();
 	// UGameplayStatics::GetPlayerCharacter(GetWorld(),0) vs Controller->GetControlledPawn()
 	//UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, sightConfig->GetSenseImplementation(), this);
@@ -69,6 +81,7 @@ void AEnemy_RealTest::SetupPlayerInputComponent(class UInputComponent* InputComp
 {
 	Super::SetupPlayerInputComponent(InputComponent);
 
+<<<<<<< HEAD
 }
 
 void AEnemy_RealTest::SenseStuff(TArray<AActor*> testActors)
@@ -82,4 +95,6 @@ void AEnemy_RealTest::SenseStuff(TArray<AActor*> testActors)
 	//FVector Movement = GetActorLocation() - testActors[0]->GetActorLocation();
 	//Movement /= 3;
 	//SetActorLocation(GetActorLocation() - Movement);
+=======
+>>>>>>> refs/remotes/origin/master
 }

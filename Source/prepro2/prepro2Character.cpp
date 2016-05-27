@@ -235,10 +235,23 @@ void Aprepro2Character::MoveForward(float Value)
 	{
 		// add movement in that direction
 		AddMovementInput(GetActorForwardVector(), Value);
+<<<<<<< HEAD
 		if (GetCharacterMovement()->MaxWalkSpeed == sprintSpeed)
 		{
 			MakeNoise(1.0f, this, GetActorLocation());
 		}
+=======
+		if (bIsCrouched)
+		{
+			return;
+		}
+		float SoundMultiplier = 0.2f;
+		if (GetCharacterMovement()->MaxWalkSpeed == sprintSpeed)
+		{
+			SoundMultiplier = 1.0f;
+		}
+		MakeNoise(SoundMultiplier, this, GetActorLocation(), 300.0f);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -248,10 +261,23 @@ void Aprepro2Character::MoveRight(float Value)
 	{
 		// add movement in that direction
 		AddMovementInput(GetActorRightVector(), Value);
+<<<<<<< HEAD
 		if (GetCharacterMovement()->MaxWalkSpeed == sprintSpeed)
 		{
 			MakeNoise(1.0f, this, GetActorLocation());
 		}
+=======
+		if (bIsCrouched)
+		{
+			return;
+		}
+		float SoundMultiplier=0.2f;
+		if (GetCharacterMovement()->MaxWalkSpeed == sprintSpeed)
+		{
+			SoundMultiplier = 1.0f;
+		}
+			MakeNoise(SoundMultiplier, this, GetActorLocation(),300.0f);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -307,8 +333,13 @@ void Aprepro2Character::Bomb()
 		// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
 		const FVector SpawnLocation = GetActorLocation() + SpawnRotation.RotateVector(GunOffset);
 		mBombs[curr]->SetActorLocation(SpawnLocation);
-
+		if (mBombSelected != -1)
+		{
+		mBombs[mBombSelected]->XRayBomb(false);
+		}
 		mBombSelected = curr;
+		mBombs[mBombSelected]->XRayBomb(true);
+
 	}
 }
 

@@ -27,7 +27,11 @@ void AExplosive::Explode()
 		mExploded = true;
 		mExplosionTimer = mExplosionDelay;
 		mBombTriggered = false;
+<<<<<<< HEAD
 		MakeNoise(1.f, this, GetActorLocation());
+=======
+		MakeNoise(1.f, this, GetActorLocation(),800.0f);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
