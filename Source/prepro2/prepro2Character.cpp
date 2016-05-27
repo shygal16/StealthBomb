@@ -235,6 +235,12 @@ void Aprepro2Character::MoveForward(float Value)
 	{
 		// add movement in that direction
 		AddMovementInput(GetActorForwardVector(), Value);
+<<<<<<< HEAD
+		if (GetCharacterMovement()->MaxWalkSpeed == sprintSpeed)
+		{
+			MakeNoise(1.0f, this, GetActorLocation());
+		}
+=======
 		if (bIsCrouched)
 		{
 			return;
@@ -245,6 +251,7 @@ void Aprepro2Character::MoveForward(float Value)
 			SoundMultiplier = 1.0f;
 		}
 		MakeNoise(SoundMultiplier, this, GetActorLocation(), 300.0f);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -254,6 +261,12 @@ void Aprepro2Character::MoveRight(float Value)
 	{
 		// add movement in that direction
 		AddMovementInput(GetActorRightVector(), Value);
+<<<<<<< HEAD
+		if (GetCharacterMovement()->MaxWalkSpeed == sprintSpeed)
+		{
+			MakeNoise(1.0f, this, GetActorLocation());
+		}
+=======
 		if (bIsCrouched)
 		{
 			return;
@@ -264,6 +277,7 @@ void Aprepro2Character::MoveRight(float Value)
 			SoundMultiplier = 1.0f;
 		}
 			MakeNoise(SoundMultiplier, this, GetActorLocation(),300.0f);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
