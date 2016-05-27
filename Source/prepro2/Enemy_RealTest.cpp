@@ -6,55 +6,77 @@
 #include "Enemy_RealTest.h"
 #include "Perception/AISense_Sight.h"
 #include "Perception/AISense_Hearing.h"
+#include "BehaviorTree/BehaviorTree.h"
+#include "Perception/PawnSensingComponent.h"
+#include "EnemyController.h"
 //#include "Runtime/Engine/Classes/GameFramework/Controller.h"
 
 
 
 // Sets default values
 AEnemy_RealTest::AEnemy_RealTest()
-{
-	/*: perceptionComponent(CreateDefaultSubobject< UAIPerceptionComponent >(TEXT("PerceptionComp")))
+	: perceptionComponent(CreateDefaultSubobject< UAIPerceptionComponent >(TEXT("PerceptionComp")))
 	, sightConfig(CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("AI Sight")))
-	, soundConfig(CreateDefaultSubobject<UAISenseConfig_Hearing>(TEXT("AI Hearing")))*/
-	//, mController(CreateDefaultSubobject<AAIController>(TEXT("AI Controller")))
+	, soundConfig(CreateDefaultSubobject<UAISenseConfig_Hearing>(TEXT("AI Hearing")))
+{
 	
-	//perceptionComponent->ConfigureSense(*sightConfig);
-	//perceptionComponent->ConfigureSense(*soundConfig);
-	////perceptionComponent->SetDominantSense(sightConfig->GetSenseImplementation());
-	//
-	//perceptionComponent->OnPerceptionUpdated.AddDynamic(this, &AEnemy_RealTest::SenseStuff);
-	//
-	//sightConfig->SightRadius = 3000.0f;
-	//sightConfig->LoseSightRadius = 3500.f;
-	//sightConfig->PeripheralVisionAngleDegrees = 90.0f;
-	//sightConfig->DetectionByAffiliation.bDetectEnemies = true;
-	//sightConfig->DetectionByAffiliation.bDetectNeutrals = true;
-	//sightConfig->DetectionByAffiliation.bDetectFriendlies = true;
-
-	////perceptionComponent->ConfigureSense(*sightConfig);
-
-	//soundConfig->HearingRange = 4000.0f;
-	//soundConfig->bUseLoSHearing = false;
-	//soundConfig->DetectionByAffiliation.bDetectEnemies = true;
-	//soundConfig->DetectionByAffiliation.bDetectNeutrals = true;
-	//soundConfig->DetectionByAffiliation.bDetectFriendlies = true;
-
-	//perceptionComponent->ConfigureSense(*soundConfig);
-	//, mController(CreateDefaultSubobject<AAIController>(TEXT("AI Controller")))
+	perceptionComponent->ConfigureSense(*sightConfig);
+	perceptionComponent->ConfigureSense(*soundConfig);
+	perceptionComponent->SetDominantSense(sightConfig->GetSenseImplementation());
 	
+	perceptionComponent->OnPerceptionUpdated.AddDynamic(this, &AEnemy_RealTest::SenseStuff);
+	
+	sightConfig->SightRadius = 3000.0f;
+	sightConfig->LoseSightRadius = 3500.f;
+	sightConfig->PeripheralVisionAngleDegrees = 90.0f;
+	sightConfig->DetectionByAffiliation.bDetectEnemies = true;
+	sightConfig->DetectionByAffiliation.bDetectNeutrals = true;
+	sightConfig->DetectionByAffiliation.bDetectFriendlies = true;
+
+	perceptionComponent->ConfigureSense(*sightConfig);
+
+	soundConfig->HearingRange = 4000.0f;
+	soundConfig->bUseLoSHearing = false;
+	soundConfig->DetectionByAffiliation.bDetectEnemies = true;
+	soundConfig->DetectionByAffiliation.bDetectNeutrals = true;
+	soundConfig->DetectionByAffiliation.bDetectFriendlies = true;
+
+	perceptionComponent->ConfigureSense(*soundConfig);
+
 	PrimaryActorTick.bCanEverTick = true;
-	//mController->SetPawn(this);
+	//PawnSense = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensingComp"));
+	//PawnSense->SetPeripheralVisionAngle(90.f);
+	AIControllerClass = AEnemyController::StaticClass();
 }
+
+/*
+void AEnemy_RealTest::OnSeePlayer(APawn* pawn)
+{
+	AEnemyController* AIControll = Cast<AEnemyController>(GetController());
+	if (AIControll)
+	{
+		age = 0;
+		cleared = false;
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, "I see you using Pawn Sense!");
+		AIControll->SetTargetEnemy(pawn);
+	}
+}
+*/
 
 // Called when the game starts or when spawned
 void AEnemy_RealTest::BeginPlay()
 {
 	Super::BeginPlay();
 
-	mTargetPos = GetActorLocation();
+	/*
+	if (PawnSense)
+	{
+		PawnSense->OnSeePawn.AddDynamic(this, &AEnemy_RealTest::OnSeePlayer);
+	}
+	*/
 	// UGameplayStatics::GetPlayerCharacter(GetWorld(),0) vs Controller->GetControlledPawn()
 	//UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, sightConfig->GetSenseImplementation(), this);
-	//UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, sightConfig->GetSenseImplementation(), UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, sightConfig->GetSenseImplementation(), UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	//UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, soundConfig->GetSenseImplementation(),this);
 
 }
@@ -63,8 +85,8 @@ void AEnemy_RealTest::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	FRotator rot = FRotator(0, 1, 0);
-	SetActorRotation(GetActorRotation() + rot);
-	
+	perceptionComponent->RequestStimuliListenerUpdate();
+	//SetActorRotation(GetActorRotation() + rot);
 }
 
 // Called to bind functionality to input
@@ -77,13 +99,10 @@ void AEnemy_RealTest::SetupPlayerInputComponent(class UInputComponent* InputComp
 
 void AEnemy_RealTest::SenseStuff(TArray<AActor*> testActors)
 {
-//	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, "I see you!");
-//	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Blue, "I hear you!");
-////	mController->MoveToActor(testActors[0]);
-//	//mTargetPos = testActors[0]->GetActorLocation();
-//	//UNavigationSystem::SimpleMoveToActor(GetController(), testActors[0]);
-//	UNavigationSystem::SimpleMoveToLocation(mController,testActors[0]->GetActorLocation());
-//	//FVector Movement = GetActorLocation() - testActors[0]->GetActorLocation();
-//	//Movement /= 3;
-//	//SetActorLocation(GetActorLocation() - Movement);
+	AEnemyController* AIControll = Cast<AEnemyController>(GetController());
+	if (AIControll)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, "I see you!");
+		AIControll->SetTargetEnemy(Cast<APawn> (testActors[0]));
+	}
 }

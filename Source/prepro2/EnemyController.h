@@ -25,14 +25,17 @@ class PREPRO2_API AEnemyController : public AAIController
 
 	virtual void BeginInactiveState() override;
 
-	void SetTargetEnemy(APawn * Target);	
 
 	UAIPerceptionComponent* perceptionComponent;
 	UAISenseConfig_Sight* sightConfig;
 	UAISenseConfig_Hearing* soundConfig;
-
 	//sensing stuff
 	UFUNCTION()
 		void SenseStuff(TArray<AActor*> testActors);
-
+	uint8 TargetKeyID;
+	uint8 TargetLocationID;
+	
+public:
+	void SetTargetEnemy(APawn * Target);
+	//void ClearTarget();
 };

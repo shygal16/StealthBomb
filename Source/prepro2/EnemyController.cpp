@@ -13,23 +13,24 @@
 
 
 AEnemyController::AEnemyController()
-	: perceptionComponent(CreateDefaultSubobject< UAIPerceptionComponent >(TEXT("PerceptionComp")))
+	:/* perceptionComponent(CreateDefaultSubobject< UAIPerceptionComponent >(TEXT("PerceptionComp")))
 	, sightConfig(CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("AI Sight")))
 	, soundConfig(CreateDefaultSubobject<UAISenseConfig_Hearing>(TEXT("AI Hearing")))
+	,*/mBlackboard (CreateDefaultSubobject<UBlackboardComponent>(TEXT("BlackBoard")))
+	,mBehaviortree (CreateDefaultSubobject<UBehaviorTreeComponent>(TEXT("BehaviorTree")))
 {
-	mBlackboard = CreateDefaultSubobject<UBlackboardComponent>(TEXT("BlackBoard"));
 	AddInstanceComponent(mBlackboard);
-	mBehaviortree = CreateDefaultSubobject<UBehaviorTreeComponent>(TEXT("BehaviorTree"));
 	AddOwnedComponent(mBehaviortree);
 
 	bWantsPlayerState = true;
 	PrimaryActorTick.bCanEverTick = true;
 
-	perceptionComponent->ConfigureSense(*sightConfig);
+	/*perceptionComponent->ConfigureSense(*sightConfig);
 	perceptionComponent->ConfigureSense(*soundConfig);
 	perceptionComponent->SetDominantSense(sightConfig->GetSenseImplementation());
 
 	perceptionComponent->OnPerceptionUpdated.AddDynamic(this, &AEnemyController::SenseStuff);
+	*/
 }
 
 
@@ -39,23 +40,32 @@ void AEnemyController::Possess(APawn* InPawn)
 	Super::Possess(InPawn);
 
 AEnemy_RealTest* Enemy=Cast<AEnemy_RealTest>(InPawn);
+if (Enemy&&Enemy->BehaviorTree)
+{
+	mBlackboard->InitializeBlackboard(*Enemy->BehaviorTree->BlackboardAsset);
+	
+	TargetKeyID = mBlackboard->GetKeyID("Target");
+	TargetLocationID = mBlackboard->GetKeyID("TargetLocation");
 
-sightConfig->SightRadius = 3000.0f;
-sightConfig->LoseSightRadius = 3500.f;
-sightConfig->PeripheralVisionAngleDegrees = 90.0f;
-sightConfig->DetectionByAffiliation.bDetectEnemies = true;
-sightConfig->DetectionByAffiliation.bDetectNeutrals = true;
-sightConfig->DetectionByAffiliation.bDetectFriendlies = true;
-
-perceptionComponent->ConfigureSense(*sightConfig);
-
-soundConfig->HearingRange = 400.0f;
-soundConfig->bUseLoSHearing = false;
-soundConfig->DetectionByAffiliation.bDetectEnemies = true;
-soundConfig->DetectionByAffiliation.bDetectNeutrals = true;
-soundConfig->DetectionByAffiliation.bDetectFriendlies = true;
-
-perceptionComponent->ConfigureSense(*soundConfig);
+	mBehaviortree->StartTree(*Enemy->BehaviorTree);
+	
+}
+//sightConfig->SightRadius = 3000.0f;
+//sightConfig->LoseSightRadius = 3500.f;
+//sightConfig->PeripheralVisionAngleDegrees = 90.0f;
+//sightConfig->DetectionByAffiliation.bDetectEnemies = true;
+//sightConfig->DetectionByAffiliation.bDetectNeutrals = true;
+//sightConfig->DetectionByAffiliation.bDetectFriendlies = true;
+//
+//perceptionComponent->ConfigureSense(*sightConfig);
+//
+//soundConfig->HearingRange = 4000.0f;
+//soundConfig->bUseLoSHearing = false;
+//soundConfig->DetectionByAffiliation.bDetectEnemies = true;
+//soundConfig->DetectionByAffiliation.bDetectNeutrals = true;
+//soundConfig->DetectionByAffiliation.bDetectFriendlies = true;
+//
+//perceptionComponent->ConfigureSense(*soundConfig);
 
 	// start behavior
 	//if (Enemy)
@@ -79,20 +89,38 @@ void AEnemyController::SetTargetEnemy(APawn* Target)
 {
 	if (mBlackboard)
 	{
-		mBlackboard->SetValueAsObject("Player", Target);
+		mBlackboard->SetValueAsObject(TargetKeyID, Target);
+		mBlackboard->SetValueAsVector(TargetLocationID, Target->GetActorLocation());
+
 	}
 }
 
+/*
+void AEnemyController::ClearTarget()
+{
+	if (mBlackboard)
+	{
+		mBlackboard->SetValueAsObject(TargetKeyID, nullptr);
+		//mBlackboard->SetValueAsVector(TargetLocationID, NULL);
+
+	}
+}
+*/
 void AEnemyController::SenseStuff(TArray<AActor*> testActors)
 {
 	//	mController->MoveToActor(testActors[0]);
 	//mTargetPos = testActors[0]->GetActorLocation();
 	//UNavigationSystem::SimpleMoveToActor(GetController(), testActors[0]);
-	TArray<AActor*> seenActors, heardActors;
+	/*TArray<AActor*> seenActors, heardActors;
 	perceptionComponent->GetPerceivedActors(UAISense_Sight::StaticClass(), seenActors);
 	perceptionComponent->GetPerceivedActors(UAISense_Hearing::StaticClass(), heardActors);
-
 	if (seenActors.Num() > 0)
+	{
+		SetTargetEnemy(Cast<APawn>(seenActors[0]));
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, "I see you!");
+
+	}*/
+	/*if (seenActors.Num() > 0)
 	{
 		if (seenActors.Max() > seenActors.Num())
 		{
@@ -108,7 +136,7 @@ void AEnemyController::SenseStuff(TArray<AActor*> testActors)
 	if (heardActors.Num() > 0)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Blue, "I hear you!");
-	}
+	}*/
 
 
 	//UNavigationSystem::SimpleMoveToLocation(mController, testActors[0]->GetActorLocation());

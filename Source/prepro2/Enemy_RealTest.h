@@ -34,11 +34,15 @@ public:
 	
 	UPROPERTY(EditAnywhere, Category=Behavior)
 	class UBehaviorTree* BehaviorTree;
+	
+	//UFUNCTION()
+	//void OnSeePlayer(APawn* pawn);
 
 	UAIPerceptionComponent* perceptionComponent;
-	AController* mController;
 	UAISenseConfig_Sight* sightConfig;
 	UAISenseConfig_Hearing* soundConfig;
-	FVector mTargetPos;
-
+	//class UPawnSensingComponent* PawnSense;
+	//float age = 0.f;
+	//float MaxAge = 1.f;
+	//bool cleared = true;
 };
