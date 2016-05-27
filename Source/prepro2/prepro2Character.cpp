@@ -336,6 +336,7 @@ void Aprepro2Character::Bomb()
 void Aprepro2Character::BombPlant()
 {
 	PlantingBomb = true;
+	
 	StartCrouch();
 
 }
@@ -370,6 +371,8 @@ void Aprepro2Character::InitBombs()
 void Aprepro2Character::BeginPlay()
 {
 	Super::BeginPlay();
+	mProgressBars = CreateWidget<UProgressBarWidget>(GetWorld(), mProgressBarsClass);
+	mProgressBars->AddToViewport(0);
 	VisionBar = VisionBarMax;
 	InitBombs();
 	//UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, UAISenseConfig_Sight::GetSenseImplementation(),)
@@ -437,6 +440,12 @@ void Aprepro2Character::Tick(float DeltaTime)
 			mBombs[mBombsIndex] = temp;
 		}
 	}
+
+	mProgressBars->mSprintBarPercentage = SprintBar / SprintBarMax;
+	mProgressBars->mXrayPercentage = VisionBar / VisionBarMax;
+
+	
+	
 }
 
 void Aprepro2Character::TriggerAllBombs()

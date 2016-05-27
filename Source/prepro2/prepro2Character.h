@@ -2,6 +2,7 @@
 #pragma once
 #include "GameFramework/Character.h"
 #include "DetonateBomb.h"
+#include "ProgressBarWidget.h"
 #include "prepro2Character.generated.h"
 
 class UInputComponent;
@@ -154,6 +155,11 @@ public:
 	FORCEINLINE class USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	/** Returns FirstPersonCameraComponent subobject **/
 	FORCEINLINE class UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
+
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<class UProgressBarWidget> mProgressBarsClass;
+
+	class UProgressBarWidget* mProgressBars;
 	
 	
 private:
