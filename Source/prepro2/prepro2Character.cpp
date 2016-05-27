@@ -338,11 +338,14 @@ void Aprepro2Character::BombPlant()
 {
 	PlantingBomb = true;
 	
+	mProgressBars->mBombPlantVisible = true;
+
 	StartCrouch();
 
 }
 void Aprepro2Character::BombStopPlant()
 {
+	mProgressBars->mBombPlantVisible = false;
 	PlantingBomb = false;
 	PlantProgress = 0;
 	EndCrouch();
@@ -418,6 +421,7 @@ void Aprepro2Character::Tick(float DeltaTime)
 	if (PlantingBomb)
 	{
 		PlantProgress += DeltaTime;
+		mProgressBars->mBombPlantPercentage = PlantProgress / PlantTime;
 		if (PlantProgress >= PlantTime)
 		{
 			Bomb();
