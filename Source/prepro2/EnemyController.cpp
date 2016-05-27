@@ -39,16 +39,17 @@ void AEnemyController::Possess(APawn* InPawn)
 {
 	Super::Possess(InPawn);
 
-AEnemy_RealTest* Enemy=Cast<AEnemy_RealTest>(InPawn);
-if (Enemy&&Enemy->BehaviorTree)
+	Owner  =Cast<AEnemy_RealTest>(InPawn);
+if (Owner&&Owner->BehaviorTree)
 {
-	mBlackboard->InitializeBlackboard(*Enemy->BehaviorTree->BlackboardAsset);
+	mBlackboard->InitializeBlackboard(*Owner->BehaviorTree->BlackboardAsset);
 	
 	TargetKeyID = mBlackboard->GetKeyID("Target");
 	TargetLocationID = mBlackboard->GetKeyID("TargetLocation");
+	PlayerInSightID = mBlackboard->GetKeyID("InSight");
 
-	mBehaviortree->StartTree(*Enemy->BehaviorTree);
-	
+	mBehaviortree->StartTree(*Owner->BehaviorTree);
+
 }
 //sightConfig->SightRadius = 3000.0f;
 //sightConfig->LoseSightRadius = 3500.f;
@@ -89,6 +90,7 @@ void AEnemyController::SetTargetEnemy(APawn* Target)
 {
 	if (mBlackboard)
 	{
+		mBlackboard->SetValueAsBool(PlayerInSightID, Owner->playerInSight);
 		mBlackboard->SetValueAsObject(TargetKeyID, Target);
 		mBlackboard->SetValueAsVector(TargetLocationID, Target->GetActorLocation());
 

@@ -44,6 +44,8 @@ public:
 	UAIPerceptionComponent* perceptionComponent;
 	UAISenseConfig_Sight* sightConfig;
 	UAISenseConfig_Hearing* soundConfig;
+
+	bool playerInSight;
 //	class UPawnSensingComponent* PawnSense;
 	//float age = 0.f;
 	//float MaxAge = 1.f;

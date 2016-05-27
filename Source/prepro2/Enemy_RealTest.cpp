@@ -8,6 +8,10 @@
 #include "Perception/AISense_Hearing.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "Perception/PawnSensingComponent.h"
+
+#include "DetonateBomb.h"
+#include "prepro2Character.h"
+
 #include "EnemyController.h"
 //#include "Runtime/Engine/Classes/GameFramework/Controller.h"
 
@@ -18,6 +22,7 @@ AEnemy_RealTest::AEnemy_RealTest()
 	: perceptionComponent(CreateDefaultSubobject< UAIPerceptionComponent >(TEXT("PerceptionComp")))
 	, sightConfig(CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("AI Sight")))
 	, soundConfig(CreateDefaultSubobject<UAISenseConfig_Hearing>(TEXT("AI Hearing")))
+	, playerInSight(false)
 {
 	
 	perceptionComponent->ConfigureSense(*sightConfig);
@@ -101,12 +106,56 @@ void AEnemy_RealTest::SetupPlayerInputComponent(class UInputComponent* InputComp
 void AEnemy_RealTest::SenseStuff(TArray<AActor*> testActors)
 {
 	AEnemyController* AIControll = Cast<AEnemyController>(GetController());
+	
+	TArray<AActor*> heardActors;
+	TArray<AActor*> seenActors;
+
+	perceptionComponent->GetPerceivedActors(UAISense_Hearing::StaticClass(), heardActors);
+	perceptionComponent->GetPerceivedActors(UAISense_Hearing::StaticClass(), seenActors);
+	
 	if (AIControll)
 	{
 		FString message = TEXT("seen Actor ") + testActors[0]->GetName();
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, message);
+		bool targetSet;
 
-		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, "I see you!");
-		AIControll->SetTargetEnemy(Cast<APawn> (testActors[0]));
+		for (int i = 0; i < seenActors.Num(); ++i)
+		{
+
+			if (testActors[i]->GetClass()->IsChildOf(Aprepro2Character::StaticClass()))
+			{
+				Aprepro2Character* temp = (Aprepro2Character*)testActors[i];
+
+				playerInSight = !playerInSight;
+				AIControll->SetTargetEnemy(Cast<APawn>(testActors[i]));
+				targetSet = true;
+			}
+		}
+
+		for (int i = 0; i < seenActors.Num(); ++i)
+		{
+
+			if (testActors[i]->GetClass()->IsChildOf(Aprepro2Character::StaticClass()))
+			{
+				Aprepro2Character* temp = (Aprepro2Character*)testActors[i];
+				if (!playerInSight)
+				{
+					AIControll->SetTargetEnemy(Cast<APawn>(testActors[i]));
+					targetSet = true;
+				}
+			}
+			else if (testActors[i]->GetClass()->IsChildOf(AExplosive::StaticClass()))
+			{
+				AExplosive* temp = (AExplosive*)testActors[i];
+				if (!playerInSight)
+				{
+					AIControll->SetTargetEnemy(Cast<APawn>(testActors[i]));
+					targetSet = true;
+				}
+			}
+		}
+
+			//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, "I see you!");
+		
 	}
 }

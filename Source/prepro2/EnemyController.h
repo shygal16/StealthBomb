@@ -34,6 +34,13 @@ class PREPRO2_API AEnemyController : public AAIController
 		void SenseStuff(TArray<AActor*> testActors);
 	uint8 TargetKeyID;
 	uint8 TargetLocationID;
+	uint8 PlayerInSightID;
+
+	//Is player in sight
+	FVector* TargetLocation;
+	FVector* LastSeenLocation;
+
+	AEnemy_RealTest* Owner;
 	
 public:
 	void SetTargetEnemy(APawn * Target);
