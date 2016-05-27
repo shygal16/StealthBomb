@@ -44,9 +44,10 @@ AEnemy_RealTest::AEnemy_RealTest()
 	perceptionComponent->ConfigureSense(*soundConfig);
 
 	PrimaryActorTick.bCanEverTick = true;
-	//PawnSense = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensingComp"));
-	//PawnSense->SetPeripheralVisionAngle(90.f);
+//	PawnSense = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensingComp"));
+//	PawnSense->SetPeripheralVisionAngle(90.f);
 	AIControllerClass = AEnemyController::StaticClass();
+	
 }
 
 /*
@@ -68,13 +69,13 @@ void AEnemy_RealTest::BeginPlay()
 {
 	Super::BeginPlay();
 
-	/*
-	if (PawnSense)
-	{
-		PawnSense->OnSeePawn.AddDynamic(this, &AEnemy_RealTest::OnSeePlayer);
-	}
-	*/
-	// UGameplayStatics::GetPlayerCharacter(GetWorld(),0) vs Controller->GetControlledPawn()
+	
+//	if (PawnSense)
+//	{
+//		PawnSense->OnSeePawn.AddDynamic(this, &AEnemy_RealTest::OnSeePlayer);
+//	}
+	
+	
 	//UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, sightConfig->GetSenseImplementation(), this);
 	UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, sightConfig->GetSenseImplementation(), UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	//UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, soundConfig->GetSenseImplementation(),this);
@@ -85,7 +86,7 @@ void AEnemy_RealTest::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	FRotator rot = FRotator(0, 1, 0);
-	perceptionComponent->RequestStimuliListenerUpdate();
+	
 	//SetActorRotation(GetActorRotation() + rot);
 }
 
@@ -102,7 +103,10 @@ void AEnemy_RealTest::SenseStuff(TArray<AActor*> testActors)
 	AEnemyController* AIControll = Cast<AEnemyController>(GetController());
 	if (AIControll)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, "I see you!");
+		FString message = TEXT("seen Actor ") + testActors[0]->GetName();
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, message);
+
+		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, "I see you!");
 		AIControll->SetTargetEnemy(Cast<APawn> (testActors[0]));
 	}
 }
