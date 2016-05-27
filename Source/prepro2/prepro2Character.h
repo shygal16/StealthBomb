@@ -66,7 +66,7 @@ public:
 	float SprintBarMax = 5;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Custom)
-		float PlantTime = 2;
+		float PlantTime = 4;
 
 	//How much faster you go while sprinting
 	UPROPERTY(Category = Custom, EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", UIMin = "0"))

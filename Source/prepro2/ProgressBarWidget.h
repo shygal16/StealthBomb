@@ -26,5 +26,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SprintBar Widget")
 		float mBombPlantPercentage;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SprintBar Widget")
+		bool mBombPlantVisible;
 
 };
