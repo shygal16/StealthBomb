@@ -3,6 +3,7 @@
 #include "prepro2.h"
 #include "DetonateBomb.h"
 #include "Perception/AISense_Hearing.h"
+#include "Perception/AISense_Sight.h"
 
 
 // Sets default values
@@ -28,6 +29,7 @@ void ADetonateBomb::BeginPlay()
 	
 	mOriginalMesh = mBombModel->DestructibleMesh;
 
+	UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, UAISense_Sight::StaticClass(), this);
 	UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, UAISense_Hearing::StaticClass(), this);
 
 	
