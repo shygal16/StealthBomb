@@ -39,5 +39,6 @@ protected:
 
 private:
 	UDestructibleMesh* mOriginalMesh;
+	//UPrimitiveComponent* mMesh;
 	float mDisappearTimer;
 };

@@ -2,13 +2,14 @@
 
 #include "prepro2.h"
 #include "DetonateBomb.h"
+#include "Perception/AISense_Hearing.h"
 
 
 // Sets default values
 ADetonateBomb::ADetonateBomb()
 	: mBombModel(CreateDefaultSubobject<UDestructibleComponent>(TEXT("Model")))
 	, mIsActive(true)
-	, mDisappearDelay(5.0f)
+	, mDisappearDelay(1.0f)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -26,13 +27,17 @@ void ADetonateBomb::BeginPlay()
 	Super::BeginPlay();
 	
 	mOriginalMesh = mBombModel->DestructibleMesh;
+
+	UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, UAISense_Hearing::StaticClass(), this);
+
+	
 }
 
 // Called every frame
 void ADetonateBomb::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
-
+	
 	if (mExplosionTimer < 0)
 	{
 		Explode();
@@ -100,6 +105,5 @@ void ADetonateBomb::SetActive(bool active)
 
 void ADetonateBomb::XRayBomb(bool On)
 {
-	//mOriginalMesh->SetRenderCustomDepth(true);
-
+	mBombModel->SetRenderCustomDepth(On);
 }
