@@ -25,15 +25,26 @@ class PREPRO2_API AEnemyController : public AAIController
 
 	virtual void BeginInactiveState() override;
 
+	UPROPERTY(EditAnywhere)
+		UAIPerceptionComponent* mPerceptionComponent;
+	UPROPERTY(EditAnywhere)
+		UAISenseConfig_Sight* sightConfig;
+	UPROPERTY(EditAnywhere)
+		UAISenseConfig_Hearing* soundConfig;
 
-	UAIPerceptionComponent* perceptionComponent;
-	UAISenseConfig_Sight* sightConfig;
-	UAISenseConfig_Hearing* soundConfig;
 	//sensing stuff
 	UFUNCTION()
 		void SenseStuff(TArray<AActor*> testActors);
-	uint8 TargetKeyID;
-	uint8 TargetLocationID;
+
+	uint8 PlayerID;
+	uint8 PlayerLastSeenLocationID;
+	uint8 BombLocationID;
+	uint8 BombHeardLocationID;
+	uint8 PlayerHeardLocationID;
+	uint8 PlayerSeenID;
+
+
+	AEnemy_RealTest* mOwner;
 	
 public:
 	void SetTargetEnemy(APawn * Target);
