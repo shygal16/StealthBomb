@@ -29,7 +29,7 @@ Aprepro2Character::Aprepro2Character()
 	SprintBar = SprintBarMax;
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
-
+	GamePaused = false;
 	// set our turn rates for input
 	BaseTurnRate = 45.f;
 	BaseLookUpRate = 45.f;
@@ -82,6 +82,8 @@ void Aprepro2Character::SetupPlayerInputComponent(class UInputComponent* InputCo
 
 	InputComponent->BindAction("TriggerAllBombs", IE_Pressed, this, &Aprepro2Character::TriggerAllBombs);
 	InputComponent->BindAction("DetonateAllBombs", IE_Pressed, this, &Aprepro2Character::DetonateAllBombs);
+
+	InputComponent->BindAction("PauseGame", IE_Pressed, this, &Aprepro2Character::TogglePause);//.bExecuteWhenPaused = true;
 
 	InputComponent->BindAction("TriggerBomb", IE_Pressed, this, &Aprepro2Character::TriggerBomb);
 	InputComponent->BindAction("DetonateBomb", IE_Pressed, this, &Aprepro2Character::DetonateBomb);
@@ -152,6 +154,24 @@ void Aprepro2Character::OnFire()
 
 
 }
+
+void Aprepro2Character::TogglePause()
+{
+	GamePaused = true;//GamePaused ? false : true;
+	UGameplayStatics::SetGamePaused(GetWorld(), GamePaused);
+	UUserWidget* PauseWidget = CreateWidget<UUserWidget>(GetWorld(),PauseWidgetClass);
+	PauseWidget->AddToViewport();
+
+	APlayerController* MyController = GetWorld()->GetFirstPlayerController();
+
+	MyController->bShowMouseCursor = GamePaused;
+	MyController->bEnableClickEvents = GamePaused;
+	MyController->bEnableMouseOverEvents = GamePaused;
+	//ConstructorHelpers::FClassFinder("StealthBomb\Content\FirstPersonCPP\Blueprints",)
+	//UObject* reference = StaticLoadObject(UObject::StaticClass(), nullptr, "PauseMenu", "StealthBomb\Content\FirstPersonCPP\Blueprints");
+	//SWidget* Widget = dynamic_cast<SWidget*>(UWidgetBlueprintLibrary::Create(GetWorld(), WidgetTemplate, GetWorld()->GetFirstPlayerController()));
+}
+
 void Aprepro2Character::Sprint()
 {
 	Sprinting = true;
@@ -229,7 +249,12 @@ void Aprepro2Character::TouchUpdate(const ETouchIndex::Type FingerIndex, const F
 		}
 	}
 }
-
+float Aprepro2Character::TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
+{
+	FString message= TEXT("Player took Damage ")+ FString::FromInt(static_cast<int>(DamageAmount));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, message);
+	return DamageAmount;
+}
 void Aprepro2Character::MoveForward(float Value)
 {
 	if (Value != 0.0f && !PlantingBomb)
@@ -382,6 +407,8 @@ void Aprepro2Character::BeginPlay()
 	//UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, UAISenseConfig_Sight::GetSenseImplementation(),)
 	UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, UAISense_Sight::StaticClass(),this);
 	UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, UAISense_Hearing::StaticClass(), this);
+
+	
 
 }
 

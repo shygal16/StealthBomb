@@ -12,10 +12,13 @@ AExplosive::AExplosive()
 	, mBombTriggered(false)
 	, mExploded(false)
 	, mExplosionDelay(5.0f)
+
 {
 	mParticleSystem->bAutoActivate = false;
 	mRadForce->bAutoActivate = false;
 	mExplosionTimer = mExplosionDelay;
+	//mExplosionRadius=(200);
+	//mExplosionDamage=(200);
 }
 
 
@@ -28,7 +31,7 @@ void AExplosive::Explode()
 		mExploded = true;
 		mExplosionTimer = mExplosionDelay;
 		mBombTriggered = false;
-		UGameplayStatics::ApplyRadialDamage(GetWorld(), 100, GetActorLocation(), 500.0, UDamageType::StaticClass(), TArray<AActor*>());
+		UGameplayStatics::ApplyRadialDamage(GetWorld(), 200, GetActorLocation(), 200, UDamageType::StaticClass(), TArray<AActor*>());
 		MakeNoise(1.f, this, GetActorLocation(),800.0f);
 	}
 }
