@@ -2,7 +2,7 @@
 
 #include "prepro2.h"
 #include "Explosive.h"
-
+#include "Perception/AISense_Hearing.h"
 #include "XrayMode.h"
 
 // Sets default values
@@ -33,6 +33,7 @@ void AExplosive::Explode()
 		mBombTriggered = false;
 		UGameplayStatics::ApplyRadialDamage(GetWorld(), 200, GetActorLocation(), 200, UDamageType::StaticClass(), TArray<AActor*>());
 		MakeNoise(1.f, this, GetActorLocation(),800.0f);
+		UAISense_Hearing::ReportNoiseEvent(this, GetActorLocation(), 1, this, 4000.f);
 	}
 }
 

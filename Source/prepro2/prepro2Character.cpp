@@ -94,6 +94,8 @@ void Aprepro2Character::SetupPlayerInputComponent(class UInputComponent* InputCo
 
 	InputComponent->BindAction("Xray", IE_Pressed, this, &Aprepro2Character::ToggleXray);
 
+	InputComponent->BindAction("Pulse", IE_Pressed, this, &Aprepro2Character::BombPulse);
+	
 	InputComponent->BindAction("Crouch", IE_Pressed, this, &Aprepro2Character::StartCrouch);
     InputComponent->BindAction("Crouch", IE_Released, this, &Aprepro2Character::EndCrouch);
 
@@ -255,6 +257,12 @@ float Aprepro2Character::TakeDamage(float DamageAmount, struct FDamageEvent cons
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, message);
 	return DamageAmount;
 }
+float Aprepro2Character::InternalTakeRadialDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
+{
+	FString message = TEXT("Player took Radial Damage ") + FString::FromInt(static_cast<int>(DamageAmount));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, message);
+	return DamageAmount;
+}
 void Aprepro2Character::MoveForward(float Value)
 {
 	if (Value != 0.0f && !PlantingBomb)
@@ -328,17 +336,30 @@ bool Aprepro2Character::EnableTouchscreenMovement(class UInputComponent* InputCo
 void Aprepro2Character::ToggleXray()
 {
 	//GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, XrayOn ? "True" : "False");
-	if (*XrayOn )
+	if (UseXray)
 	{
-		*XrayOn = false;
-	}
-	else
-	{
-		*XrayOn = true;
+		*XrayOn = !*XrayOn;
+	//if (*XrayOn )
+	//{
+	//	*XrayOn = false;
+	//}
+	//else
+	//{
+	//	*XrayOn = true;
+	//}
 	}
 
 
 }
+
+void Aprepro2Character::BombPulse()
+{
+	if (mBombs[mBombSelected]->IsActive())
+	{
+		mBombs[mBombSelected]->PingNoise();
+	}
+}
+
 void Aprepro2Character::Bomb()
 {
 	if (mBombsIndex != mMaxBombs)

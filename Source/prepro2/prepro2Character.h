@@ -72,6 +72,9 @@ public:
 	UPROPERTY(Category = Custom, EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", UIMin = "0"))
 		float SpeedMult = 2;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		bool UseXray=true;
+
 	UPROPERTY(EditFixedSize)
 	uint8 mMaxBombs;
 
@@ -89,6 +92,8 @@ public:
 	int GetBombIndex() const		{ return mBombsIndex;   }
 	int GetBombSelected() const		{ return mBombSelected; }
 
+	float InternalTakeRadialDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController* EventInstigator, AActor* DamageCauser);
+
 protected:
 	void StartCrouch();
 	void EndCrouch();
@@ -104,6 +109,8 @@ protected:
 
 	void TriggerBomb();
 	void DetonateBomb();
+
+	void BombPulse();
 
 	void SelectBomb();
 

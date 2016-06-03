@@ -86,6 +86,12 @@ void AEnemy_RealTest::Tick(float DeltaTime)
 	//SetActorRotation(GetActorRotation() + rot);
 }
 
+float AEnemy_RealTest::TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
+{
+	FString message = TEXT("Enemy took Damage ") + FString::FromInt(static_cast<int>(DamageAmount));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, message);
+	return DamageAmount;
+}
 // Called to bind functionality to input
 void AEnemy_RealTest::SetupPlayerInputComponent(class UInputComponent* InputComponent)
 {
