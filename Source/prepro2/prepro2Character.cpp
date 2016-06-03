@@ -246,7 +246,7 @@ void Aprepro2Character::MoveForward(float Value)
 		{
 			SoundMultiplier = 1.0f;
 		}
-		MakeNoise(SoundMultiplier, this, GetActorLocation(), 300.0f);
+		UAISense_Hearing::ReportNoiseEvent(this, GetActorLocation(), SoundMultiplier, this, 2000.f);
 
 	}
 }
@@ -267,8 +267,8 @@ void Aprepro2Character::MoveRight(float Value)
 		{
 			SoundMultiplier = 1.0f;
 		}
-			MakeNoise(SoundMultiplier, this, GetActorLocation(),300.0f);
-
+		UAISense_Hearing::ReportNoiseEvent(this, GetActorLocation(), SoundMultiplier, this, 2000.f);
+			
 	}
 }
 
