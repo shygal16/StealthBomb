@@ -94,6 +94,7 @@ protected:
 	void EndCrouch();
 	/** Fires a projectile. */
 	void OnFire();
+	void TogglePause();
 	void ToggleXray();
 	//Throw a bomb
 	void Bomb();
@@ -161,7 +162,10 @@ public:
 
 	class UProgressBarWidget* mProgressBars;
 	
-	
+	float TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)
+		TSubclassOf<UUserWidget> PauseWidgetClass;
+
 private:
 	bool* XrayOn;
 	ADetonateBomb** mBombs;
@@ -169,7 +173,8 @@ private:
 	int mBombSelected;
 	void InitBombs();
 	float VisionBar;
-
+	
+	bool GamePaused;
 
 	void BombPlant();
 	void BombStopPlant();
