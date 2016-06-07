@@ -8,7 +8,7 @@
 #include "Explosive.generated.h"
 
 UCLASS(abstract)
-class PREPRO2_API AExplosive : public AActor
+class PREPRO2_API AExplosive : public APawn
 {
 	GENERATED_BODY()
 
@@ -24,6 +24,10 @@ public:
 
 	UPROPERTY(EditAnywhere)
 		float mExplosionDelay;
+	//UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	//	float mExplosionRadius;
+	//UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	//	float mExplosionDamage;
 
 	void Explode();
 

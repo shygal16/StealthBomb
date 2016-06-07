@@ -2,6 +2,7 @@
 #pragma once
 #include "GameFramework/Character.h"
 #include "DetonateBomb.h"
+#include "ProgressBarWidget.h"
 #include "prepro2Character.generated.h"
 
 class UInputComponent;
@@ -65,11 +66,14 @@ public:
 	float SprintBarMax = 5;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Custom)
-		float PlantTime = 2;
+		float PlantTime = 4;
 
 	//How much faster you go while sprinting
 	UPROPERTY(Category = Custom, EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", UIMin = "0"))
 		float SpeedMult = 2;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		bool UseXray=true;
 
 	UPROPERTY(EditFixedSize)
 	uint8 mMaxBombs;
@@ -88,11 +92,14 @@ public:
 	int GetBombIndex() const		{ return mBombsIndex;   }
 	int GetBombSelected() const		{ return mBombSelected; }
 
+	float InternalTakeRadialDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController* EventInstigator, AActor* DamageCauser);
+
 protected:
 	void StartCrouch();
 	void EndCrouch();
 	/** Fires a projectile. */
 	void OnFire();
+	void TogglePause();
 	void ToggleXray();
 	//Throw a bomb
 	void Bomb();
@@ -102,6 +109,8 @@ protected:
 
 	void TriggerBomb();
 	void DetonateBomb();
+
+	void BombPulse();
 
 	void SelectBomb();
 
@@ -154,8 +163,16 @@ public:
 	FORCEINLINE class USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	/** Returns FirstPersonCameraComponent subobject **/
 	FORCEINLINE class UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
+
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<class UProgressBarWidget> mProgressBarsClass;
+
+	class UProgressBarWidget* mProgressBars;
 	
-	
+	float TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)
+		TSubclassOf<UUserWidget> PauseWidgetClass;
+
 private:
 	bool* XrayOn;
 	ADetonateBomb** mBombs;
@@ -163,7 +180,8 @@ private:
 	int mBombSelected;
 	void InitBombs();
 	float VisionBar;
-
+	
+	bool GamePaused;
 
 	void BombPlant();
 	void BombStopPlant();

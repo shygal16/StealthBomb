@@ -11,6 +11,7 @@
 #include "Perception/AISenseConfig_Hearing.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISense_Sight.h"
+#include "Perception/AISense_Hearing.h"
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
 //////////////////////////////////////////////////////////////////////////
@@ -23,11 +24,12 @@ Aprepro2Character::Aprepro2Character()
 	, mMaxBombs(5)
 	, mBombSelected(-1)
 {
+	
 	XrayOn = &Globals::XrayOn;
 	SprintBar = SprintBarMax;
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
-
+	GamePaused = false;
 	// set our turn rates for input
 	BaseTurnRate = 45.f;
 	BaseLookUpRate = 45.f;
@@ -81,6 +83,8 @@ void Aprepro2Character::SetupPlayerInputComponent(class UInputComponent* InputCo
 	InputComponent->BindAction("TriggerAllBombs", IE_Pressed, this, &Aprepro2Character::TriggerAllBombs);
 	InputComponent->BindAction("DetonateAllBombs", IE_Pressed, this, &Aprepro2Character::DetonateAllBombs);
 
+	InputComponent->BindAction("PauseGame", IE_Pressed, this, &Aprepro2Character::TogglePause);//.bExecuteWhenPaused = true;
+
 	InputComponent->BindAction("TriggerBomb", IE_Pressed, this, &Aprepro2Character::TriggerBomb);
 	InputComponent->BindAction("DetonateBomb", IE_Pressed, this, &Aprepro2Character::DetonateBomb);
 	InputComponent->BindAction("SelectBomb", IE_Pressed, this, &Aprepro2Character::SelectBomb);
@@ -90,6 +94,8 @@ void Aprepro2Character::SetupPlayerInputComponent(class UInputComponent* InputCo
 
 	InputComponent->BindAction("Xray", IE_Pressed, this, &Aprepro2Character::ToggleXray);
 
+	InputComponent->BindAction("Pulse", IE_Pressed, this, &Aprepro2Character::BombPulse);
+	
 	InputComponent->BindAction("Crouch", IE_Pressed, this, &Aprepro2Character::StartCrouch);
     InputComponent->BindAction("Crouch", IE_Released, this, &Aprepro2Character::EndCrouch);
 
@@ -150,6 +156,24 @@ void Aprepro2Character::OnFire()
 
 
 }
+
+void Aprepro2Character::TogglePause()
+{
+	GamePaused = true;//GamePaused ? false : true;
+	UGameplayStatics::SetGamePaused(GetWorld(), GamePaused);
+	UUserWidget* PauseWidget = CreateWidget<UUserWidget>(GetWorld(),PauseWidgetClass);
+	PauseWidget->AddToViewport();
+
+	APlayerController* MyController = GetWorld()->GetFirstPlayerController();
+
+	MyController->bShowMouseCursor = GamePaused;
+	MyController->bEnableClickEvents = GamePaused;
+	MyController->bEnableMouseOverEvents = GamePaused;
+	//ConstructorHelpers::FClassFinder("StealthBomb\Content\FirstPersonCPP\Blueprints",)
+	//UObject* reference = StaticLoadObject(UObject::StaticClass(), nullptr, "PauseMenu", "StealthBomb\Content\FirstPersonCPP\Blueprints");
+	//SWidget* Widget = dynamic_cast<SWidget*>(UWidgetBlueprintLibrary::Create(GetWorld(), WidgetTemplate, GetWorld()->GetFirstPlayerController()));
+}
+
 void Aprepro2Character::Sprint()
 {
 	Sprinting = true;
@@ -227,13 +251,36 @@ void Aprepro2Character::TouchUpdate(const ETouchIndex::Type FingerIndex, const F
 		}
 	}
 }
-
+float Aprepro2Character::TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
+{
+	FString message= TEXT("Player took Damage ")+ FString::FromInt(static_cast<int>(DamageAmount));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, message);
+	return DamageAmount;
+}
+float Aprepro2Character::InternalTakeRadialDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
+{
+	FString message = TEXT("Player took Radial Damage ") + FString::FromInt(static_cast<int>(DamageAmount));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, message);
+	return DamageAmount;
+}
 void Aprepro2Character::MoveForward(float Value)
 {
 	if (Value != 0.0f && !PlantingBomb)
 	{
 		// add movement in that direction
 		AddMovementInput(GetActorForwardVector(), Value);
+
+		if (bIsCrouched)
+		{
+			return;
+		}
+		float SoundMultiplier = 0.2f;
+		if (GetCharacterMovement()->MaxWalkSpeed == sprintSpeed)
+		{
+			SoundMultiplier = 1.0f;
+		}
+		UAISense_Hearing::ReportNoiseEvent(this, GetActorLocation(), SoundMultiplier, this, 2000.f);
+
 	}
 }
 
@@ -243,6 +290,18 @@ void Aprepro2Character::MoveRight(float Value)
 	{
 		// add movement in that direction
 		AddMovementInput(GetActorRightVector(), Value);
+
+		if (bIsCrouched)
+		{
+			return;
+		}
+		float SoundMultiplier=0.2f;
+		if (GetCharacterMovement()->MaxWalkSpeed == sprintSpeed)
+		{
+			SoundMultiplier = 1.0f;
+		}
+		UAISense_Hearing::ReportNoiseEvent(this, GetActorLocation(), SoundMultiplier, this, 2000.f);
+			
 	}
 }
 
@@ -277,17 +336,30 @@ bool Aprepro2Character::EnableTouchscreenMovement(class UInputComponent* InputCo
 void Aprepro2Character::ToggleXray()
 {
 	//GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, XrayOn ? "True" : "False");
-	if (*XrayOn )
+	if (UseXray)
 	{
-		*XrayOn = false;
-	}
-	else
-	{
-		*XrayOn = true;
+		*XrayOn = !*XrayOn;
+	//if (*XrayOn )
+	//{
+	//	*XrayOn = false;
+	//}
+	//else
+	//{
+	//	*XrayOn = true;
+	//}
 	}
 
 
 }
+
+void Aprepro2Character::BombPulse()
+{
+	if (mBombs[mBombSelected]->IsActive())
+	{
+		mBombs[mBombSelected]->PingNoise();
+	}
+}
+
 void Aprepro2Character::Bomb()
 {
 	if (mBombsIndex != mMaxBombs)
@@ -298,18 +370,28 @@ void Aprepro2Character::Bomb()
 		// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
 		const FVector SpawnLocation = GetActorLocation() + SpawnRotation.RotateVector(GunOffset);
 		mBombs[curr]->SetActorLocation(SpawnLocation);
-
+		if (mBombSelected != -1)
+		{
+		mBombs[mBombSelected]->XRayBomb(false);
+		}
 		mBombSelected = curr;
+		mBombs[mBombSelected]->XRayBomb(true);
+
 	}
 }
 
 void Aprepro2Character::BombPlant()
 {
 	PlantingBomb = true;
+	
+	mProgressBars->mBombPlantVisible = true;
+
 	StartCrouch();
+
 }
 void Aprepro2Character::BombStopPlant()
 {
+	mProgressBars->mBombPlantVisible = false;
 	PlantingBomb = false;
 	PlantProgress = 0;
 	EndCrouch();
@@ -339,10 +421,15 @@ void Aprepro2Character::InitBombs()
 void Aprepro2Character::BeginPlay()
 {
 	Super::BeginPlay();
+	mProgressBars = CreateWidget<UProgressBarWidget>(GetWorld(), mProgressBarsClass);
+	mProgressBars->AddToViewport(0);
 	VisionBar = VisionBarMax;
 	InitBombs();
 	//UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, UAISenseConfig_Sight::GetSenseImplementation(),)
 	UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, UAISense_Sight::StaticClass(),this);
+	UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, UAISense_Hearing::StaticClass(), this);
+
+	
 
 }
 
@@ -382,6 +469,7 @@ void Aprepro2Character::Tick(float DeltaTime)
 	if (PlantingBomb)
 	{
 		PlantProgress += DeltaTime;
+		mProgressBars->mBombPlantPercentage = PlantProgress / PlantTime;
 		if (PlantProgress >= PlantTime)
 		{
 			Bomb();
@@ -405,6 +493,12 @@ void Aprepro2Character::Tick(float DeltaTime)
 			mBombs[mBombsIndex] = temp;
 		}
 	}
+
+	mProgressBars->mSprintBarPercentage = SprintBar / SprintBarMax;
+	mProgressBars->mXrayPercentage = VisionBar / VisionBarMax;
+
+	
+	
 }
 
 void Aprepro2Character::TriggerAllBombs()

@@ -5,6 +5,7 @@
 #include "GameFramework/Character.h"
 #include "Perception/AISenseConfig_Sight.h"
 #include "Perception/AISenseConfig_Hearing.h"
+#include "AIController.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Enemy_RealTest.generated.h"
 
@@ -26,13 +27,20 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 
-	//sensing stuff
-	UFUNCTION()
-	void SenseStuff(TArray<AActor*> testActors);
-
-	UAIPerceptionComponent* perceptionComponent;
-
-	UAISenseConfig_Sight* sightConfig;
-	UAISenseConfig_Hearing* soundConfig;
+	float TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController* EventInstigator, AActor* DamageCauser);
 	
+	UPROPERTY(EditAnywhere, Category=Behavior)
+	class UBehaviorTree* BehaviorTree;	
+//	UFUNCTION()
+//	void OnSeePlayer(APawn* pawn);
+
+//	UFUNCTION()
+//	void OnHearPlayer(APawn* pawn, const FVector &Location, float Volume);
+private:
+	
+
+//	class UPawnSensingComponent* PawnSense;
+	//float age = 0.f;
+	//float MaxAge = 1.f;
+	//bool cleared = true;
 };

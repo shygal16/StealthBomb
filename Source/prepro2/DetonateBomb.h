@@ -33,7 +33,7 @@ public:
 	bool IsActive()		{ return mIsActive; }
 
 	void XRayBomb(bool On);
-
+	void PingNoise();
 protected:
 	bool mIsActive;
 
