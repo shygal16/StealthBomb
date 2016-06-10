@@ -13,6 +13,7 @@
  struct Globals
 {
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = VisionMode)
 	static bool XrayOn;
 };
 

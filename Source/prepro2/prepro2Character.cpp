@@ -336,18 +336,9 @@ bool Aprepro2Character::EnableTouchscreenMovement(class UInputComponent* InputCo
 void Aprepro2Character::ToggleXray()
 {
 	//GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, XrayOn ? "True" : "False");
-	if (UseXray)
-	{
+
 		*XrayOn = !*XrayOn;
-	//if (*XrayOn )
-	//{
-	//	*XrayOn = false;
-	//}
-	//else
-	//{
-	//	*XrayOn = true;
-	//}
-	}
+
 
 
 }
@@ -440,18 +431,24 @@ void Aprepro2Character::Tick(float DeltaTime)
 	//*XrayOn = Globals::XrayOn;
 
 	//GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, FString::FromInt(VisionBar));
-	if (VisionBar < VisionBarMax && !*XrayOn)
+	if (!UseXray)
 	{
-		VisionBar+=DeltaTime;
+		*XrayOn = false;
+
 	}
-	else if (*XrayOn)
+	if(*XrayOn)
 	{
-		VisionBar-=DeltaTime;
+		VisionBar -= DeltaTime;
 		if (VisionBar <= 0)
 		{
 			ToggleXray();
 		}
 	}
+	else if (VisionBar < VisionBarMax ) //checks if vision bar isnt maxed, and xray is off
+	{
+		VisionBar+=DeltaTime;
+	}
+
 
 	if (!Sprinting && SprintBar<SprintBarMax)
 	{

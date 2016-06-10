@@ -72,7 +72,7 @@ public:
 	UPROPERTY(Category = Custom, EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", UIMin = "0"))
 		float SpeedMult = 2;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = VisionMode)
 		bool UseXray=true;
 
 	UPROPERTY(EditFixedSize)
@@ -175,6 +175,7 @@ public:
 
 private:
 	bool* XrayOn;
+
 	ADetonateBomb** mBombs;
 	int mBombsIndex;
 	int mBombSelected;
