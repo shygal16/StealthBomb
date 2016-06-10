@@ -408,6 +408,7 @@ void Aprepro2Character::InitBombs()
 	verify(BombClass != NULL && "bomb class doesnt exist");
 	for (int i = 0; i < mMaxBombs; i++)
 	{
+
 		UWorld* const World = GetWorld();
 		if (World != NULL)
 		{

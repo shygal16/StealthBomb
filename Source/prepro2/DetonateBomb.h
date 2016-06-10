@@ -43,4 +43,5 @@ private:
 	UDestructibleMesh* mOriginalMesh;
 	//UPrimitiveComponent* mMesh;
 	float mDisappearTimer;
+	UBoxComponent* RangeTelegraph;
 };
