@@ -354,9 +354,12 @@ void Aprepro2Character::ToggleXray()
 
 void Aprepro2Character::BombPulse()
 {
-	if (mBombs[mBombSelected]->IsActive())
+	if (mBombSelected != -1)
 	{
-		mBombs[mBombSelected]->PingNoise();
+		if (mBombs[mBombSelected]->IsActive())
+		{
+			mBombs[mBombSelected]->PingNoise();
+		}
 	}
 }
 

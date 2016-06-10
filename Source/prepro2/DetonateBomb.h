@@ -22,6 +22,8 @@ public:
 	UPROPERTY(EditAnywhere)
 		float mDisappearDelay;
 
+	UPROPERTY(EditAnywhere)
+		float PulseRange;
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
