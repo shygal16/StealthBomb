@@ -51,6 +51,8 @@ if (mOwner&&mOwner->BehaviorTree)
 	 BombLocationID = mBlackboard->GetKeyID("BombLocation");
 	 BombHeardLocationID = mBlackboard->GetKeyID("BombHeardLocation");
 	 PlayerHeardLocationID = mBlackboard->GetKeyID("PlayerHeardLocation");	
+	 SecondaryLocationID = mBlackboard->GetKeyID("SecondaryLocation"); 
+	 PlayerMovementDirectionID = mBlackboard->GetKeyID("PlayerMovementDirection");
 	
 	mBehaviortree->StartTree(*mOwner->BehaviorTree);
 
@@ -64,7 +66,7 @@ sightConfig->DetectionByAffiliation.bDetectFriendlies = true;
 
 mPerceptionComponent->ConfigureSense(*sightConfig);
 
-soundConfig->HearingRange = 4000.0f;
+soundConfig->HearingRange = 12000.0f;
 soundConfig->bUseLoSHearing = false;
 soundConfig->DetectionByAffiliation.bDetectEnemies = true;
 soundConfig->DetectionByAffiliation.bDetectNeutrals = true;
@@ -118,7 +120,8 @@ void AEnemyController::SetTargetEnemy(APawn* Target)
 						{
 							GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Player Lost. Updating its last seen Location");
 							mBlackboard->ClearValue(PlayerID);					
-							mBlackboard->SetValueAsVector(PlayerLastSeenLocationID, Target->GetActorLocation());									
+							mBlackboard->SetValueAsVector(PlayerLastSeenLocationID, Target->GetActorLocation());	
+							mBlackboard->ClearValueAsVector(PlayerHeardLocationID);
 						}
 						info.LastSensedStimuli[i].AgeStimulus(1.f);
 					}
@@ -130,6 +133,7 @@ void AEnemyController::SetTargetEnemy(APawn* Target)
 					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, "Player Heard. Updating its last Heard Location");
 					mBlackboard->SetValueAsVector(PlayerHeardLocationID, Target->GetActorLocation());
 					info.LastSensedStimuli[i].AgeStimulus(1.f);
+					mBlackboard->ClearValueAsVector(PlayerLastSeenLocationID);
 				}
 			}
 		}
