@@ -354,9 +354,12 @@ void Aprepro2Character::ToggleXray()
 
 void Aprepro2Character::BombPulse()
 {
-	if (mBombs[mBombSelected]->IsActive())
+	if (mBombSelected != -1)
 	{
-		mBombs[mBombSelected]->PingNoise();
+		if (mBombs[mBombSelected]->IsActive())
+		{
+			mBombs[mBombSelected]->PingNoise();
+		}
 	}
 }
 
@@ -405,6 +408,7 @@ void Aprepro2Character::InitBombs()
 	verify(BombClass != NULL && "bomb class doesnt exist");
 	for (int i = 0; i < mMaxBombs; i++)
 	{
+
 		UWorld* const World = GetWorld();
 		if (World != NULL)
 		{

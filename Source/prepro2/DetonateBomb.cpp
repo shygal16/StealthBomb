@@ -12,6 +12,7 @@ ADetonateBomb::ADetonateBomb()
 	, mIsActive(true)
 	, mDisappearDelay(1.0f)
 {
+	//RangeTelegraph = (CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComp")));
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	RootComponent = mBombModel;
@@ -31,6 +32,12 @@ void ADetonateBomb::BeginPlay()
 
 	UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, UAISense_Sight::StaticClass(), this);
 	UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, UAISense_Hearing::StaticClass(), this);
+
+	if (RangeTelegraph)
+	{
+		RangeTelegraph->SetBoxExtent(FVector(mExplosionRadius, mExplosionRadius, 1));
+		RangeTelegraph->SetVisibility(true);
+	}
 
 	
 }
@@ -106,7 +113,7 @@ void ADetonateBomb::SetActive(bool active)
 }
 void ADetonateBomb::PingNoise()
 {
-	UAISense_Hearing::ReportNoiseEvent(this, GetActorLocation(), 1, this, 2000.f);
+	UAISense_Hearing::ReportNoiseEvent(this, GetActorLocation(), 1, this, PulseRange);
 }
 void ADetonateBomb::XRayBomb(bool On)
 {

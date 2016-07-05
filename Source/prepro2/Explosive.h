@@ -24,8 +24,8 @@ public:
 
 	UPROPERTY(EditAnywhere)
 		float mExplosionDelay;
-	//UPROPERTY(EditAnywhere,BlueprintReadWrite)
-	//	float mExplosionRadius;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+		float mExplosionRadius;
 	//UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	//	float mExplosionDamage;
 
