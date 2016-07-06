@@ -120,9 +120,12 @@ void AEnemyController::SetTargetEnemy(APawn* Target)
 						{
 							GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Player Lost. Updating its last seen Location");
 							mBlackboard->ClearValue(PlayerID);					
-							mBlackboard->SetValueAsVector(PlayerLastSeenLocationID, Target->GetActorLocation());	
-							mBlackboard->ClearValueAsVector(PlayerHeardLocationID);
+							if (mBlackboard->IsVectorValueSet(PlayerHeardLocationID))
+							{
+								mBlackboard->ClearValueAsVector(PlayerHeardLocationID);
+							}
 						}
+						mBlackboard->SetValueAsVector(PlayerLastSeenLocationID, Target->GetActorLocation());	
 						info.LastSensedStimuli[i].AgeStimulus(1.f);
 					}
 				}
@@ -133,7 +136,10 @@ void AEnemyController::SetTargetEnemy(APawn* Target)
 					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, "Player Heard. Updating its last Heard Location");
 					mBlackboard->SetValueAsVector(PlayerHeardLocationID, Target->GetActorLocation());
 					info.LastSensedStimuli[i].AgeStimulus(1.f);
-					mBlackboard->ClearValueAsVector(PlayerLastSeenLocationID);
+					if(mBlackboard->IsVectorValueSet(PlayerLastSeenLocationID))
+					{
+						mBlackboard->ClearValueAsVector(PlayerLastSeenLocationID);
+					}
 				}
 			}
 		}
@@ -189,7 +195,7 @@ void AEnemyController::SenseStuff(TArray<AActor*> testActors)
 		{
 			//Checking if Bomb is active
 			ADetonateBomb* temp = (ADetonateBomb*)actors;
-			if (!temp->IsActive())
+			if (!temp->IsPlanted())
 			{
 				return;
 			}

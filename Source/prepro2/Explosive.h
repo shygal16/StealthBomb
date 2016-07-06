@@ -28,17 +28,12 @@ public:
 		float mExplosionRadius;
 	//UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	//	float mExplosionDamage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float mExplosionSound;
+
 
 	void Explode();
 
-	bool IsExploded()	{ return mExploded; }
-	bool IsBombTriggered()	{ return mBombTriggered; }
-
-	void TriggerBomb();
-
 protected:
-	bool mBombTriggered;
-	float mExplosionTimer;
 	bool mExploded;
-	
 };

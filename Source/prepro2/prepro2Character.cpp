@@ -20,9 +20,10 @@ DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 bool Globals::XrayOn;
 
 Aprepro2Character::Aprepro2Character()
-	: mBombsIndex(0)
-	, mMaxBombs(5)
-	, mBombSelected(-1)
+	: mMaxBombs(5)
+	, mBombSelected(0)
+	, mNumBombs(3)
+	, mBombsPlanted(0)
 {
 	
 	XrayOn = &Globals::XrayOn;
@@ -80,12 +81,10 @@ void Aprepro2Character::SetupPlayerInputComponent(class UInputComponent* InputCo
 	InputComponent->BindAction("Bomb", IE_Pressed, this, &Aprepro2Character::BombPlant);
 	InputComponent->BindAction("Bomb", IE_Released, this, &Aprepro2Character::BombStopPlant);
 
-	InputComponent->BindAction("TriggerAllBombs", IE_Pressed, this, &Aprepro2Character::TriggerAllBombs);
 	InputComponent->BindAction("DetonateAllBombs", IE_Pressed, this, &Aprepro2Character::DetonateAllBombs);
 
 	InputComponent->BindAction("PauseGame", IE_Pressed, this, &Aprepro2Character::TogglePause);//.bExecuteWhenPaused = true;
 
-	InputComponent->BindAction("TriggerBomb", IE_Pressed, this, &Aprepro2Character::TriggerBomb);
 	InputComponent->BindAction("DetonateBomb", IE_Pressed, this, &Aprepro2Character::DetonateBomb);
 	InputComponent->BindAction("SelectBomb", IE_Pressed, this, &Aprepro2Character::SelectBomb);
 	
@@ -257,12 +256,12 @@ float Aprepro2Character::TakeDamage(float DamageAmount, struct FDamageEvent cons
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, message);
 	return DamageAmount;
 }
-float Aprepro2Character::InternalTakeRadialDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
-{
-	FString message = TEXT("Player took Radial Damage ") + FString::FromInt(static_cast<int>(DamageAmount));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, message);
-	return DamageAmount;
-}
+//float Aprepro2Character::InternalTakeRadialDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
+//{
+//	FString message = TEXT("Player took Radial Damage ") + FString::FromInt(static_cast<int>(DamageAmount));
+//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, message);
+//	return DamageAmount;
+//}
 void Aprepro2Character::MoveForward(float Value)
 {
 	if (Value != 0.0f && !PlantingBomb)
@@ -356,7 +355,7 @@ void Aprepro2Character::BombPulse()
 {
 	if (mBombSelected != -1)
 	{
-		if (mBombs[mBombSelected]->IsActive())
+		if (mBombs[mBombSelected]->IsPlanted())
 		{
 			mBombs[mBombSelected]->PingNoise();
 		}
@@ -365,32 +364,32 @@ void Aprepro2Character::BombPulse()
 
 void Aprepro2Character::Bomb()
 {
-	if (mBombsIndex != mMaxBombs)
+	int curr = mBombsPlanted;
+	mBombs[curr]->SetActive(true);
+	mBombs[curr]->Plant();
+	mBombSelected = curr;
+	const FRotator SpawnRotation = GetControlRotation();
+	// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
+	const FVector SpawnLocation = GetActorLocation() + SpawnRotation.RotateVector(GunOffset);
+	mBombs[mBombSelected]->SetActorLocation(SpawnLocation);
+	if (mBombsPlanted > 0)
 	{
-		int curr = mBombsIndex++;
-		mBombs[curr]->SetActive(true);
-		const FRotator SpawnRotation = GetControlRotation();
-		// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
-		const FVector SpawnLocation = GetActorLocation() + SpawnRotation.RotateVector(GunOffset);
-		mBombs[curr]->SetActorLocation(SpawnLocation);
-		if (mBombSelected != -1)
-		{
-		mBombs[mBombSelected]->XRayBomb(false);
-		}
-		mBombSelected = curr;
-		mBombs[mBombSelected]->XRayBomb(true);
-
+		mBombs[mBombSelected - 1]->XRayBomb(false);
 	}
+	
+	mBombsPlanted++;
+	mBombs[mBombSelected]->XRayBomb(true);
+
 }
 
 void Aprepro2Character::BombPlant()
 {
-	PlantingBomb = true;
-	
-	mProgressBars->mBombPlantVisible = true;
-
-	StartCrouch();
-
+	if (mNumBombs !=0 && mNumBombs > mBombsPlanted)
+	{
+		PlantingBomb = true;
+		mProgressBars->mBombPlantVisible = true;
+		StartCrouch();
+	}
 }
 void Aprepro2Character::BombStopPlant()
 {
@@ -402,11 +401,12 @@ void Aprepro2Character::BombStopPlant()
 
 void Aprepro2Character::InitBombs()
 {
-	mBombs = new ADetonateBomb* [mMaxBombs];
+	mBombs.Reserve(mNumBombs + 5);
+
 	const FVector tempLocation = GetActorLocation();
 	const FRotator tempRotation = { 0, 0, 0 };
 	verify(BombClass != NULL && "bomb class doesnt exist");
-	for (int i = 0; i < mMaxBombs; i++)
+	for (int i = 0; i < mNumBombs; i++)
 	{
 
 		UWorld* const World = GetWorld();
@@ -414,7 +414,7 @@ void Aprepro2Character::InitBombs()
 		{
 			
 			// spawn the projectile at the muzzle
-			mBombs[i] = World->SpawnActor<ADetonateBomb>(BombClass, tempLocation, tempRotation);
+			mBombs.Add(World->SpawnActor<ADetonateBomb>(BombClass, tempLocation, tempRotation));
 			
 			mBombs[i]->SetActive(false);
 	
@@ -484,20 +484,6 @@ void Aprepro2Character::Tick(float DeltaTime)
 	}
 	//GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, FString::FromInt(VisionBar));
 
-	for (int i = mBombsIndex - 1; i >= 0; --i)
-	{
-		if (!mBombs[i]->IsActive())
-		{
-			mBombsIndex--;
-			ADetonateBomb* temp = mBombs[i];
-			for (int j = i; j < mBombsIndex; ++j)
-			{
-				mBombs[j] = mBombs[j + 1];
-			}
-			mBombs[mBombsIndex] = temp;
-		}
-	}
-
 	mProgressBars->mSprintBarPercentage = SprintBar / SprintBarMax;
 	mProgressBars->mXrayPercentage = VisionBar / VisionBarMax;
 
@@ -505,46 +491,43 @@ void Aprepro2Character::Tick(float DeltaTime)
 	
 }
 
-void Aprepro2Character::TriggerAllBombs()
-{
-	for (int i = 0; i < mBombsIndex; ++i)
-	{
-		
-			mBombs[i]->TriggerBomb();
-		
-	}
-}
 void Aprepro2Character::DetonateAllBombs()
 {
-	for (int i = 0; i < mBombsIndex; ++i)
+	for (int i = 0; i < mNumBombs; ++i)
 	{
 			mBombs[i]->Explode();
+			mBombs.Empty();
+			mNumBombs = 0;
+			mBombsPlanted = 0;
+			mBombSelected = -1;
 	}
 }
 
-void Aprepro2Character::TriggerBomb()
-{
-	if (mBombSelected != -1)
-	{
-		mBombs[mBombSelected]->TriggerBomb();
-		//mBombSelected = (mBombSelected + 1 == mBombsIndex) ? 0 : mBombSelected + 1;
-	}
-}
 void Aprepro2Character::DetonateBomb()
 {
 	if (mBombSelected != -1)
 	{
 		mBombs[mBombSelected]->Explode();
-		SelectBomb();		
+		mBombs.RemoveAt(mBombSelected);
+		mNumBombs--;
+		mBombsPlanted--;
+		if (mNumBombs > 0)
+		{
+			mBombSelected = 0;
+		}
+		else
+		{
+			mBombSelected = -1;
+		}
 	}
 }
 
 void Aprepro2Character::SelectBomb()
 {
-	if (mBombsIndex != 0)
+	if (mBombsPlanted != 0)
 	{
 		mBombs[mBombSelected]->XRayBomb(false);
-			mBombSelected = (mBombSelected + 1 == mBombsIndex) ? 0 : mBombSelected + 1;
+			mBombSelected = (mBombSelected + 1 == mBombsPlanted) ? 0 : mBombSelected + 1;
 		mBombs[mBombSelected]->XRayBomb(true);
 	}
 }
