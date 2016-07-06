@@ -67,7 +67,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Custom)
 		float PlantTime = 4;
-
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Custom)
+		float mHealth = 300;
 	//How much faster you go while sprinting
 	UPROPERTY(Category = Custom, EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", UIMin = "0"))
 		float SpeedMult = 2;

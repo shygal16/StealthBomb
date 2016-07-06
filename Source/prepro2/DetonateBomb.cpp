@@ -20,7 +20,8 @@ ADetonateBomb::ADetonateBomb()
 	mParticleSystem->AttachTo(mBombModel);
 	mRadForce->AttachTo(mBombModel);
 
-	mDisappearTimer = mDisappearDelay;
+	mDisappearTimer = mDisappearDelay;	
+	
 }
 
 // Called when the game starts or when spawned
