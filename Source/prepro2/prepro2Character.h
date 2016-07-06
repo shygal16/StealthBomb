@@ -78,6 +78,9 @@ public:
 	UPROPERTY(EditFixedSize)
 	uint8 mMaxBombs;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		uint8 mNumBombs;
+
 	/*UPROPERTY(EditAnywhere)
 		static const int mMaxBombs;*/
 
@@ -88,11 +91,11 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaSeconds) override;
 
-	uint8 GetMaxBombs() const		{ return mMaxBombs;     }
-	int GetBombIndex() const		{ return mBombsIndex;   }
+	uint8 GetNumBombs() const		{ return mNumBombs;     }
+	int GetBombPlanted() const		{ return mBombsPlanted;   }
 	int GetBombSelected() const		{ return mBombSelected; }
 
-	float InternalTakeRadialDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController* EventInstigator, AActor* DamageCauser);
+	//float InternalTakeRadialDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController* EventInstigator, AActor* DamageCauser);
 
 protected:
 	void StartCrouch();
@@ -104,10 +107,8 @@ protected:
 	//Throw a bomb
 	void Bomb();
 
-	void TriggerAllBombs();
 	void DetonateAllBombs();
 
-	void TriggerBomb();
 	void DetonateBomb();
 
 	void BombPulse();
@@ -175,8 +176,8 @@ public:
 
 private:
 	bool* XrayOn;
-	ADetonateBomb** mBombs;
-	int mBombsIndex;
+	TArray<ADetonateBomb*> mBombs;
+	int mBombsPlanted;
 	int mBombSelected;
 	void InitBombs();
 	float VisionBar;

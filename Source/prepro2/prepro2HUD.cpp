@@ -60,14 +60,15 @@ void Aprepro2HUD::DrawHUD()
 
 	Aprepro2Character* player = Cast<Aprepro2Character>(UGameplayStatics::GetPlayerPawn(this, 0));
 
-	int bombIndex = player->GetBombIndex();
-	uint8 maxBombs = player->GetMaxBombs();
+	int numBombs = player->GetNumBombs();
+	int plantedBombs = player->GetBombPlanted();
 
 	//draw used bombs
-	for (int i = 0; i < bombIndex; ++i)
+	for (int i = 0; i < plantedBombs; ++i)
 	{
 		TileItem.Position = BombPosition;
 		TileItem.Position.X += i*(mBombTextureWidth + 5.0f);
+
 		if (i == player->GetBombSelected())
 		{
 			TileItem.Texture = mBombSelected->Resource;
@@ -81,7 +82,7 @@ void Aprepro2HUD::DrawHUD()
 	}
 
 	//draw unused bombs
-	for (int i = bombIndex; i < maxBombs; ++i)
+	for (int i = plantedBombs; i < numBombs; ++i)
 	{
 		TileItem.Position = BombPosition;
 		TileItem.Position.X += i*(mBombTextureWidth + 5.0f);

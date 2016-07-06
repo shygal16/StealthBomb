@@ -9,8 +9,8 @@
 // Sets default values
 ADetonateBomb::ADetonateBomb()
 	: mBombModel(CreateDefaultSubobject<UDestructibleComponent>(TEXT("Model")))
-	, mIsActive(true)
-	, mDisappearDelay(1.0f)
+	, mIsPlanted(false)
+	, mDisappearDelay(2.0f)
 {
 	//RangeTelegraph = (CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComp")));
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -28,8 +28,6 @@ void ADetonateBomb::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	mOriginalMesh = mBombModel->DestructibleMesh;
-
 	UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, UAISense_Sight::StaticClass(), this);
 	UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, UAISense_Hearing::StaticClass(), this);
 
@@ -47,44 +45,28 @@ void ADetonateBomb::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
 	
-	if (mExplosionTimer < 0)
-	{
-		Explode();
-		mDisappearTimer = mDisappearDelay;
-	}
 
 	if (mDisappearTimer < 0)
 	{
-		mExploded = false;
-		mBombModel->SetDestructibleMesh(mOriginalMesh);
-		mDisappearTimer = mDisappearDelay;
-		SetActive(false);
+		Destroy();
 	}
 
 	if (mExploded)
 	{
 		mDisappearTimer -= DeltaTime;
 	}
-
-	else
-	{
-		if (mBombTriggered)
-		{
-			mExplosionTimer -= DeltaTime;
-		}
-	}
 	
 }
 
 void ADetonateBomb::SetActive(bool active)
 {
-	if (mIsActive == active)
+	/*if (mIsActive == active)
 	{
 		return;
 	}
 
 	
-	mIsActive = active;
+	mIsActive = active;*/
 
 	SetActorHiddenInGame(!active);
 	if (active)

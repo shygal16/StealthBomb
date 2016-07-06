@@ -32,15 +32,17 @@ public:
 
 	void SetActive(bool active);
 
-	bool IsActive()		{ return mIsActive; }
+	bool IsPlanted()		{ return mIsPlanted; }
 
 	void XRayBomb(bool On);
 	void PingNoise();
+
+	void Plant() { mIsPlanted = true; }
+
 protected:
-	bool mIsActive;
+	bool mIsPlanted;
 
 private:
-	UDestructibleMesh* mOriginalMesh;
 	//UPrimitiveComponent* mMesh;
 	float mDisappearTimer;
 	UBoxComponent* RangeTelegraph;
