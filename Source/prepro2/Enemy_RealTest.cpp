@@ -80,7 +80,10 @@ void AEnemy_RealTest::BeginPlay()
 // Called every frame
 void AEnemy_RealTest::Tick(float DeltaTime)
 {
+	//if (mHealth > 0)
+	{
 	Super::Tick(DeltaTime);
+	}
 	FRotator rot = FRotator(0, 1, 0);
 	
 	//SetActorRotation(GetActorRotation() + rot);
@@ -88,8 +91,14 @@ void AEnemy_RealTest::Tick(float DeltaTime)
 
 float AEnemy_RealTest::TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
 {
-	FString message = TEXT("Enemy took Damage ") + FString::FromInt(static_cast<int>(DamageAmount));
+	mHealth -= DamageAmount;
+	FString message = TEXT("Enemy took Damage. Health Remaining") + FString::FromInt(static_cast<int>(mHealth));
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, message);
+	if (mHealth <= 0)
+	{
+		Destroy();
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, "Enemy Has Died");
+	}
 	return DamageAmount;
 }
 // Called to bind functionality to input
