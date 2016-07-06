@@ -119,6 +119,8 @@ void Aprepro2Character::SetupPlayerInputComponent(class UInputComponent* InputCo
 
 void Aprepro2Character::OnFire()
 { 
+	/*
+	
 	// try and fire a projectile
 	if (ProjectileClass != NULL)
 	{
@@ -153,7 +155,7 @@ void Aprepro2Character::OnFire()
 		}
 	}
 
-
+	*/
 }
 
 void Aprepro2Character::TogglePause()
@@ -252,8 +254,20 @@ void Aprepro2Character::TouchUpdate(const ETouchIndex::Type FingerIndex, const F
 }
 float Aprepro2Character::TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
 {
-	FString message= TEXT("Player took Damage ")+ FString::FromInt(static_cast<int>(DamageAmount));
+	mHealth -= DamageAmount;
+	FString message= TEXT("Player took Damage. Remaing HP: ")+ FString::FromInt(static_cast<int>(mHealth));
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, message);
+	if (mHealth <= 0)
+	{
+		UUserWidget* PauseWidget = CreateWidget<UUserWidget>(GetWorld(), PauseWidgetClass);
+		PauseWidget->AddToViewport();
+
+		APlayerController* MyController = GetWorld()->GetFirstPlayerController();
+
+		MyController->bShowMouseCursor = true;
+		MyController->bEnableClickEvents = true;
+		MyController->bEnableMouseOverEvents = true;
+	}
 	return DamageAmount;
 }
 //float Aprepro2Character::InternalTakeRadialDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
