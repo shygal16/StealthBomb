@@ -29,6 +29,9 @@ public:
 
 	float TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController* EventInstigator, AActor* DamageCauser);
 	
+	UPROPERTY(EditAnywhere, Category = Combat)
+	float mHealth;
+	
 	UPROPERTY(EditAnywhere, Category=Behavior)
 	class UBehaviorTree* BehaviorTree;	
 //	UFUNCTION()
