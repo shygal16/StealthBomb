@@ -96,7 +96,7 @@ float AEnemy_RealTest::TakeDamage(float DamageAmount, struct FDamageEvent const 
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, message);
 	if (mHealth <= 0)
 	{
-		Destroy(this);
+		Destroy();
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, "Enemy Has Died");
 	}
 	return DamageAmount;
