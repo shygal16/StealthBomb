@@ -505,7 +505,7 @@ void Aprepro2Character::DetonateAllBombs()
 
 void Aprepro2Character::DetonateBomb()
 {
-	if (mBombSelected != -1)
+	if (mBombSelected != -1 && mBombs[mBombSelected]->IsPlanted())
 	{
 		mBombs[mBombSelected]->Explode();
 		mBombs.RemoveAt(mBombSelected);
