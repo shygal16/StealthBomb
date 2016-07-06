@@ -124,6 +124,10 @@ void AEnemyController::SetTargetEnemy(APawn* Target)
 							{
 								mBlackboard->ClearValueAsVector(PlayerHeardLocationID);
 							}
+							if (mBlackboard->IsVectorValueSet(BombHeardLocationID))
+							{
+								mBlackboard->ClearValueAsVector(BombHeardLocationID);
+							}
 						}
 						mBlackboard->SetValueAsVector(PlayerLastSeenLocationID, Target->GetActorLocation());	
 						info.LastSensedStimuli[i].AgeStimulus(1.f);
@@ -139,6 +143,10 @@ void AEnemyController::SetTargetEnemy(APawn* Target)
 					if(mBlackboard->IsVectorValueSet(PlayerLastSeenLocationID))
 					{
 						mBlackboard->ClearValueAsVector(PlayerLastSeenLocationID);
+					}
+					if (mBlackboard->IsVectorValueSet(BombHeardLocationID))
+					{
+						mBlackboard->ClearValueAsVector(BombHeardLocationID);
 					}
 				}
 			}
@@ -158,6 +166,14 @@ void AEnemyController::SetTargetEnemy(APawn* Target)
 				else if (info.LastSensedStimuli[i].Type.Name == "Default__AISense_Hearing")
 				{
 					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Bomb Heard. Updating its last Heard Location");
+					if (mBlackboard->IsVectorValueSet(PlayerHeardLocationID))
+					{
+						mBlackboard->ClearValueAsVector(PlayerHeardLocationID);
+					}
+					if (mBlackboard->IsVectorValueSet(PlayerLastSeenLocationID))
+					{
+						mBlackboard->ClearValueAsVector(PlayerLastSeenLocationID);
+					}
 					mBlackboard->SetValueAsVector(BombHeardLocationID, Target->GetActorLocation());
 				}
 			}
