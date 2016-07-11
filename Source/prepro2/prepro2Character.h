@@ -176,6 +176,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)
 		TSubclassOf<UUserWidget> PauseWidgetClass;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)
+		bool Keycard;
+
 private:
 	bool* XrayOn;
 	TArray<ADetonateBomb*> mBombs;

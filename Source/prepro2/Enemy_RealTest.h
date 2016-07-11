@@ -34,6 +34,8 @@ public:
 	
 	UPROPERTY(EditAnywhere, Category=Behavior)
 	class UBehaviorTree* BehaviorTree;	
+
+	bool Alive=true;
 //	UFUNCTION()
 //	void OnSeePlayer(APawn* pawn);
 

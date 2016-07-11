@@ -45,7 +45,7 @@ void AEnemy_RealTest::OnSeePlayer(APawn* pawn)
 void AEnemy_RealTest::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 
 	/*sightConfig->SightRadius = 3000.0f;
 	sightConfig->LoseSightRadius = 3500.f;
@@ -96,8 +96,8 @@ float AEnemy_RealTest::TakeDamage(float DamageAmount, struct FDamageEvent const 
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, message);
 	if (mHealth <= 0)
 	{
+		Alive = false;
 		Destroy();
-		
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, "Enemy Has Died");
 	}
 	return DamageAmount;

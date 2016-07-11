@@ -45,7 +45,8 @@ void ADetonateBomb::BeginPlay()
 void ADetonateBomb::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
-	
+	UWorld* TEST = GetWorld();
+	DrawDebugSphere(GetWorld(), GetActorLocation(), mExplosionRadius,32, FColor(255, 0, 0));
 
 	if (mDisappearTimer < 0)
 	{
