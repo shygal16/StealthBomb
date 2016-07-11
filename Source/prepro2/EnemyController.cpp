@@ -6,6 +6,9 @@
 
 #include "Engine.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "BehaviorTree/Blackboard/BlackboardKeyType_Class.h"
+#include "BehaviorTree/Blackboard/BlackboardKeyType_Vector.h"
+#include "BehaviorTree/Blackboard/BlackboardKeyType_Object.h"
 #include "Perception/AISense_Sight.h"
 #include "Perception/AISense_Hearing.h"
 #include "prepro2Character.h"
@@ -111,7 +114,7 @@ void AEnemyController::SetTargetEnemy(APawn* Target)
 					if (info.LastSensedStimuli[i].WasSuccessfullySensed() )
 					{
 						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, "Player Detected. Following him");
-						mBlackboard->SetValueAsObject(PlayerID, Target);									
+						mBlackboard->SetValue<UBlackboardKeyType_Object>(PlayerID, Target);									
 					}
 					// Player exited the sight
 					else
@@ -122,14 +125,14 @@ void AEnemyController::SetTargetEnemy(APawn* Target)
 							mBlackboard->ClearValue(PlayerID);					
 							if (mBlackboard->IsVectorValueSet(PlayerHeardLocationID))
 							{
-								mBlackboard->ClearValueAsVector(PlayerHeardLocationID);
+								mBlackboard->ClearValue(PlayerHeardLocationID);
 							}
 							if (mBlackboard->IsVectorValueSet(BombHeardLocationID))
 							{
-								mBlackboard->ClearValueAsVector(BombHeardLocationID);
+								mBlackboard->ClearValue(BombHeardLocationID);
 							}
 						}
-						mBlackboard->SetValueAsVector(PlayerLastSeenLocationID, Target->GetActorLocation());	
+						mBlackboard->SetValue<UBlackboardKeyType_Vector>(PlayerLastSeenLocationID, Target->GetActorLocation());
 						info.LastSensedStimuli[i].AgeStimulus(1.f);
 					}
 				}
@@ -138,15 +141,15 @@ void AEnemyController::SetTargetEnemy(APawn* Target)
 				else if (info.LastSensedStimuli[i].Type.Name == "Default__AISense_Hearing" && info.LastSensedStimuli[i].GetAge() == 0.f)
 				{
 					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, "Player Heard. Updating its last Heard Location");
-					mBlackboard->SetValueAsVector(PlayerHeardLocationID, Target->GetActorLocation());
+					mBlackboard->SetValue<UBlackboardKeyType_Vector>(PlayerHeardLocationID, Target->GetActorLocation());
 					info.LastSensedStimuli[i].AgeStimulus(1.f);
 					if(mBlackboard->IsVectorValueSet(PlayerLastSeenLocationID))
 					{
-						mBlackboard->ClearValueAsVector(PlayerLastSeenLocationID);
+						mBlackboard->ClearValue(PlayerLastSeenLocationID);
 					}
 					if (mBlackboard->IsVectorValueSet(BombHeardLocationID))
 					{
-						mBlackboard->ClearValueAsVector(BombHeardLocationID);
+						mBlackboard->ClearValue(BombHeardLocationID);
 					}
 				}
 			}
@@ -160,7 +163,7 @@ void AEnemyController::SetTargetEnemy(APawn* Target)
 				// Checking if it was detected by sight
 				if (info.LastSensedStimuli[i].Type.Name == "Default__AISense_Sight")
 				{
-					mBlackboard->SetValueAsVector(BombLocationID, Target->GetActorLocation());
+					mBlackboard->SetValue<UBlackboardKeyType_Vector>(BombLocationID, Target->GetActorLocation());
 				}
 				// Checking if it was detected by sound
 				else if (info.LastSensedStimuli[i].Type.Name == "Default__AISense_Hearing")
@@ -168,13 +171,13 @@ void AEnemyController::SetTargetEnemy(APawn* Target)
 					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Bomb Heard. Updating its last Heard Location");
 					if (mBlackboard->IsVectorValueSet(PlayerHeardLocationID))
 					{
-						mBlackboard->ClearValueAsVector(PlayerHeardLocationID);
+						mBlackboard->ClearValue(PlayerHeardLocationID);
 					}
 					if (mBlackboard->IsVectorValueSet(PlayerLastSeenLocationID))
 					{
-						mBlackboard->ClearValueAsVector(PlayerLastSeenLocationID);
+						mBlackboard->ClearValue(PlayerLastSeenLocationID);
 					}
-					mBlackboard->SetValueAsVector(BombHeardLocationID, Target->GetActorLocation());
+					mBlackboard->SetValue<UBlackboardKeyType_Vector>(BombHeardLocationID, Target->GetActorLocation());
 				}
 			}
 		}

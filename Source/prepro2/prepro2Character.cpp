@@ -384,7 +384,8 @@ void Aprepro2Character::Bomb()
 	mBombSelected = curr;
 	const FRotator SpawnRotation = GetControlRotation();
 	// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
-	const FVector SpawnLocation = GetActorLocation() + SpawnRotation.RotateVector(GunOffset);
+	FVector SpawnLocation = GetActorLocation() + SpawnRotation.RotateVector(GunOffset);
+	SpawnLocation.Z = 1100;
 	mBombs[mBombSelected]->SetActorLocation(SpawnLocation);
 	if (mBombsPlanted > 0)
 	{
