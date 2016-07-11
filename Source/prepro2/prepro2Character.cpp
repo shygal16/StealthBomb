@@ -18,6 +18,7 @@ DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 // Aprepro2Character
 
 bool Globals::XrayOn;
+bool Globals::Keycard;
 
 Aprepro2Character::Aprepro2Character()
 	: mMaxBombs(5)
@@ -27,6 +28,8 @@ Aprepro2Character::Aprepro2Character()
 {
 	
 	XrayOn = &Globals::XrayOn;
+	Keycard = &Globals::Keycard;
+
 	SprintBar = SprintBarMax;
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
