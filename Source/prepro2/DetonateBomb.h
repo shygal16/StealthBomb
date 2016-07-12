@@ -32,11 +32,12 @@ public:
 
 	void SetActive(bool active);
 
-	bool IsPlanted()		{ return mIsPlanted; }
+	UFUNCTION(BlueprintCallable, Category = "Check")
+		bool IsPlanted();
 
 	void XRayBomb(bool On);
 	void PingNoise();
-
+	
 	void Plant() { mIsPlanted = true; }
 
 protected:

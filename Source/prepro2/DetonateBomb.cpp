@@ -102,3 +102,8 @@ void ADetonateBomb::XRayBomb(bool On)
 {
 	mBombModel->SetRenderCustomDepth(On);
 }
+
+bool ADetonateBomb::IsPlanted()
+{
+	return mIsPlanted; 
+}

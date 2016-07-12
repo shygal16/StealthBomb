@@ -25,11 +25,11 @@ Aprepro2Character::Aprepro2Character()
 	, mBombSelected(0)
 	, mNumBombs(3)
 	, mBombsPlanted(0)
+	, mInsideTriggerBox(false)
 {
 	
 	XrayOn = &Globals::XrayOn;
-	Keycard = &Globals::Keycard;
-
+	
 	SprintBar = SprintBarMax;
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -65,6 +65,7 @@ Aprepro2Character::Aprepro2Character()
 	GunOffset = FVector(100.0f, 30.0f, 10.0f);
 
 	PrimaryActorTick.bCanEverTick = true;
+	
 
 	// Note: The ProjectileClass and the skeletal mesh/anim blueprints for Mesh1P are set in the
 	// derived blueprint asset named MyCharacter (to avoid direct content references in C++)
@@ -100,6 +101,8 @@ void Aprepro2Character::SetupPlayerInputComponent(class UInputComponent* InputCo
 	
 	InputComponent->BindAction("Crouch", IE_Pressed, this, &Aprepro2Character::StartCrouch);
     InputComponent->BindAction("Crouch", IE_Released, this, &Aprepro2Character::EndCrouch);
+
+	//InputComponent->BindAction("PickUpItem", IE_Pressed, this, &Aprepro2Character::PickUpBomb);
 
 	//InputComponent->BindTouch(EInputEvent::IE_Pressed, this, &Aprepro2Character::TouchStarted);
 	if( EnableTouchscreenMovement(InputComponent) == false )
@@ -548,4 +551,11 @@ void Aprepro2Character::SelectBomb()
 			mBombSelected = (mBombSelected + 1 == mBombsPlanted) ? 0 : mBombSelected + 1;
 		mBombs[mBombSelected]->XRayBomb(true);
 	}
+}
+
+void Aprepro2Character::PickUpBomb(ADetonateBomb* bomb)
+{
+	mBombs.Add(bomb);
+	bomb->SetActive(false);
+	mNumBombs++;
 }

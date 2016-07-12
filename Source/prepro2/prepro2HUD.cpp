@@ -19,6 +19,12 @@ Aprepro2HUD::Aprepro2HUD()
 		mBombUsed = mBombUsedObj.Object;
 	}
 
+	static ConstructorHelpers::FObjectFinder<UFont> mFontObj(TEXT("/Game/Font/Roboto"));
+	if (mFontObj.Succeeded())
+	{
+		mFont = mFontObj.Object;
+	}
+
 	//bomb unused
 	static ConstructorHelpers::FObjectFinder<UTexture2D> mBombUnusedObj(TEXT("/Game/FirstPerson/Textures/bomb_unused"));
 	if (mBombUnusedObj.Succeeded())
@@ -89,5 +95,11 @@ void Aprepro2HUD::DrawHUD()
 		TileItem.Texture = mBombUnused->Resource;
 		Canvas->DrawItem(TileItem);
 	}
-}
 
+	// TODO: get input for from player controller rather than hardcoding y
+	if (player->IsPickUpTriggerActivated())
+	{
+		Canvas->DrawText(mFont, "Press Y to Pick Up Item", Canvas->ClipX * 0.5f, Canvas->ClipY - 100.f);
+	}
+}
+   

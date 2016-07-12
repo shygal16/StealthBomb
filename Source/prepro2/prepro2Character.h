@@ -83,6 +83,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		uint8 mNumBombs;
 
+	UFUNCTION(BlueprintCallable, category = "pickup")
+		void PickUpBomb(ADetonateBomb* bomb);
+
+	UFUNCTION(BlueprintCallable, category = "pickup")
+		bool IsPickUpTriggerActivated() { return mInsideTriggerBox; }
+
+	UFUNCTION(BlueprintCallable, category = "pickup")
+		void SetTriggerActive(bool val) { mInsideTriggerBox = val; }
+
+	
 	/*UPROPERTY(EditAnywhere)
 		static const int mMaxBombs;*/
 
@@ -195,6 +205,8 @@ private:
 	bool Sprinting;
 	float sprintSpeed;
 	float WalkSpeed;
+
+	bool mInsideTriggerBox;
 	
 	
 };
