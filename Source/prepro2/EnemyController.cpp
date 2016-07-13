@@ -238,6 +238,8 @@ void AEnemyController::SenseStuff(TArray<AActor*> testActors)
 }
 void AEnemyController::UpdateStatus()
 {
-	if(mOwner)
+	if (mOwner)
+	{
 	mBlackboard->SetValue<UBlackboardKeyType_Bool>(isAliveID, mOwner->isAlive);
+	}
 }
