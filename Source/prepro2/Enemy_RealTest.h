@@ -36,7 +36,7 @@ public:
 	class UBehaviorTree* BehaviorTree;	
 //	UFUNCTION()
 //	void OnSeePlayer(APawn* pawn);
-
+	bool isAlive = true;
 //	UFUNCTION()
 //	void OnHearPlayer(APawn* pawn, const FVector &Location, float Volume);
 private:

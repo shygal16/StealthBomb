@@ -193,6 +193,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)
 		TSubclassOf<UUserWidget> PauseWidgetClass;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)
+	bool Keycard = false;
 private:
 	bool* XrayOn;
 	TArray<ADetonateBomb*> mBombs;
@@ -217,6 +219,7 @@ private:
 
 	bool mInsideTriggerBox;
 	
+
 	
 };
 

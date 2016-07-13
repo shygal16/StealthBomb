@@ -14,7 +14,6 @@
 {
 public:
 	static bool XrayOn;
-	static bool Keycard; //figure out how to make this a global for level 1 only
 };
 
 #endif

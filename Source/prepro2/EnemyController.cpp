@@ -63,7 +63,9 @@ void AEnemyController::Possess(APawn* InPawn)
 		 PatrolLocationID = mBlackboard->GetKeyID("PatrolLocation");
 		 PatrolIndexID = mBlackboard->GetKeyID("PatrolIndex");
 		 AlertedID = mBlackboard->GetKeyID("Alerted");
-		
+		 isAliveID = mBlackboard->GetKeyID("Alive");
+
+		mBlackboard->SetValue<UBlackboardKeyType_Bool>(isAliveID, mOwner->isAlive);
 		mBehaviortree->StartTree(*mOwner->BehaviorTree);
 	
 	}
@@ -233,4 +235,8 @@ void AEnemyController::SenseStuff(TArray<AActor*> testActors)
 		}
 		SetTargetEnemy(Cast<APawn>(actors));
 	}
+}
+void AEnemyController::UpdateStatus()
+{
+	mBlackboard->SetValue<UBlackboardKeyType_Bool>(isAliveID, mOwner->isAlive);
 }
