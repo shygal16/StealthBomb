@@ -40,10 +40,5 @@ public:
 //	UFUNCTION()
 //	void OnHearPlayer(APawn* pawn, const FVector &Location, float Volume);
 private:
-	
-
-//	class UPawnSensingComponent* PawnSense;
-	//float age = 0.f;
-	//float MaxAge = 1.f;
-	//bool cleared = true;
+	float mWalkSpeed;
 };

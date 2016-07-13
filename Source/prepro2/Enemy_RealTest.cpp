@@ -21,6 +21,7 @@
 AEnemy_RealTest::AEnemy_RealTest()
 {
 	PrimaryActorTick.bCanEverTick = true;
+	mWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
 //	PawnSense = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensingComp"));
 //	PawnSense->SetPeripheralVisionAngle(90.f);
 	//AIControllerClass = AEnemyController::StaticClass();
@@ -45,7 +46,6 @@ void AEnemy_RealTest::OnSeePlayer(APawn* pawn)
 void AEnemy_RealTest::BeginPlay()
 {
 	Super::BeginPlay();
-
 
 	/*sightConfig->SightRadius = 3000.0f;
 	sightConfig->LoseSightRadius = 3500.f;

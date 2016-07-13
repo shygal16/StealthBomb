@@ -44,7 +44,9 @@ class PREPRO2_API AEnemyController : public AAIController
 	uint8 PlayerSeenID;
 	uint8 SecondaryLocationID;
 	uint8 PlayerMovementDirectionID;
-
+	uint8 PatrolLocationID;
+	uint8 PatrolIndexID;
+	uint8 AlertedID;
 
 	AEnemy_RealTest* mOwner;
 	

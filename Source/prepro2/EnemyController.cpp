@@ -9,6 +9,8 @@
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Class.h"
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Vector.h"
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Object.h"
+#include "BehaviorTree/Blackboard/BlackboardKeyType_Int.h"
+#include "BehaviorTree/Blackboard/BlackboardKeyType_Bool.h"
 #include "Perception/AISense_Sight.h"
 #include "Perception/AISense_Hearing.h"
 #include "prepro2Character.h"
@@ -43,39 +45,48 @@ AEnemyController::AEnemyController()
 void AEnemyController::Possess(APawn* InPawn)
 {
 	Super::Possess(InPawn);
+	
 
 	mOwner =Cast<AEnemy_RealTest>(InPawn);
-if (mOwner&&mOwner->BehaviorTree)
-{
-	mBlackboard->InitializeBlackboard(*mOwner->BehaviorTree->BlackboardAsset);
+
+	if (mOwner&&mOwner->BehaviorTree)
+	{
+		mBlackboard->InitializeBlackboard(*mOwner->BehaviorTree->BlackboardAsset);
+		
+		 PlayerID = mBlackboard->GetKeyID("Player");
+		 PlayerLastSeenLocationID = mBlackboard->GetKeyID("PlayerLastSeenLocation");
+		 BombLocationID = mBlackboard->GetKeyID("BombLocation");
+		 BombHeardLocationID = mBlackboard->GetKeyID("BombHeardLocation");
+		 PlayerHeardLocationID = mBlackboard->GetKeyID("PlayerHeardLocation");	
+		 SecondaryLocationID = mBlackboard->GetKeyID("SecondaryLocation"); 
+		 PlayerMovementDirectionID = mBlackboard->GetKeyID("PlayerMovementDirection");
+		 PatrolLocationID = mBlackboard->GetKeyID("PatrolLocation");
+		 PatrolIndexID = mBlackboard->GetKeyID("PatrolIndex");
+		 AlertedID = mBlackboard->GetKeyID("Alerted");
+		
+		mBehaviortree->StartTree(*mOwner->BehaviorTree);
 	
-	 PlayerID = mBlackboard->GetKeyID("Player");
-	 PlayerLastSeenLocationID = mBlackboard->GetKeyID("PlayerLastSeenLocation");
-	 BombLocationID = mBlackboard->GetKeyID("BombLocation");
-	 BombHeardLocationID = mBlackboard->GetKeyID("BombHeardLocation");
-	 PlayerHeardLocationID = mBlackboard->GetKeyID("PlayerHeardLocation");	
-	 SecondaryLocationID = mBlackboard->GetKeyID("SecondaryLocation"); 
-	 PlayerMovementDirectionID = mBlackboard->GetKeyID("PlayerMovementDirection");
+	}
+	sightConfig->SightRadius = 3000.0f;
+	sightConfig->LoseSightRadius = 3500.f;
+	sightConfig->PeripheralVisionAngleDegrees = 90.0f;
+	sightConfig->DetectionByAffiliation.bDetectEnemies = true;
+	sightConfig->DetectionByAffiliation.bDetectNeutrals = true;
+	sightConfig->DetectionByAffiliation.bDetectFriendlies = true;
 	
-	mBehaviortree->StartTree(*mOwner->BehaviorTree);
+	mPerceptionComponent->ConfigureSense(*sightConfig);
+	
+	soundConfig->HearingRange = 12000.0f;
+	soundConfig->bUseLoSHearing = false;
+	soundConfig->DetectionByAffiliation.bDetectEnemies = true;
+	soundConfig->DetectionByAffiliation.bDetectNeutrals = true;
+	soundConfig->DetectionByAffiliation.bDetectFriendlies = true;
+	
+	mPerceptionComponent->ConfigureSense(*soundConfig);
 
-}
-sightConfig->SightRadius = 3000.0f;
-sightConfig->LoseSightRadius = 3500.f;
-sightConfig->PeripheralVisionAngleDegrees = 90.0f;
-sightConfig->DetectionByAffiliation.bDetectEnemies = true;
-sightConfig->DetectionByAffiliation.bDetectNeutrals = true;
-sightConfig->DetectionByAffiliation.bDetectFriendlies = true;
-
-mPerceptionComponent->ConfigureSense(*sightConfig);
-
-soundConfig->HearingRange = 12000.0f;
-soundConfig->bUseLoSHearing = false;
-soundConfig->DetectionByAffiliation.bDetectEnemies = true;
-soundConfig->DetectionByAffiliation.bDetectNeutrals = true;
-soundConfig->DetectionByAffiliation.bDetectFriendlies = true;
-
-mPerceptionComponent->ConfigureSense(*soundConfig);
+	mBlackboard->SetValue<UBlackboardKeyType_Vector>(PatrolLocationID, mOwner->GetActorLocation());
+	mBlackboard->SetValue<UBlackboardKeyType_Int>(PatrolIndexID, 0);
+	mBlackboard->SetValue<UBlackboardKeyType_Bool>(AlertedID, false);
 
 	// start behavior
 	//if (Enemy)
@@ -99,6 +110,7 @@ void AEnemyController::SetTargetEnemy(APawn* Target)
 {
 	if (mBlackboard)
 	{
+		mBlackboard->SetValue<UBlackboardKeyType_Bool>(AlertedID, true);
 		FActorPerceptionBlueprintInfo info;
 		mPerceptionComponent->GetActorsPerception(Target, info);
 
