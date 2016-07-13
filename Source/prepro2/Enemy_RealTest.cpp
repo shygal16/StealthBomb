@@ -8,7 +8,7 @@
 #include "Perception/AISense_Hearing.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "Perception/PawnSensingComponent.h"
-
+#include "MyLevelScriptActor.h"
 #include "DetonateBomb.h"
 #include "prepro2Character.h"
 
@@ -100,6 +100,7 @@ float AEnemy_RealTest::TakeDamage(float DamageAmount, struct FDamageEvent const 
 	{
 		//Destroy();
 		isAlive = false;
+		mLevel->FirstEnemyDeathEvent();
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, "Enemy Has Died");
 		AEnemyController* AIControll = Cast<AEnemyController>(GetController());
 		AIControll->UpdateStatus();

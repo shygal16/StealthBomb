@@ -14,4 +14,12 @@ AMyLevelScriptActor::AMyLevelScriptActor()
 	mSpawnPointsSet1.Push(FVector(30.0, 1010.0, 1184.0));
 	mSpawnPointsSet1.Push(FVector(-530.0, 1470.0, 1184.0));
 	mSpawnPointsSet1.Push(FVector(-1410.0, 1470.0, 1184.0));
+
+	mEnemies.Reserve(2);
 }
+
+void AMyLevelScriptActor::FirstEnemyDeathEvent()
+{
+	mEnemies[1]->isAlive = true;
+}
+

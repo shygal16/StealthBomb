@@ -9,6 +9,8 @@
 #include "Perception/AIPerceptionComponent.h"
 #include "Enemy_RealTest.generated.h"
 
+class AMyLevelScriptActor;
+
 UCLASS()
 class PREPRO2_API AEnemy_RealTest : public ACharacter
 {
@@ -36,9 +38,17 @@ public:
 	class UBehaviorTree* BehaviorTree;	
 //	UFUNCTION()
 //	void OnSeePlayer(APawn* pawn);
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Alive")
 	bool isAlive = true;
+
+	UFUNCTION(BlueprintCallable, category = "Level")
+	void SetLevel(AMyLevelScriptActor* level) { mLevel = level; }
+
 //	UFUNCTION()
 //	void OnHearPlayer(APawn* pawn, const FVector &Location, float Volume);
 private:
 	float mWalkSpeed;
+
+	//Reference to level
+	AMyLevelScriptActor* mLevel;
 };
