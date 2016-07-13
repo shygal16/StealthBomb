@@ -25,9 +25,20 @@ void AExplosive::Explode()
 	mParticleSystem->ActivateSystem();
 	mRadForce->FireImpulse();
 	
-	UGameplayStatics::ApplyRadialDamage(GetWorld(), mExplosionDamage, GetActorLocation(), mExplosionRadius, UDamageType::StaticClass(), TArray<AActor*>());
+	//UGameplayStatics::ApplyRadialDamage(GetWorld(), mExplosionDamage, GetActorLocation(), mExplosionRadius, UDamageType::StaticClass(), TArray<AActor*>(),NULL,NULL,true);
+	
+	for (TActorIterator<AActor> it(GetWorld()); it; ++it)
+	{
+		float Distance = GetDistanceTo(*it);
 
-	//UGameplayStatics::ApplyRadialDamage(GetWorld(), 200, GetActorLocation(), mExplosionRadius, UDamageType::StaticClass(), TArray<AActor*>());
+		if (Distance <= mExplosionRadius)
+		{
+			UGameplayStatics::ApplyDamage(*it, mExplosionDamage,
+				GetInstigatorController(), this, UDamageType::StaticClass());
+		}
+	}
+
+	
 	UAISense_Hearing::ReportNoiseEvent(this, GetActorLocation(), 1, this, mExplosionSound);
 	mExploded = true;
 }

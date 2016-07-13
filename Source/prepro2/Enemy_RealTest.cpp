@@ -98,11 +98,14 @@ float AEnemy_RealTest::TakeDamage(float DamageAmount, struct FDamageEvent const 
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, message);
 	if (mHealth <= 0)
 	{
-		Destroy();
+		//Destroy();
 		isAlive = false;
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, "Enemy Has Died");
 		AEnemyController* AIControll = Cast<AEnemyController>(GetController());
 		AIControll->UpdateStatus();
+		SetActorHiddenInGame(true);
+		SetActorTickEnabled(false);
+		SetActorEnableCollision(false);
 	}
 	return DamageAmount;
 }
