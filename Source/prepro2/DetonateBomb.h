@@ -20,6 +20,9 @@ public:
 		UDestructibleComponent* mBombModel;
 
 	UPROPERTY(EditAnywhere)
+		UBoxComponent* mBox;
+
+	UPROPERTY(EditAnywhere)
 		float mDisappearDelay;
 
 	UPROPERTY(EditAnywhere)
@@ -34,6 +37,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Check")
 		bool IsPlanted();
+
+	UFUNCTION(BlueprintCallable, Category = "Check")
+		bool IsActive() { return mActive; }
 
 	void XRayBomb(bool On);
 	void PingNoise();

@@ -35,5 +35,6 @@ public:
 	void Explode();
 
 protected:
+	bool mActive = true;
 	bool mExploded;
 };

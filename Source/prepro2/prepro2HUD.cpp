@@ -102,8 +102,8 @@ void Aprepro2HUD::DrawHUD()
 	// TODO: get input for from player controller rather than hardcoding y
 	if (player->IsPickUpTriggerActivated())
 	{
-		Canvas->SetDrawColor(0, 0, 255);
-		Canvas->DrawText(mFont, "Press Y to Pick Up Item", Canvas->ClipX * 0.5f, Canvas->ClipY - 100.f);
+		Canvas->SetDrawColor(255, 0, 0);
+		Canvas->DrawText(mFont, "Press Y to Pick Up Item", Canvas->ClipX * 0.5f - 175.f, Canvas->ClipY - 100.f, 2.f,2.f);
 	}
 }
    

@@ -9,6 +9,7 @@
 // Sets default values
 ADetonateBomb::ADetonateBomb()
 	: mBombModel(CreateDefaultSubobject<UDestructibleComponent>(TEXT("Model")))
+	, mBox(CreateDefaultSubobject<UBoxComponent>(TEXT("Trigger Box")))
 	, mIsPlanted(false)
 	, mDisappearDelay(2.0f)
 {
@@ -19,8 +20,10 @@ ADetonateBomb::ADetonateBomb()
 	
 	mParticleSystem->AttachTo(mBombModel);
 	mRadForce->AttachTo(mBombModel);
-
+	mBox->AttachTo(mBombModel);
+	
 	mDisappearTimer = mDisappearDelay;	
+	
 	
 }
 
@@ -61,25 +64,25 @@ void ADetonateBomb::Tick( float DeltaTime )
 
 void ADetonateBomb::SetActive(bool active)
 {
-	/*if (mIsActive == active)
-	{
-		return;
-	}
-
 	
-	mIsActive = active;*/
+	
+	mActive = active;
 
 	SetActorHiddenInGame(!active);
 	if (active)
 	{
+		mBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 		mBombModel->GetBodyInstance()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	}
 	else
 	{
+		mBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		mBombModel->GetBodyInstance()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 	SetActorTickEnabled(active);
 	mBombModel->GetBodyInstance()->SetInstanceSimulatePhysics(active);
+	
+
 	UDestructibleComponent* meshComp = Cast<UDestructibleComponent>(GetComponentByClass(UDestructibleComponent::StaticClass()));
 	if (meshComp != nullptr)
 	{
