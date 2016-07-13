@@ -86,6 +86,10 @@ public:
 	UFUNCTION(BlueprintCallable, category = "pickup")
 		void PickUpBomb(ADetonateBomb* bomb);
 
+
+	UFUNCTION(BlueprintCallable, category = "pickup")
+		void PickUpVisionBoost(float boost);
+
 	UFUNCTION(BlueprintCallable, category = "pickup")
 		bool IsPickUpTriggerActivated() { return mInsideTriggerBox; }
 

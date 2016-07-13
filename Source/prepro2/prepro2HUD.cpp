@@ -40,9 +40,12 @@ Aprepro2HUD::Aprepro2HUD()
 	}
 
 	mBombTextureWidth = mBombUsed->GetSurfaceWidth();
-	
 }
 
+void Aprepro2HUD::BeginPlay()
+{
+	
+}
 
 void Aprepro2HUD::DrawHUD()
 {
@@ -99,6 +102,7 @@ void Aprepro2HUD::DrawHUD()
 	// TODO: get input for from player controller rather than hardcoding y
 	if (player->IsPickUpTriggerActivated())
 	{
+		Canvas->SetDrawColor(0, 0, 255);
 		Canvas->DrawText(mFont, "Press Y to Pick Up Item", Canvas->ClipX * 0.5f, Canvas->ClipY - 100.f);
 	}
 }

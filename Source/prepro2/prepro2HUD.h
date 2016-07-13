@@ -20,6 +20,8 @@ private:
 	/** Crosshair asset pointer */
 	class UTexture2D* CrosshairTex;
 
+	void BeginPlay() override;
+
 	class UTexture2D* mBombUsed;
 	class UTexture2D* mBombUnused;
 	class UTexture2D* mBombSelected;

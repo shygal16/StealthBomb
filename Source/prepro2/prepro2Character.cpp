@@ -559,3 +559,8 @@ void Aprepro2Character::PickUpBomb(ADetonateBomb* bomb)
 	bomb->SetActive(false);
 	mNumBombs++;
 }
+
+void Aprepro2Character::PickUpVisionBoost(float boost)
+{
+	VisionBar = (VisionBar + boost > VisionBarMax) ? VisionBarMax : VisionBar + boost;
+}
