@@ -265,14 +265,7 @@ float Aprepro2Character::TakeDamage(float DamageAmount, struct FDamageEvent cons
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, message);
 	if (mHealth <= 0)
 	{
-		UUserWidget* PauseWidget = CreateWidget<UUserWidget>(GetWorld(), PauseWidgetClass);
-		PauseWidget->AddToViewport();
-
-		APlayerController* MyController = GetWorld()->GetFirstPlayerController();
-
-		MyController->bShowMouseCursor = true;
-		MyController->bEnableClickEvents = true;
-		MyController->bEnableMouseOverEvents = true;
+		TogglePause();
 	}
 	return DamageAmount;
 }
@@ -358,14 +351,7 @@ void Aprepro2Character::ToggleXray()
 	if (UseXray)
 	{
 		*XrayOn = !*XrayOn;
-	//if (*XrayOn )
-	//{
-	//	*XrayOn = false;
-	//}
-	//else
-	//{
-	//	*XrayOn = true;
-	//}
+		
 	}
 
 
@@ -375,9 +361,10 @@ void Aprepro2Character::BombPulse()
 {
 	if (mBombSelected != -1)
 	{
-		if (mBombs[mBombSelected]->IsPlanted())
+		if (mBombs[mBombSelected]->IsPlanted() && PulseRecharge >= PulseCooldown)
 		{
 			mBombs[mBombSelected]->PingNoise();
+			PulseRecharge = 0;
 		}
 	}
 }
@@ -461,15 +448,20 @@ void Aprepro2Character::BeginPlay()
 // Called every frame
 void Aprepro2Character::Tick(float DeltaTime)
 {
-
-	//*XrayOn = Globals::XrayOn;
+	//if (PulseRecharge < PulseCooldown)
+	{
+		PulseRecharge += DeltaTime;
+	}
 
 	//GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, FString::FromInt(VisionBar));
+
+	/* // Xray Regeneration
 	if (VisionBar < VisionBarMax && !*XrayOn)
 	{
 		VisionBar+=DeltaTime;
 	}
-	else if (*XrayOn)
+	else */if (*XrayOn)
+	
 	{
 		VisionBar-=DeltaTime;
 		if (VisionBar <= 0)

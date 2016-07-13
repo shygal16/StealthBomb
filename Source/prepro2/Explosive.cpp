@@ -24,7 +24,10 @@ void AExplosive::Explode()
 {
 	mParticleSystem->ActivateSystem();
 	mRadForce->FireImpulse();
-	UGameplayStatics::ApplyRadialDamage(GetWorld(), 200, GetActorLocation(), mExplosionRadius, UDamageType::StaticClass(), TArray<AActor*>());
+	
+	UGameplayStatics::ApplyRadialDamage(GetWorld(), mExplosionDamage, GetActorLocation(), mExplosionRadius, UDamageType::StaticClass(), TArray<AActor*>());
+
+	//UGameplayStatics::ApplyRadialDamage(GetWorld(), 200, GetActorLocation(), mExplosionRadius, UDamageType::StaticClass(), TArray<AActor*>());
 	UAISense_Hearing::ReportNoiseEvent(this, GetActorLocation(), 1, this, mExplosionSound);
 	mExploded = true;
 }

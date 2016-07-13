@@ -66,6 +66,9 @@ public:
 	float SprintBarMax = 5;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Custom)
+		float PulseCooldown = 10;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Custom)
 		float PlantTime = 4;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Custom)
@@ -209,6 +212,8 @@ private:
 	bool Sprinting;
 	float sprintSpeed;
 	float WalkSpeed;
+
+	float PulseRecharge=100;
 
 	bool mInsideTriggerBox;
 	
