@@ -78,14 +78,16 @@ void AEnemy_RealTest::BeginPlay()
 
 }
 // Called every frame
+
+
 void AEnemy_RealTest::Tick(float DeltaTime)
 {
 	//if (mHealth > 0)
 	{
 	Super::Tick(DeltaTime);
 	}
-	FRotator rot = FRotator(0, 1, 0);
-	
+
+
 	//SetActorRotation(GetActorRotation() + rot);
 }
 
@@ -97,8 +99,10 @@ float AEnemy_RealTest::TakeDamage(float DamageAmount, struct FDamageEvent const 
 	if (mHealth <= 0)
 	{
 		Destroy();
-		
+		isAlive = false;
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, "Enemy Has Died");
+		AEnemyController* AIControll = Cast<AEnemyController>(GetController());
+		AIControll->UpdateStatus();
 	}
 	return DamageAmount;
 }

@@ -34,6 +34,8 @@ public:
 	
 	UPROPERTY(EditAnywhere, Category=Behavior)
 	class UBehaviorTree* BehaviorTree;	
+
+	bool isAlive = true;
 //	UFUNCTION()
 //	void OnSeePlayer(APawn* pawn);
 
@@ -41,7 +43,6 @@ public:
 //	void OnHearPlayer(APawn* pawn, const FVector &Location, float Volume);
 private:
 	
-
 //	class UPawnSensingComponent* PawnSense;
 	//float age = 0.f;
 	//float MaxAge = 1.f;

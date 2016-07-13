@@ -9,6 +9,7 @@
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Class.h"
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Vector.h"
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Object.h"
+#include "BehaviorTree/Blackboard/BlackboardKeyType_Bool.h"
 #include "Perception/AISense_Sight.h"
 #include "Perception/AISense_Hearing.h"
 #include "prepro2Character.h"
@@ -56,7 +57,10 @@ if (mOwner&&mOwner->BehaviorTree)
 	 PlayerHeardLocationID = mBlackboard->GetKeyID("PlayerHeardLocation");	
 	 SecondaryLocationID = mBlackboard->GetKeyID("SecondaryLocation"); 
 	 PlayerMovementDirectionID = mBlackboard->GetKeyID("PlayerMovementDirection");
+	 isAliveID = mBlackboard->GetKeyID("isAlive");
 	
+	 mBlackboard->SetValue<UBlackboardKeyType_Bool>(isAliveID, mOwner->isAlive);
+
 	mBehaviortree->StartTree(*mOwner->BehaviorTree);
 
 }
@@ -205,7 +209,7 @@ void AEnemyController::SenseStuff(TArray<AActor*> testActors)
 		FActorPerceptionBlueprintInfo info;
 		mPerceptionComponent->GetActorsPerception(actors, info);
 
-		for (int i = 0; i < info.LastSensedStimuli.Num(); ++i)
+		for (int i = 0; i < info.LastSensedStimuli.Num(); ++i) //?
 		{
 			//info.LastSensedStimuli[i].SetStimulusAge(0.f);
 		}
@@ -221,4 +225,9 @@ void AEnemyController::SenseStuff(TArray<AActor*> testActors)
 		}
 		SetTargetEnemy(Cast<APawn>(actors));
 	}
+}
+
+void AEnemyController::UpdateStatus()
+{
+	mBlackboard->SetValue<UBlackboardKeyType_Bool>(isAliveID, mOwner->isAlive);
 }

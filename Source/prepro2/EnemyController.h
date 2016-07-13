@@ -24,6 +24,8 @@ class PREPRO2_API AEnemyController : public AAIController
 	virtual void Possess(class APawn* InPawn) override;
 
 	virtual void BeginInactiveState() override;
+	
+	
 
 	UPROPERTY(EditAnywhere)
 		UAIPerceptionComponent* mPerceptionComponent;
@@ -44,11 +46,12 @@ class PREPRO2_API AEnemyController : public AAIController
 	uint8 PlayerSeenID;
 	uint8 SecondaryLocationID;
 	uint8 PlayerMovementDirectionID;
-
+	uint8 isAliveID;
 
 	AEnemy_RealTest* mOwner;
 	
 public:
 	void SetTargetEnemy(APawn * Target);
+	void UpdateStatus();
 	//void ClearTarget();
 };
