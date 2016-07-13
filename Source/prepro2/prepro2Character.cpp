@@ -18,7 +18,7 @@ DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 // Aprepro2Character
 
 bool Globals::XrayOn;
-bool Globals::Keycard;
+
 
 Aprepro2Character::Aprepro2Character()
 	: mMaxBombs(5)
@@ -351,7 +351,15 @@ void Aprepro2Character::ToggleXray()
 	if (UseXray)
 	{
 		*XrayOn = !*XrayOn;
+		FLinearColor Tint = *XrayOn ? FColor::Black : FLinearColor::White;
 		
+		FirstPersonCameraComponent->PostProcessSettings.SceneColorTint.R = Tint.R;
+		FirstPersonCameraComponent->PostProcessSettings.SceneColorTint.G = Tint.G;
+		FirstPersonCameraComponent->PostProcessSettings.SceneColorTint.B = Tint.B;
+		FirstPersonCameraComponent->PostProcessSettings.SceneColorTint.A=Tint.A;
+
+
+		//FirstPersonCameraComponent->PostProcessSettings.SceneColorTint.Transparent;
 	}
 
 
