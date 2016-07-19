@@ -22,12 +22,15 @@ AExplosive::AExplosive()
 
 void AExplosive::Explode()
 {
+	mTriggered = false; 
+
+
 	mParticleSystem->ActivateSystem();
 	mRadForce->FireImpulse();
 	
 	//UGameplayStatics::ApplyRadialDamage(GetWorld(), mExplosionDamage, GetActorLocation(), mExplosionRadius, UDamageType::StaticClass(), TArray<AActor*>(),NULL,NULL,true);
-	
-	for (TActorIterator<AActor> it(GetWorld()); it; ++it)
+	//Use AACtor to dmg killzone
+	for (TActorIterator<ACharacter> it(GetWorld()); it; ++it)
 	{
 		float Distance = GetDistanceTo(*it);
 
@@ -43,4 +46,8 @@ void AExplosive::Explode()
 	mExploded = true;
 }
 
+void AExplosive::Trigger()
+{
+	mTriggered = true;
 
+}
