@@ -381,6 +381,9 @@ void Aprepro2Character::Bomb()
 	int curr = mBombsPlanted;
 	mBombs[curr]->SetActive(true);
 	mBombs[curr]->Plant();
+
+	mBombs[curr]->Trigger(); //makes bombs auto arm with timer
+
 	mBombSelected = curr;
 	const FRotator SpawnRotation = GetControlRotation();
 	// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position

@@ -93,6 +93,7 @@ void AEnemy_RealTest::Tick(float DeltaTime)
 
 float AEnemy_RealTest::TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
 {
+	return 0.f;
 	mHealth -= DamageAmount;
 	FString message = TEXT("Enemy took Damage. Health Remaining") + FString::FromInt(static_cast<int>(mHealth));
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, message);

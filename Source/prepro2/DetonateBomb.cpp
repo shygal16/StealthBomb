@@ -48,16 +48,25 @@ void ADetonateBomb::BeginPlay()
 void ADetonateBomb::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
-	
-
-	if (mDisappearTimer < 0)
+	if (mTriggered)
 	{
-		Destroy();
+		mExplosionDelay -= DeltaTime;
+
+		if (mExplosionDelay < 0.f)
+		{
+			Explode();
+		}
 	}
+
 
 	if (mExploded)
 	{
 		mDisappearTimer -= DeltaTime;
+
+		if (mDisappearTimer < 0.f)
+		{
+			Destroy();
+		}
 	}
 	
 }
@@ -103,6 +112,7 @@ void ADetonateBomb::PingNoise()
 }
 void ADetonateBomb::XRayBomb(bool On)
 {
+	return;
 	mBombModel->SetRenderCustomDepth(On);
 }
 
