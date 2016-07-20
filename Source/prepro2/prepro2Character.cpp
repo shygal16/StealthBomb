@@ -387,8 +387,9 @@ void Aprepro2Character::Bomb()
 	mBombSelected = curr;
 	const FRotator SpawnRotation = GetControlRotation();
 	// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
-	FVector SpawnLocation = GetActorLocation() + SpawnRotation.RotateVector(GunOffset);
-	SpawnLocation.Z = 1100;
+	FVector Offset(25, 0, 0);
+	FVector SpawnLocation = GetActorLocation() +SpawnRotation.RotateVector(Offset);
+	//SpawnLocation.Z = 1100;
 	mBombs[mBombSelected]->SetActorLocation(SpawnLocation);
 	if (mBombsPlanted > 0)
 	{
@@ -455,6 +456,7 @@ void Aprepro2Character::BeginPlay()
 
 }
 
+
 // Called every frame
 void Aprepro2Character::Tick(float DeltaTime)
 {
@@ -480,6 +482,7 @@ void Aprepro2Character::Tick(float DeltaTime)
 		}
 	}
 
+
 	if (!Sprinting && SprintBar<SprintBarMax)
 	{
 		SprintBar += DeltaTime;
@@ -493,7 +496,10 @@ void Aprepro2Character::Tick(float DeltaTime)
 		}
 	}
 
-	if (PlantingBomb)
+
+	
+
+	if (PlantingBomb )
 	{
 		PlantProgress += DeltaTime;
 		mProgressBars->mBombPlantPercentage = PlantProgress / PlantTime;
