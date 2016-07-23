@@ -22,8 +22,16 @@ public:
 
 	AMyLevelScriptActor();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SpawnPoints")
-	TArray<FVector> mSpawnPointsSet1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PatrolPoints")
+		TArray<FVector> mPatrolPointsSet1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PatrolPoints")
+		TArray<FVector> mPatrolPointsSet2;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PatrolPoints")
+		TArray<FVector> mPatrolPointsSet3;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PatrolPoints")
+		TArray<FVector> mPatrolPointsSet4;
+
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemies")
 	TArray<AEnemy_RealTest*> mEnemies;
