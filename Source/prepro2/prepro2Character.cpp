@@ -467,12 +467,12 @@ void Aprepro2Character::Tick(float DeltaTime)
 
 	//GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, FString::FromInt(VisionBar));
 
-	/* // Xray Regeneration
+	 // Xray Regeneration
 	if (VisionBar < VisionBarMax && !*XrayOn)
 	{
-		VisionBar+=DeltaTime;
+		VisionBar+= XrayRegen*DeltaTime;
 	}
-	else */if (*XrayOn)
+	else if (*XrayOn)
 	
 	{
 		VisionBar-=DeltaTime;

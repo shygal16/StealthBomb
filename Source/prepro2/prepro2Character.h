@@ -80,6 +80,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool UseXray=true;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float XrayRegen = 0.1;
+
 	UPROPERTY(EditFixedSize)
 	uint8 mMaxBombs;
 
