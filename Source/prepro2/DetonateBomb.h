@@ -20,8 +20,13 @@ public:
 		UDestructibleComponent* mBombModel;
 
 	UPROPERTY(EditAnywhere)
+		UBoxComponent* mBox;
+
+	UPROPERTY(EditAnywhere)
 		float mDisappearDelay;
 
+	UPROPERTY(EditAnywhere)
+		float PulseRange;
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
@@ -30,15 +35,22 @@ public:
 
 	void SetActive(bool active);
 
-	bool IsActive()		{ return mIsActive; }
+	UFUNCTION(BlueprintCallable, Category = "Check")
+		bool IsPlanted();
+
+	UFUNCTION(BlueprintCallable, Category = "Check")
+		bool IsActive() { return mActive; }
 
 	void XRayBomb(bool On);
 	void PingNoise();
+	
+	void Plant() { mIsPlanted = true; }
+
 protected:
-	bool mIsActive;
+	bool mIsPlanted;
 
 private:
-	UDestructibleMesh* mOriginalMesh;
 	//UPrimitiveComponent* mMesh;
 	float mDisappearTimer;
+	UBoxComponent* RangeTelegraph;
 };

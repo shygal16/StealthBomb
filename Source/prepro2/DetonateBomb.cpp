@@ -9,17 +9,22 @@
 // Sets default values
 ADetonateBomb::ADetonateBomb()
 	: mBombModel(CreateDefaultSubobject<UDestructibleComponent>(TEXT("Model")))
-	, mIsActive(true)
-	, mDisappearDelay(1.0f)
+	, mBox(CreateDefaultSubobject<UBoxComponent>(TEXT("Trigger Box")))
+	, mIsPlanted(false)
+	, mDisappearDelay(2.0f)
 {
+	//RangeTelegraph = (CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComp")));
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	RootComponent = mBombModel;
 	
 	mParticleSystem->AttachTo(mBombModel);
 	mRadForce->AttachTo(mBombModel);
-
-	mDisappearTimer = mDisappearDelay;
+	mBox->AttachTo(mBombModel);
+	
+	mDisappearTimer = mDisappearDelay;	
+	
+	
 }
 
 // Called when the game starts or when spawned
@@ -27,10 +32,14 @@ void ADetonateBomb::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	mOriginalMesh = mBombModel->DestructibleMesh;
-
 	UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, UAISense_Sight::StaticClass(), this);
 	UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, UAISense_Hearing::StaticClass(), this);
+
+	if (RangeTelegraph)
+	{
+		RangeTelegraph->SetBoxExtent(FVector(mExplosionRadius, mExplosionRadius, 1));
+		RangeTelegraph->SetVisibility(true);
+	}
 
 	
 }
@@ -39,31 +48,24 @@ void ADetonateBomb::BeginPlay()
 void ADetonateBomb::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
-	
-	if (mExplosionTimer < 0)
+	if (mTriggered)
 	{
-		Explode();
-		mDisappearTimer = mDisappearDelay;
+		mExplosionDelay -= DeltaTime;
+
+		if (mExplosionDelay < 0.f)
+		{
+			Explode();
+		}
 	}
 
-	if (mDisappearTimer < 0)
-	{
-		mExploded = false;
-		mBombModel->SetDestructibleMesh(mOriginalMesh);
-		mDisappearTimer = mDisappearDelay;
-		SetActive(false);
-	}
 
 	if (mExploded)
 	{
 		mDisappearTimer -= DeltaTime;
-	}
 
-	else
-	{
-		if (mBombTriggered)
+		if (mDisappearTimer < 0.f)
 		{
-			mExplosionTimer -= DeltaTime;
+			Destroy();
 		}
 	}
 	
@@ -71,25 +73,25 @@ void ADetonateBomb::Tick( float DeltaTime )
 
 void ADetonateBomb::SetActive(bool active)
 {
-	if (mIsActive == active)
-	{
-		return;
-	}
-
 	
-	mIsActive = active;
+	
+	mActive = active;
 
 	SetActorHiddenInGame(!active);
 	if (active)
 	{
+		mBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 		mBombModel->GetBodyInstance()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	}
 	else
 	{
+		mBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		mBombModel->GetBodyInstance()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 	SetActorTickEnabled(active);
 	mBombModel->GetBodyInstance()->SetInstanceSimulatePhysics(active);
+	
+
 	UDestructibleComponent* meshComp = Cast<UDestructibleComponent>(GetComponentByClass(UDestructibleComponent::StaticClass()));
 	if (meshComp != nullptr)
 	{
@@ -106,9 +108,15 @@ void ADetonateBomb::SetActive(bool active)
 }
 void ADetonateBomb::PingNoise()
 {
-	UAISense_Hearing::ReportNoiseEvent(this, GetActorLocation(), 1, this, 2000.f);
+	UAISense_Hearing::ReportNoiseEvent(this, GetActorLocation(), 1, this, PulseRange);
 }
 void ADetonateBomb::XRayBomb(bool On)
 {
+	return;
 	mBombModel->SetRenderCustomDepth(On);
+}
+
+bool ADetonateBomb::IsPlanted()
+{
+	return mIsPlanted; 
 }

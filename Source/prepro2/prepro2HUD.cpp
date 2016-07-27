@@ -19,6 +19,12 @@ Aprepro2HUD::Aprepro2HUD()
 		mBombUsed = mBombUsedObj.Object;
 	}
 
+	static ConstructorHelpers::FObjectFinder<UFont> mFontObj(TEXT("/Game/Font/Roboto"));
+	if (mFontObj.Succeeded())
+	{
+		mFont = mFontObj.Object;
+	}
+
 	//bomb unused
 	static ConstructorHelpers::FObjectFinder<UTexture2D> mBombUnusedObj(TEXT("/Game/FirstPerson/Textures/bomb_unused"));
 	if (mBombUnusedObj.Succeeded())
@@ -34,9 +40,12 @@ Aprepro2HUD::Aprepro2HUD()
 	}
 
 	mBombTextureWidth = mBombUsed->GetSurfaceWidth();
-	
 }
 
+void Aprepro2HUD::BeginPlay()
+{
+	
+}
 
 void Aprepro2HUD::DrawHUD()
 {
@@ -60,14 +69,15 @@ void Aprepro2HUD::DrawHUD()
 
 	Aprepro2Character* player = Cast<Aprepro2Character>(UGameplayStatics::GetPlayerPawn(this, 0));
 
-	int bombIndex = player->GetBombIndex();
-	uint8 maxBombs = player->GetMaxBombs();
+	int numBombs = player->GetNumBombs();
+	int plantedBombs = player->GetBombPlanted();
 
 	//draw used bombs
-	for (int i = 0; i < bombIndex; ++i)
+	for (int i = 0; i < plantedBombs; ++i)
 	{
 		TileItem.Position = BombPosition;
 		TileItem.Position.X += i*(mBombTextureWidth + 5.0f);
+
 		if (i == player->GetBombSelected())
 		{
 			TileItem.Texture = mBombSelected->Resource;
@@ -81,12 +91,19 @@ void Aprepro2HUD::DrawHUD()
 	}
 
 	//draw unused bombs
-	for (int i = bombIndex; i < maxBombs; ++i)
+	for (int i = plantedBombs; i < numBombs; ++i)
 	{
 		TileItem.Position = BombPosition;
 		TileItem.Position.X += i*(mBombTextureWidth + 5.0f);
 		TileItem.Texture = mBombUnused->Resource;
 		Canvas->DrawItem(TileItem);
 	}
-}
 
+	// TODO: get input for from player controller rather than hardcoding y
+	if (player->IsPickUpTriggerActivated())
+	{
+		Canvas->SetDrawColor(255, 0, 0);
+		Canvas->DrawText(mFont, "Press Y to Pick Up Item", Canvas->ClipX * 0.5f - 175.f, Canvas->ClipY - 100.f, 2.f,2.f);
+	}
+}
+   

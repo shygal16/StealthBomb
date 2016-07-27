@@ -2,6 +2,7 @@
 #pragma once 
 #include "GameFramework/HUD.h"
 #include "prepro2Character.h"
+#include "Runtime/Engine/Classes/Engine/Font.h"
 #include "prepro2HUD.generated.h"
 
 UCLASS()
@@ -19,11 +20,16 @@ private:
 	/** Crosshair asset pointer */
 	class UTexture2D* CrosshairTex;
 
+	void BeginPlay() override;
+
 	class UTexture2D* mBombUsed;
 	class UTexture2D* mBombUnused;
 	class UTexture2D* mBombSelected;
 
+	UFont* mFont;
+
 	float mBombTextureWidth;
 
+	
 };
 

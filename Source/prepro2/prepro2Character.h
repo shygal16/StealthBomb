@@ -66,8 +66,13 @@ public:
 	float SprintBarMax = 5;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Custom)
-		float PlantTime = 4;
+		float PulseCooldown = 10;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Custom)
+		float PlantTime = 4;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Custom)
+		float mHealth = 300;
 	//How much faster you go while sprinting
 	UPROPERTY(Category = Custom, EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", UIMin = "0"))
 		float SpeedMult = 2;
@@ -78,6 +83,23 @@ public:
 	UPROPERTY(EditFixedSize)
 	uint8 mMaxBombs;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		uint8 mNumBombs;
+
+	UFUNCTION(BlueprintCallable, category = "pickup")
+		void PickUpBomb(ADetonateBomb* bomb);
+
+
+	UFUNCTION(BlueprintCallable, category = "pickup")
+		void PickUpVisionBoost(float boost);
+
+	UFUNCTION(BlueprintCallable, category = "pickup")
+		bool IsPickUpTriggerActivated() { return mInsideTriggerBox; }
+
+	UFUNCTION(BlueprintCallable, category = "pickup")
+		void SetTriggerActive(bool val) { mInsideTriggerBox = val; }
+
+	
 	/*UPROPERTY(EditAnywhere)
 		static const int mMaxBombs;*/
 
@@ -88,11 +110,11 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaSeconds) override;
 
-	uint8 GetMaxBombs() const		{ return mMaxBombs;     }
-	int GetBombIndex() const		{ return mBombsIndex;   }
+	uint8 GetNumBombs() const		{ return mNumBombs;     }
+	int GetBombPlanted() const		{ return mBombsPlanted;   }
 	int GetBombSelected() const		{ return mBombSelected; }
 
-	float InternalTakeRadialDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController* EventInstigator, AActor* DamageCauser);
+	//float InternalTakeRadialDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController* EventInstigator, AActor* DamageCauser);
 
 protected:
 	void StartCrouch();
@@ -104,10 +126,8 @@ protected:
 	//Throw a bomb
 	void Bomb();
 
-	void TriggerAllBombs();
 	void DetonateAllBombs();
 
-	void TriggerBomb();
 	void DetonateBomb();
 
 	void BombPulse();
@@ -119,6 +139,8 @@ protected:
 
 	/** Handles stafing movement, left and right */
 	void MoveRight(float Val);
+
+
 
 	/**
 	 * Called via input to turn at a given rate.
@@ -173,11 +195,18 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)
 		TSubclassOf<UUserWidget> PauseWidgetClass;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)
+	bool Keycard = false;
 private:
 	bool* XrayOn;
+<<<<<<< HEAD
 
 	ADetonateBomb** mBombs;
 	int mBombsIndex;
+=======
+	TArray<ADetonateBomb*> mBombs;
+	int mBombsPlanted;
+>>>>>>> refs/remotes/origin/master
 	int mBombSelected;
 	void InitBombs();
 	float VisionBar;
@@ -193,7 +222,12 @@ private:
 	bool Sprinting;
 	float sprintSpeed;
 	float WalkSpeed;
+
+	float PulseRecharge=100;
+
+	bool mInsideTriggerBox;
 	
+
 	
 };
 
