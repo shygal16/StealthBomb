@@ -36,7 +36,7 @@ void UXrayMode::TickComponent( float DeltaTime, ELevelTick TickType, FActorCompo
 
 		if(Globals::XrayOn)//GetOwner()->GetVelocity().Size() == 0)
 		{
-			if (GetOwner()->GetVelocity().Size() > 0)
+			//if (GetOwner()->GetVelocity().Size() > 0)
 			{
 
 			if(mXrayOn==false) 

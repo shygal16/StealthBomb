@@ -347,9 +347,11 @@ bool Aprepro2Character::EnableTouchscreenMovement(class UInputComponent* InputCo
 void Aprepro2Character::ToggleXray()
 {
 	//GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, XrayOn ? "True" : "False");
-	if (UseXray)
-	{
+
 		*XrayOn = !*XrayOn;
+<<<<<<< HEAD
+
+=======
 		FLinearColor Tint = *XrayOn ? FColor::Black : FLinearColor::White;
 		
 		FirstPersonCameraComponent->PostProcessSettings.SceneColorTint.R = Tint.R;
@@ -360,6 +362,7 @@ void Aprepro2Character::ToggleXray()
 
 		//FirstPersonCameraComponent->PostProcessSettings.SceneColorTint.Transparent;
 	}
+>>>>>>> refs/remotes/origin/master
 
 
 }
@@ -466,21 +469,35 @@ void Aprepro2Character::Tick(float DeltaTime)
 	}
 
 	//GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, FString::FromInt(VisionBar));
+<<<<<<< HEAD
+	if (!UseXray)
+=======
 
 	/* // Xray Regeneration
 	if (VisionBar < VisionBarMax && !*XrayOn)
+>>>>>>> refs/remotes/origin/master
 	{
-		VisionBar+=DeltaTime;
+		*XrayOn = false;
+
 	}
+<<<<<<< HEAD
+	if(*XrayOn)
+=======
 	else */if (*XrayOn)
 	
+>>>>>>> refs/remotes/origin/master
 	{
-		VisionBar-=DeltaTime;
+		VisionBar -= DeltaTime;
 		if (VisionBar <= 0)
 		{
 			ToggleXray();
 		}
 	}
+	else if (VisionBar < VisionBarMax ) //checks if vision bar isnt maxed, and xray is off
+	{
+		VisionBar+=DeltaTime;
+	}
+
 
 
 	if (!Sprinting && SprintBar<SprintBarMax)
