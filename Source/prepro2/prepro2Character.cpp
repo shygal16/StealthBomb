@@ -287,17 +287,14 @@ void Aprepro2Character::MoveForward(float Value)
 		// add movement in that direction
 		AddMovementInput(GetActorForwardVector(), Value);
 
+		float SoundMultiplier = GetCharacterMovement()->MaxWalkSpeed == sprintSpeed ? 1.0f : .2f;
 		if (bIsCrouched)
 		{
-			return;
+			SoundMultiplier = 0.05f;
+			//return;
 		}
-		float SoundMultiplier = 0.2f;
-		if (GetCharacterMovement()->MaxWalkSpeed == sprintSpeed)
-		{
-			SoundMultiplier = 1.0f;
-		}
+
 		UAISense_Hearing::ReportNoiseEvent(this, GetActorLocation(), SoundMultiplier, this, 2000.f);
-		
 	}
 }
 
@@ -308,18 +305,14 @@ void Aprepro2Character::MoveRight(float Value)
 		// add movement in that direction
 		AddMovementInput(GetActorRightVector(), Value);
 
+		float SoundMultiplier = GetCharacterMovement()->MaxWalkSpeed == sprintSpeed ? 1.0f : .2f;
 		if (bIsCrouched)
 		{
-			return;
+			SoundMultiplier = 0.05f;
+		//	return;
 		}
-		float SoundMultiplier=0.2f;
-		if (GetCharacterMovement()->MaxWalkSpeed == sprintSpeed)
-		{
-			SoundMultiplier = 1.0f;
-		}
-		UAISense_Hearing::ReportNoiseEvent(this, GetActorLocation(), SoundMultiplier, this, 2000.f);
 
-		
+		UAISense_Hearing::ReportNoiseEvent(this, GetActorLocation(), SoundMultiplier, this, 2000.f);
 	}
 }
 
@@ -501,10 +494,7 @@ void Aprepro2Character::Tick(float DeltaTime)
 		{
 			StopSprint();
 		}
-	}
-
-
-	
+	}	
 
 	if (PlantingBomb )
 	{
@@ -522,7 +512,13 @@ void Aprepro2Character::Tick(float DeltaTime)
 
 	mProgressBars->mSprintBarPercentage = SprintBar / SprintBarMax;
 	mProgressBars->mXrayPercentage = VisionBar / VisionBarMax;
-	FootStepTimer -= DeltaTime;
+	if (bIsCrouched)
+	{
+		FootStepTimer -= DeltaTime*0.5;
+	}
+	else
+	FootStepTimer -= Sprinting ? DeltaTime * 2 : DeltaTime;
+
 	if (FootStepTimer <= 0)
 	{
 		FootStepNoise();
@@ -532,15 +528,12 @@ void Aprepro2Character::Tick(float DeltaTime)
 
 void Aprepro2Character::FootStepNoise()
 {
-	if (!bIsCrouched)
+	//if (!bIsCrouched)
 	{
 		if (GetVelocity().Size() > 0)//is moving
 		{
-			float volume = 1.0f;
-			if (Sprinting)
-			{
-				volume = 2;
-			}
+			float volume = Sprinting ? 2 : 1;
+			volume = bIsCrouched ? 0.5f:volume;
 			FootStepAudio->SetVolumeMultiplier(volume);
 			FootStepAudio->Play();
 			
