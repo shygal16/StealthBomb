@@ -12,6 +12,8 @@ ADetonateBomb::ADetonateBomb()
 	, mBox(CreateDefaultSubobject<UBoxComponent>(TEXT("Trigger Box")))
 	, mIsPlanted(false)
 	, mDisappearDelay(2.0f)
+	, ExplosionAudioComp(CreateDefaultSubobject<UAudioComponent>(TEXT("Explosion Audio Comp")))
+	, TickAudioComp(CreateDefaultSubobject<UAudioComponent>(TEXT("Tick Audio Comp")))
 {
 	//RangeTelegraph = (CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComp")));
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -22,9 +24,20 @@ ADetonateBomb::ADetonateBomb()
 	mRadForce->AttachTo(mBombModel);
 	mBox->AttachTo(mBombModel);
 	
-	mDisappearTimer = mDisappearDelay;	
-	
-	
+	mDisappearTimer = mDisappearDelay;
+
+	if (ExplosionAudioComp)
+	{
+		ExplosionAudioComp->AttachParent = RootComponent;
+		ExplosionAudioComp->bAutoActivate = false; // with this true the sounds play at spawn (game starts)
+		ExplosionAudioComp->bStopWhenOwnerDestroyed = false;
+	}
+	if (TickAudioComp)
+	{	
+		TickAudioComp->AttachParent = RootComponent;
+		TickAudioComp->bAutoActivate = false; // with this true the sounds play at spawn (game starts)
+		//TickAudioComp->bStopWhenOwnerDestroyed = false;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -51,9 +64,19 @@ void ADetonateBomb::Tick( float DeltaTime )
 	if (mTriggered)
 	{
 		mExplosionDelay -= DeltaTime;
+		mTickTimer -= DeltaTime;
+		if (mTickTimer <= 0.f)
+		{
+			mTickTimer = 1;
+			TickAudioComp->Activate(true);
+			TickAudioComp->Play(0.0f);
+			TickAudioComp->Activate(false);
 
+		}
 		if (mExplosionDelay < 0.f)
 		{
+			ExplosionAudioComp->Activate(true);
+			ExplosionAudioComp->Play(0.0f);
 			Explode();
 		}
 	}

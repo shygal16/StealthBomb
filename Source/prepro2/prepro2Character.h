@@ -29,6 +29,10 @@ public:
 	void Sprint();
 	void StopSprint();
 
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio Component")
+		UAudioComponent* FootStepAudio;
+
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseTurnRate;
@@ -62,6 +66,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Custom)
 	float VisionBarMax = 5;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Custom)
+		float footStepDelay = 0.5f;
+	float FootStepTimer=0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Custom)
 	float SprintBarMax = 5;
 
@@ -143,7 +150,7 @@ protected:
 	/** Handles stafing movement, left and right */
 	void MoveRight(float Val);
 
-
+	void FootStepNoise();
 
 	/**
 	 * Called via input to turn at a given rate.

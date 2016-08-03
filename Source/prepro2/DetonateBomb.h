@@ -16,6 +16,12 @@ public:
 	// Sets default values for this actor's properties
 	ADetonateBomb();
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio Component")
+		UAudioComponent* ExplosionAudioComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio Component")
+		UAudioComponent* TickAudioComp;
+
 	UPROPERTY(EditAnywhere)
 		UDestructibleComponent* mBombModel;
 
@@ -53,4 +59,5 @@ private:
 	//UPrimitiveComponent* mMesh;
 	float mDisappearTimer;
 	UBoxComponent* RangeTelegraph;
+	float mTickTimer=1;
 };

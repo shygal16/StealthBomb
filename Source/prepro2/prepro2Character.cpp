@@ -25,6 +25,7 @@ Aprepro2Character::Aprepro2Character()
 	, mNumBombs(3)
 	, mBombsPlanted(0)
 	, mInsideTriggerBox(false)
+	, FootStepAudio(CreateDefaultSubobject<UAudioComponent>(TEXT("Footstep Audio Comp")))
 {
 	
 	XrayOn = &Globals::XrayOn;
@@ -65,6 +66,11 @@ Aprepro2Character::Aprepro2Character()
 
 	PrimaryActorTick.bCanEverTick = true;
 	
+	if (FootStepAudio)
+	{
+		FootStepAudio->AttachParent = RootComponent;
+	}
+
 
 	// Note: The ProjectileClass and the skeletal mesh/anim blueprints for Mesh1P are set in the
 	// derived blueprint asset named MyCharacter (to avoid direct content references in C++)
@@ -291,7 +297,7 @@ void Aprepro2Character::MoveForward(float Value)
 			SoundMultiplier = 1.0f;
 		}
 		UAISense_Hearing::ReportNoiseEvent(this, GetActorLocation(), SoundMultiplier, this, 2000.f);
-
+		
 	}
 }
 
@@ -312,7 +318,8 @@ void Aprepro2Character::MoveRight(float Value)
 			SoundMultiplier = 1.0f;
 		}
 		UAISense_Hearing::ReportNoiseEvent(this, GetActorLocation(), SoundMultiplier, this, 2000.f);
-			
+
+		
 	}
 }
 
@@ -515,9 +522,31 @@ void Aprepro2Character::Tick(float DeltaTime)
 
 	mProgressBars->mSprintBarPercentage = SprintBar / SprintBarMax;
 	mProgressBars->mXrayPercentage = VisionBar / VisionBarMax;
+	FootStepTimer -= DeltaTime;
+	if (FootStepTimer <= 0)
+	{
+		FootStepNoise();
+	}
+	
+}
 
-	
-	
+void Aprepro2Character::FootStepNoise()
+{
+	if (!bIsCrouched)
+	{
+		if (GetVelocity().Size() > 0)//is moving
+		{
+			float volume = 1.0f;
+			if (Sprinting)
+			{
+				volume = 2;
+			}
+			FootStepAudio->SetVolumeMultiplier(volume);
+			FootStepAudio->Play();
+			
+			FootStepTimer = footStepDelay;
+		}
+	}
 }
 
 void Aprepro2Character::DetonateAllBombs()
