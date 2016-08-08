@@ -56,5 +56,12 @@ public:
 	void SetTargetEnemy(APawn * Target);
 	UFUNCTION(BlueprintCallable, Category = "Control")
 	void UpdateStatus();
+
+	UPROPERTY(EditAnywhere)
+	float VisionRangeMin;
+	UPROPERTY(EditAnywhere)
+	float VisionRangeMax;
+	UPROPERTY(EditAnywhere)
+	float HearRange;
 	//void ClearTarget();
 };

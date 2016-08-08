@@ -25,6 +25,9 @@ AEnemyController::AEnemyController()
 	, soundConfig(CreateDefaultSubobject<UAISenseConfig_Hearing>(TEXT("AI Hearing")))
 	, mBlackboard (CreateDefaultSubobject<UBlackboardComponent>(TEXT("BlackBoard")))
 	,mBehaviortree (CreateDefaultSubobject<UBehaviorTreeComponent>(TEXT("BehaviorTree")))
+	, VisionRangeMin(1000.0f)
+	, VisionRangeMax(1500.0f)
+	, HearRange(12000.0f)
 {
 	AddInstanceComponent(mBlackboard);
 	AddOwnedComponent(mBehaviortree);
@@ -69,8 +72,8 @@ void AEnemyController::Possess(APawn* InPawn)
 		mBehaviortree->StartTree(*mOwner->BehaviorTree);
 	
 	}
-	sightConfig->SightRadius = 3000.0f;
-	sightConfig->LoseSightRadius = 3500.f;
+	sightConfig->SightRadius = VisionRangeMin;
+	sightConfig->LoseSightRadius = VisionRangeMax;
 	sightConfig->PeripheralVisionAngleDegrees = 90.0f;
 	sightConfig->DetectionByAffiliation.bDetectEnemies = true;
 	sightConfig->DetectionByAffiliation.bDetectNeutrals = true;
@@ -78,7 +81,7 @@ void AEnemyController::Possess(APawn* InPawn)
 	
 	mPerceptionComponent->ConfigureSense(*sightConfig);
 	
-	soundConfig->HearingRange = 12000.0f;
+	soundConfig->HearingRange = HearRange;
 	soundConfig->bUseLoSHearing = false;
 	soundConfig->DetectionByAffiliation.bDetectEnemies = true;
 	soundConfig->DetectionByAffiliation.bDetectNeutrals = true;
