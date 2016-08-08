@@ -26,6 +26,7 @@ Aprepro2Character::Aprepro2Character()
 	, mBombsPlanted(0)
 	, mInsideTriggerBox(false)
 	, FootStepAudio(CreateDefaultSubobject<UAudioComponent>(TEXT("Footstep Audio Comp")))
+	, Light(CreateDefaultSubobject<USpotLightComponent>(TEXT("FlashLight Comp")))
 {
 	
 	XrayOn = &Globals::XrayOn;
@@ -71,6 +72,11 @@ Aprepro2Character::Aprepro2Character()
 		FootStepAudio->AttachParent = RootComponent;
 	}
 
+	if (Light)
+	{
+		Light->AttachParent = FirstPersonCameraComponent;
+		Light->ToggleVisibility();
+	}
 
 	// Note: The ProjectileClass and the skeletal mesh/anim blueprints for Mesh1P are set in the
 	// derived blueprint asset named MyCharacter (to avoid direct content references in C++)
@@ -347,6 +353,7 @@ bool Aprepro2Character::EnableTouchscreenMovement(class UInputComponent* InputCo
 void Aprepro2Character::ToggleXray()
 {
 	//GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, XrayOn ? "True" : "False");
+	/*
 	if (UseXray)
 	{
 		*XrayOn = !*XrayOn;
@@ -356,12 +363,13 @@ void Aprepro2Character::ToggleXray()
 		FirstPersonCameraComponent->PostProcessSettings.SceneColorTint.G = Tint.G;
 		FirstPersonCameraComponent->PostProcessSettings.SceneColorTint.B = Tint.B;
 		FirstPersonCameraComponent->PostProcessSettings.SceneColorTint.A=Tint.A;
-
+		
 
 		//FirstPersonCameraComponent->PostProcessSettings.SceneColorTint.Transparent;
 	}
-
-
+	*/
+	*XrayOn = !*XrayOn;
+	Light->ToggleVisibility();
 }
 
 void Aprepro2Character::BombPulse()

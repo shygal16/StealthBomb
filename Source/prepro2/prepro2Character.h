@@ -33,6 +33,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio Component")
 		UAudioComponent* FootStepAudio;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Light")
+		USpotLightComponent* Light;
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseTurnRate;
@@ -204,7 +206,7 @@ public:
 	float TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)
 		TSubclassOf<UUserWidget> PauseWidgetClass;
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)
 	bool Keycard = false;
 private:
