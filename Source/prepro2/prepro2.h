@@ -13,6 +13,10 @@
  struct Globals
 {
 public:
+	Globals()
+	{
+		XrayOn = false;
+	}
 	static bool XrayOn;
 };
 

@@ -3,6 +3,7 @@
 #include "GameFramework/Character.h"
 #include "DetonateBomb.h"
 #include "ProgressBarWidget.h"
+#include "LightDetector.h"
 #include "prepro2Character.generated.h"
 
 class UInputComponent;
@@ -20,8 +21,6 @@ class Aprepro2Character : public ACharacter
 	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
 	class USkeletalMeshComponent* FP_Gun;
 
-	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
-	class USkeletalMeshComponent* Target;
 	/** First person camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FirstPersonCameraComponent;
@@ -31,6 +30,8 @@ public:
 	void Sprint();
 	void StopSprint();
 
+	UPROPERTY(EditAnywhere)
+	ALightDetector* Target;
 	//ADetectionDummy* LightDetection;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio Component")
@@ -67,6 +68,9 @@ public:
 	/** Bomb class to spawn */
 	UPROPERTY(EditAnywhere, Category = Bomb)
 		TSubclassOf<class ADetonateBomb> BombClass;
+
+	UPROPERTY(EditAnywhere, Category = Perception)
+		TSubclassOf<class ALightDetector> LightDetectionClass;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Custom)
 	float VisionBarMax = 5;

@@ -5,7 +5,6 @@
 #include "prepro2Projectile.h"
 #include "Animation/AnimInstance.h"
 #include "GameFramework/InputSettings.h"
-
 #include "Perception/AISenseConfig_Sight.h"
 #include "Perception/AISenseConfig_Hearing.h"
 #include "Perception/AIPerceptionComponent.h"
@@ -54,11 +53,12 @@ Aprepro2Character::Aprepro2Character()
 	Mesh1P->bCastDynamicShadow = false;
 	Mesh1P->CastShadow = false;
 
-	Target = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Target"));
-	Target->SetOnlyOwnerSee(false);
-	Target->AttachParent = FirstPersonCameraComponent;
-	Target->bCastDynamicShadow = false;
-	Target->CastShadow = false;
+//	Target = CreateDefaultSubobject<ALightDetector>(TEXT("Target"));
+	//Target->SetOnlyOwnerSee(false);
+	//Target->AttachParent = FirstPersonCameraComponent;
+	//Target->bCastDynamicShadow = false;
+	//Target->CastShadow = false;
+	
 
 	// Create a gun mesh component
 	FP_Gun = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("FP_Gun"));
@@ -463,11 +463,15 @@ void Aprepro2Character::BeginPlay()
 	mProgressBars->AddToViewport(0);
 	VisionBar = VisionBarMax;
 	InitBombs();
+	UWorld* const World = GetWorld();
+	const FVector tempLocation = GetActorLocation();
+	const FRotator tempRotation = { 0, 0, 0 };
+	Target = World->SpawnActor<ALightDetector>(LightDetectionClass, tempLocation, tempRotation);
 	Target->SetActive(false);
 	//UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, UAISenseConfig_Sight::GetSenseImplementation(),)
 	UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, UAISense_Sight::StaticClass(),this);
 	UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, UAISense_Hearing::StaticClass(), this);
-
+	*XrayOn = false;
 	
 
 }
@@ -553,11 +557,18 @@ void Aprepro2Character::Tick(float DeltaTime)
 		TraceParams.bTraceAsyncScene = true;
 		TraceParams.bReturnPhysicalMaterial = true;
 		FHitResult Hit(ForceInit);
+		float length = RayCastDistance;
 		GetWorld()->LineTraceSingle(Hit, StartTrace, EndTrace, ECollisionChannel::ECC_Camera, TraceParams); // simple trace function
 		if (Hit.bBlockingHit)
 		{
-			Target->SetWorldLocation(Hit.Location);
+			Target->SetActorLocation(Hit.Location);
+			length = FVector::Dist(Hit.Location, StartTrace);
 		}
+		else
+		{
+			Target->SetActorLocation(EndTrace);
+		}
+		DrawDebugSphere(GetWorld(), Target->GetActorLocation(), 100.f, 20, FColor::Red);
 	}
 }
 

@@ -3,7 +3,7 @@
 #include "prepro2.h"
 #include "Enemy_RealTest.h"
 #include "BehaviorTree/BehaviorTree.h"
-
+#include "LightDetector.h"
 #include "Engine.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Class.h"
@@ -173,17 +173,17 @@ void AEnemyController::SetTargetEnemy(APawn* Target)
 		}
 
 		// Checking if Detected Target is Bomb
-		else if (Target->GetClass()->IsChildOf(ADetonateBomb::StaticClass()))
+		else if (Target->GetClass()->IsChildOf(ALightDetector::StaticClass()))
 		{
 			for (int i = 0; i < info.LastSensedStimuli.Num(); ++i)
 			{
-				// Checking if it was detected by sight
-				if (info.LastSensedStimuli[i].Type.Name == "Default__AISense_Sight")
-				{
-					mBlackboard->SetValue<UBlackboardKeyType_Vector>(BombLocationID, Target->GetActorLocation());
-				}
+				//// Checking if it was detected by sight
+				//if (info.LastSensedStimuli[i].Type.Name == "Default__AISense_Sight")
+				//{
+				//	mBlackboard->SetValue<UBlackboardKeyType_Vector>(BombLocationID, Target->GetActorLocation());
+				//}
 				// Checking if it was detected by sound
-				else if (info.LastSensedStimuli[i].Type.Name == "Default__AISense_Hearing")
+				/*else*/ if (info.LastSensedStimuli[i].Type.Name == "Default__AISense_Sight")
 				{
 					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Bomb Heard. Updating its last Heard Location");
 					if (mBlackboard->IsVectorValueSet(PlayerHeardLocationID))
@@ -227,15 +227,25 @@ void AEnemyController::SenseStuff(TArray<AActor*> testActors)
 			//info.LastSensedStimuli[i].SetStimulusAge(0.f);
 		}
 
-		if (actors->GetClass()->IsChildOf(ADetonateBomb::StaticClass()))
+		if (actors->GetClass()->IsChildOf(ALightDetector::StaticClass()))
 		{
-			//Checking if Bomb is active
-			ADetonateBomb* temp = (ADetonateBomb*)actors;
-			if (!temp->IsPlanted())
+			//Checking if Light is active
+			ALightDetector* temp = (ALightDetector*)actors;
+			if (!temp->IsActive())
 			{
 				return;
 			}
 		}
+
+		//if (actors->GetClass()->IsChildOf(ADetonateBomb::StaticClass()))
+		//{
+		//	//Checking if Bomb is active
+		//	ADetonateBomb* temp = (ADetonateBomb*)actors;
+		//	if (!temp->IsPlanted())
+		//	{
+		//		return;
+		//	}
+		//}
 		SetTargetEnemy(Cast<APawn>(actors));
 	}
 }
