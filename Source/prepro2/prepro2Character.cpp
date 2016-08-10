@@ -54,6 +54,12 @@ Aprepro2Character::Aprepro2Character()
 	Mesh1P->bCastDynamicShadow = false;
 	Mesh1P->CastShadow = false;
 
+	Target = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Target"));
+	Target->SetOnlyOwnerSee(false);
+	Target->AttachParent = FirstPersonCameraComponent;
+	Target->bCastDynamicShadow = false;
+	Target->CastShadow = false;
+
 	// Create a gun mesh component
 	FP_Gun = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("FP_Gun"));
 	FP_Gun->SetOnlyOwnerSee(true);			// only the owning player will see this mesh
@@ -370,6 +376,7 @@ void Aprepro2Character::ToggleXray()
 	*/
 	*XrayOn = !*XrayOn;
 	Light->ToggleVisibility();
+	Target->SetActive(*XrayOn);
 }
 
 void Aprepro2Character::BombPulse()
@@ -456,6 +463,7 @@ void Aprepro2Character::BeginPlay()
 	mProgressBars->AddToViewport(0);
 	VisionBar = VisionBarMax;
 	InitBombs();
+	Target->SetActive(false);
 	//UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, UAISenseConfig_Sight::GetSenseImplementation(),)
 	UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, UAISense_Sight::StaticClass(),this);
 	UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, UAISense_Hearing::StaticClass(), this);
@@ -532,6 +540,25 @@ void Aprepro2Character::Tick(float DeltaTime)
 		FootStepNoise();
 	}
 	
+	if (*XrayOn)
+	{
+		FVector CamLoc;
+		FRotator CamRot;
+
+		Controller->GetPlayerViewPoint(CamLoc, CamRot); // Get the camera position and rotation
+		const FVector StartTrace = CamLoc; // trace start is the camera location
+		const FVector Direction = CamRot.Vector();
+		const FVector EndTrace = StartTrace + Direction * RayCastDistance;
+		FCollisionQueryParams TraceParams(FName(TEXT("WeaponTrace")), true, this);
+		TraceParams.bTraceAsyncScene = true;
+		TraceParams.bReturnPhysicalMaterial = true;
+		FHitResult Hit(ForceInit);
+		GetWorld()->LineTraceSingle(Hit, StartTrace, EndTrace, ECollisionChannel::ECC_Camera, TraceParams); // simple trace function
+		if (Hit.bBlockingHit)
+		{
+			Target->SetWorldLocation(Hit.Location);
+		}
+	}
 }
 
 void Aprepro2Character::FootStepNoise()

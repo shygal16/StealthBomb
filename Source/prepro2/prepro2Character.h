@@ -20,6 +20,8 @@ class Aprepro2Character : public ACharacter
 	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
 	class USkeletalMeshComponent* FP_Gun;
 
+	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
+	class USkeletalMeshComponent* Target;
 	/** First person camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FirstPersonCameraComponent;
@@ -29,6 +31,7 @@ public:
 	void Sprint();
 	void StopSprint();
 
+	//ADetectionDummy* LightDetection;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio Component")
 		UAudioComponent* FootStepAudio;
@@ -76,6 +79,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Custom)
 		float PulseCooldown = 10;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Custom)
+		float RayCastDistance = 400;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Custom)
 		float PlantTime = 4;
