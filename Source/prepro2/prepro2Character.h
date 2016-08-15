@@ -129,6 +129,9 @@ public:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UFUNCTION(BlueprintCallable, category = "XRAY")
+		bool GetXray() { return *XrayOn; }
+
 	// Called every frame
 	virtual void Tick(float DeltaSeconds) override;
 
