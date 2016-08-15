@@ -11,8 +11,9 @@
 #include "MyLevelScriptActor.h"
 #include "DetonateBomb.h"
 #include "prepro2Character.h"
-
+#include "LightDetector.h"
 #include "EnemyController.h"
+#include "prepro2Character.h"
 //#include "Runtime/Engine/Classes/GameFramework/Controller.h"
 
 
@@ -86,8 +87,20 @@ void AEnemy_RealTest::Tick(float DeltaTime)
 	{
 	Super::Tick(DeltaTime);
 	}
+	
 
-
+	/*isAlive = true;
+	float dist;
+	Aprepro2Character* player = Cast<Aprepro2Character>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	if (player->Target->IsActive())
+	{
+		dist=GetDistanceTo(player);
+		if (dist < 800)
+		{
+			isAlive = false;
+		}
+	}
+	*/
 	//SetActorRotation(GetActorRotation() + rot);
 }
 
