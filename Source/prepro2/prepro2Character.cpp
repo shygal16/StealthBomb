@@ -584,7 +584,7 @@ void Aprepro2Character::Tick(float DeltaTime)
 		{
 			Target->SetActorLocation(EndTrace);
 		}
-		DrawDebugSphere(GetWorld(), Target->GetActorLocation(), 100.f, 20, FColor::Red);
+		//DrawDebugSphere(GetWorld(), Target->GetActorLocation(), 100.f, 20, FColor::Red);
 	}
 }
 
