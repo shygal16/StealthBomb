@@ -219,7 +219,8 @@ public:
 	float TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)
 		TSubclassOf<UUserWidget> PauseWidgetClass;
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)
+		TSubclassOf<UUserWidget> GameOverClass;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)
 	bool Keycard = false;
 private:
@@ -229,7 +230,7 @@ private:
 	int mBombSelected;
 	void InitBombs();
 	float VisionBar;
-	
+	void GameOver();
 	bool GamePaused;
 
 	void BombPlant();
