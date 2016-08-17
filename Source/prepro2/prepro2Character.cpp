@@ -197,6 +197,22 @@ void Aprepro2Character::TogglePause()
 	//UObject* reference = StaticLoadObject(UObject::StaticClass(), nullptr, "PauseMenu", "StealthBomb\Content\FirstPersonCPP\Blueprints");
 	//SWidget* Widget = dynamic_cast<SWidget*>(UWidgetBlueprintLibrary::Create(GetWorld(), WidgetTemplate, GetWorld()->GetFirstPlayerController()));
 }
+void Aprepro2Character::GameOver()
+{
+	GamePaused = true;//GamePaused ? false : true;
+	UGameplayStatics::SetGamePaused(GetWorld(), GamePaused);
+	UUserWidget* GameOverWidget = CreateWidget<UUserWidget>(GetWorld(), GameOverClass);
+	GameOverWidget->AddToViewport();
+
+	APlayerController* MyController = GetWorld()->GetFirstPlayerController();
+
+	MyController->bShowMouseCursor = GamePaused;
+	MyController->bEnableClickEvents = GamePaused;
+	MyController->bEnableMouseOverEvents = GamePaused;
+	//ConstructorHelpers::FClassFinder("StealthBomb\Content\FirstPersonCPP\Blueprints",)
+	//UObject* reference = StaticLoadObject(UObject::StaticClass(), nullptr, "PauseMenu", "StealthBomb\Content\FirstPersonCPP\Blueprints");
+	//SWidget* Widget = dynamic_cast<SWidget*>(UWidgetBlueprintLibrary::Create(GetWorld(), WidgetTemplate, GetWorld()->GetFirstPlayerController()));
+}
 
 void Aprepro2Character::Sprint()
 {
@@ -282,7 +298,7 @@ float Aprepro2Character::TakeDamage(float DamageAmount, struct FDamageEvent cons
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, message);
 	if (mHealth <= 0)
 	{
-		TogglePause();
+		GameOver();
 	}
 	return DamageAmount;
 }
@@ -568,7 +584,7 @@ void Aprepro2Character::Tick(float DeltaTime)
 		{
 			Target->SetActorLocation(EndTrace);
 		}
-		DrawDebugSphere(GetWorld(), Target->GetActorLocation(), 100.f, 20, FColor::Red);
+		//DrawDebugSphere(GetWorld(), Target->GetActorLocation(), 100.f, 20, FColor::Red);
 	}
 }
 
