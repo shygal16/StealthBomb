@@ -44,11 +44,24 @@ class PREPRO2_API AEnemyController : public AAIController
 	uint8 PlayerSeenID;
 	uint8 SecondaryLocationID;
 	uint8 PlayerMovementDirectionID;
-
+	uint8 PatrolLocationID;
+	uint8 PatrolIndexID;
+	uint8 AlertedID;
+	
+	uint8 isAliveID;
 
 	AEnemy_RealTest* mOwner;
 	
 public:
 	void SetTargetEnemy(APawn * Target);
+	UFUNCTION(BlueprintCallable, Category = "Control")
+	void UpdateStatus();
+
+	UPROPERTY(EditAnywhere)
+	float VisionRangeMin;
+	UPROPERTY(EditAnywhere)
+	float VisionRangeMax;
+	UPROPERTY(EditAnywhere)
+	float HearRange;
 	//void ClearTarget();
 };

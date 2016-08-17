@@ -8,11 +8,12 @@
 #include "Perception/AISense_Hearing.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "Perception/PawnSensingComponent.h"
-
+#include "MyLevelScriptActor.h"
 #include "DetonateBomb.h"
 #include "prepro2Character.h"
-
+#include "LightDetector.h"
 #include "EnemyController.h"
+#include "prepro2Character.h"
 //#include "Runtime/Engine/Classes/GameFramework/Controller.h"
 
 
@@ -21,6 +22,7 @@
 AEnemy_RealTest::AEnemy_RealTest()
 {
 	PrimaryActorTick.bCanEverTick = true;
+	mWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
 //	PawnSense = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensingComp"));
 //	PawnSense->SetPeripheralVisionAngle(90.f);
 	//AIControllerClass = AEnemyController::StaticClass();
@@ -45,7 +47,6 @@ void AEnemy_RealTest::OnSeePlayer(APawn* pawn)
 void AEnemy_RealTest::BeginPlay()
 {
 	Super::BeginPlay();
-
 
 	/*sightConfig->SightRadius = 3000.0f;
 	sightConfig->LoseSightRadius = 3500.f;
@@ -78,26 +79,48 @@ void AEnemy_RealTest::BeginPlay()
 
 }
 // Called every frame
+
+
 void AEnemy_RealTest::Tick(float DeltaTime)
 {
 	//if (mHealth > 0)
 	{
 	Super::Tick(DeltaTime);
 	}
-	FRotator rot = FRotator(0, 1, 0);
 	
+
+	/*isAlive = true;
+	float dist;
+	Aprepro2Character* player = Cast<Aprepro2Character>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	if (player->Target->IsActive())
+	{
+		dist=GetDistanceTo(player);
+		if (dist < 800)
+		{
+			isAlive = false;
+		}
+	}
+	*/
 	//SetActorRotation(GetActorRotation() + rot);
 }
 
 float AEnemy_RealTest::TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
 {
+	return 0.f;
 	mHealth -= DamageAmount;
 	FString message = TEXT("Enemy took Damage. Health Remaining") + FString::FromInt(static_cast<int>(mHealth));
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, message);
 	if (mHealth <= 0)
 	{
-		Destroy();
+		//Destroy();
+		isAlive = false;
+		mLevel->FirstEnemyDeathEvent();
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, "Enemy Has Died");
+		AEnemyController* AIControll = Cast<AEnemyController>(GetController());
+		AIControll->UpdateStatus();
+		SetActorHiddenInGame(true);
+		SetActorTickEnabled(false);
+		SetActorEnableCollision(false);
 	}
 	return DamageAmount;
 }

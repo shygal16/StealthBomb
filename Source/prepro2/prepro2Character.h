@@ -3,6 +3,7 @@
 #include "GameFramework/Character.h"
 #include "DetonateBomb.h"
 #include "ProgressBarWidget.h"
+#include "LightDetector.h"
 #include "prepro2Character.generated.h"
 
 class UInputComponent;
@@ -29,6 +30,15 @@ public:
 	void Sprint();
 	void StopSprint();
 
+	UPROPERTY(EditAnywhere)
+	ALightDetector* Target;
+	//ADetectionDummy* LightDetection;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio Component")
+		UAudioComponent* FootStepAudio;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Light")
+		USpotLightComponent* Light;
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseTurnRate;
@@ -58,16 +68,30 @@ public:
 	/** Bomb class to spawn */
 	UPROPERTY(EditAnywhere, Category = Bomb)
 		TSubclassOf<class ADetonateBomb> BombClass;
+
+	UPROPERTY(EditAnywhere, Category = Perception)
+		TSubclassOf<class ALightDetector> LightDetectionClass;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Custom)
 	float VisionBarMax = 5;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Custom)
+		float footStepDelay = 0.5f;
+	float FootStepTimer=0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Custom)
 	float SprintBarMax = 5;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Custom)
-		float PlantTime = 4;
+		float PulseCooldown = 10;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Custom)
+		float RayCastDistance = 400;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Custom)
+		float PlantTime = 4;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Custom)
+		float mHealth = 300;
 	//How much faster you go while sprinting
 	UPROPERTY(Category = Custom, EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", UIMin = "0"))
 		float SpeedMult = 2;
@@ -75,18 +99,38 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool UseXray=true;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float XrayRegen = 0.1;
+
 	UPROPERTY(EditFixedSize)
 	uint8 mMaxBombs;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		uint8 mNumBombs;
 
+	UFUNCTION(BlueprintCallable, category = "pickup")
+		void PickUpBomb(ADetonateBomb* bomb);
+
+
+	UFUNCTION(BlueprintCallable, category = "pickup")
+		void PickUpVisionBoost(float boost);
+
+	UFUNCTION(BlueprintCallable, category = "pickup")
+		bool IsPickUpTriggerActivated() { return mInsideTriggerBox; }
+
+	UFUNCTION(BlueprintCallable, category = "pickup")
+		void SetTriggerActive(bool val) { mInsideTriggerBox = val; }
+
+	
 	/*UPROPERTY(EditAnywhere)
 		static const int mMaxBombs;*/
 
 public: 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	UFUNCTION(BlueprintCallable, category = "XRAY")
+		bool GetXray() { return *XrayOn; }
 
 	// Called every frame
 	virtual void Tick(float DeltaSeconds) override;
@@ -120,6 +164,8 @@ protected:
 
 	/** Handles stafing movement, left and right */
 	void MoveRight(float Val);
+
+	void FootStepNoise();
 
 	/**
 	 * Called via input to turn at a given rate.
@@ -173,7 +219,10 @@ public:
 	float TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)
 		TSubclassOf<UUserWidget> PauseWidgetClass;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)
+		TSubclassOf<UUserWidget> GameOverClass;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)
+	bool Keycard = false;
 private:
 	bool* XrayOn;
 	TArray<ADetonateBomb*> mBombs;
@@ -181,7 +230,7 @@ private:
 	int mBombSelected;
 	void InitBombs();
 	float VisionBar;
-	
+	void GameOver();
 	bool GamePaused;
 
 	void BombPlant();
@@ -193,7 +242,12 @@ private:
 	bool Sprinting;
 	float sprintSpeed;
 	float WalkSpeed;
+
+	float PulseRecharge=100;
+
+	bool mInsideTriggerBox;
 	
+
 	
 };
 

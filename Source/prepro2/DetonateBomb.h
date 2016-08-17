@@ -16,8 +16,17 @@ public:
 	// Sets default values for this actor's properties
 	ADetonateBomb();
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio Component")
+		UAudioComponent* ExplosionAudioComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio Component")
+		UAudioComponent* TickAudioComp;
+
 	UPROPERTY(EditAnywhere)
 		UDestructibleComponent* mBombModel;
+
+	UPROPERTY(EditAnywhere)
+		UBoxComponent* mBox;
 
 	UPROPERTY(EditAnywhere)
 		float mDisappearDelay;
@@ -32,11 +41,15 @@ public:
 
 	void SetActive(bool active);
 
-	bool IsPlanted()		{ return mIsPlanted; }
+	UFUNCTION(BlueprintCallable, Category = "Check")
+		bool IsPlanted();
+
+	UFUNCTION(BlueprintCallable, Category = "Check")
+		bool IsActive() { return mActive; }
 
 	void XRayBomb(bool On);
 	void PingNoise();
-
+	
 	void Plant() { mIsPlanted = true; }
 
 protected:
@@ -46,4 +59,5 @@ private:
 	//UPrimitiveComponent* mMesh;
 	float mDisappearTimer;
 	UBoxComponent* RangeTelegraph;
+	float mTickTimer=1;
 };

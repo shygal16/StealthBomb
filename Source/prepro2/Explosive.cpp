@@ -22,11 +22,32 @@ AExplosive::AExplosive()
 
 void AExplosive::Explode()
 {
+	mTriggered = false; 
+
+
 	mParticleSystem->ActivateSystem();
 	mRadForce->FireImpulse();
-	UGameplayStatics::ApplyRadialDamage(GetWorld(), 200, GetActorLocation(), mExplosionRadius, UDamageType::StaticClass(), TArray<AActor*>());
+	
+	//UGameplayStatics::ApplyRadialDamage(GetWorld(), mExplosionDamage, GetActorLocation(), mExplosionRadius, UDamageType::StaticClass(), TArray<AActor*>(),NULL,NULL,true);
+	//Use AACtor to dmg killzone
+	for (TActorIterator<ACharacter> it(GetWorld()); it; ++it)
+	{
+		float Distance = GetDistanceTo(*it);
+
+		if (Distance <= mExplosionRadius)
+		{
+			UGameplayStatics::ApplyDamage(*it, mExplosionDamage,
+				GetInstigatorController(), this, UDamageType::StaticClass());
+		}
+	}
+
+	
 	UAISense_Hearing::ReportNoiseEvent(this, GetActorLocation(), 1, this, mExplosionSound);
 	mExploded = true;
 }
 
+void AExplosive::Trigger()
+{
+	mTriggered = true;
 
+}

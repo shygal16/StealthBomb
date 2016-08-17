@@ -22,18 +22,20 @@ public:
 	UPROPERTY(EditAnywhere)
 		UParticleSystemComponent* mParticleSystem;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 		float mExplosionDelay;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 		float mExplosionRadius;
-	//UPROPERTY(EditAnywhere,BlueprintReadWrite)
-	//	float mExplosionDamage;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+		float mExplosionDamage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float mExplosionSound;
 
-
 	void Explode();
+	void Trigger();
 
 protected:
+	bool mActive = true;
 	bool mExploded;
+	bool mTriggered = false;
 };

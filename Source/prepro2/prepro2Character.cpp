@@ -1,4 +1,3 @@
-// Copyright 1998-2015 Epic Games, Inc. All Rights Reserved.
 
 #include "prepro2.h"
 #include "prepro2Character.h"
@@ -6,7 +5,6 @@
 #include "prepro2Projectile.h"
 #include "Animation/AnimInstance.h"
 #include "GameFramework/InputSettings.h"
-
 #include "Perception/AISenseConfig_Sight.h"
 #include "Perception/AISenseConfig_Hearing.h"
 #include "Perception/AIPerceptionComponent.h"
@@ -19,14 +17,19 @@ DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
 bool Globals::XrayOn;
 
+
 Aprepro2Character::Aprepro2Character()
 	: mMaxBombs(5)
 	, mBombSelected(0)
 	, mNumBombs(3)
 	, mBombsPlanted(0)
+	, mInsideTriggerBox(false)
+	, FootStepAudio(CreateDefaultSubobject<UAudioComponent>(TEXT("Footstep Audio Comp")))
+	, Light(CreateDefaultSubobject<USpotLightComponent>(TEXT("FlashLight Comp")))
 {
 	
 	XrayOn = &Globals::XrayOn;
+	
 	SprintBar = SprintBarMax;
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -50,6 +53,13 @@ Aprepro2Character::Aprepro2Character()
 	Mesh1P->bCastDynamicShadow = false;
 	Mesh1P->CastShadow = false;
 
+//	Target = CreateDefaultSubobject<ALightDetector>(TEXT("Target"));
+	//Target->SetOnlyOwnerSee(false);
+	//Target->AttachParent = FirstPersonCameraComponent;
+	//Target->bCastDynamicShadow = false;
+	//Target->CastShadow = false;
+	
+
 	// Create a gun mesh component
 	FP_Gun = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("FP_Gun"));
 	FP_Gun->SetOnlyOwnerSee(true);			// only the owning player will see this mesh
@@ -62,6 +72,17 @@ Aprepro2Character::Aprepro2Character()
 	GunOffset = FVector(100.0f, 30.0f, 10.0f);
 
 	PrimaryActorTick.bCanEverTick = true;
+	
+	if (FootStepAudio)
+	{
+		FootStepAudio->AttachParent = RootComponent;
+	}
+
+	if (Light)
+	{
+		Light->AttachParent = FirstPersonCameraComponent;
+		Light->ToggleVisibility();
+	}
 
 	// Note: The ProjectileClass and the skeletal mesh/anim blueprints for Mesh1P are set in the
 	// derived blueprint asset named MyCharacter (to avoid direct content references in C++)
@@ -98,6 +119,8 @@ void Aprepro2Character::SetupPlayerInputComponent(class UInputComponent* InputCo
 	InputComponent->BindAction("Crouch", IE_Pressed, this, &Aprepro2Character::StartCrouch);
     InputComponent->BindAction("Crouch", IE_Released, this, &Aprepro2Character::EndCrouch);
 
+	//InputComponent->BindAction("PickUpItem", IE_Pressed, this, &Aprepro2Character::PickUpBomb);
+
 	//InputComponent->BindTouch(EInputEvent::IE_Pressed, this, &Aprepro2Character::TouchStarted);
 	if( EnableTouchscreenMovement(InputComponent) == false )
 	{
@@ -119,6 +142,8 @@ void Aprepro2Character::SetupPlayerInputComponent(class UInputComponent* InputCo
 
 void Aprepro2Character::OnFire()
 { 
+	/*
+	
 	// try and fire a projectile
 	if (ProjectileClass != NULL)
 	{
@@ -153,7 +178,7 @@ void Aprepro2Character::OnFire()
 		}
 	}
 
-
+	*/
 }
 
 void Aprepro2Character::TogglePause()
@@ -162,6 +187,22 @@ void Aprepro2Character::TogglePause()
 	UGameplayStatics::SetGamePaused(GetWorld(), GamePaused);
 	UUserWidget* PauseWidget = CreateWidget<UUserWidget>(GetWorld(),PauseWidgetClass);
 	PauseWidget->AddToViewport();
+
+	APlayerController* MyController = GetWorld()->GetFirstPlayerController();
+
+	MyController->bShowMouseCursor = GamePaused;
+	MyController->bEnableClickEvents = GamePaused;
+	MyController->bEnableMouseOverEvents = GamePaused;
+	//ConstructorHelpers::FClassFinder("StealthBomb\Content\FirstPersonCPP\Blueprints",)
+	//UObject* reference = StaticLoadObject(UObject::StaticClass(), nullptr, "PauseMenu", "StealthBomb\Content\FirstPersonCPP\Blueprints");
+	//SWidget* Widget = dynamic_cast<SWidget*>(UWidgetBlueprintLibrary::Create(GetWorld(), WidgetTemplate, GetWorld()->GetFirstPlayerController()));
+}
+void Aprepro2Character::GameOver()
+{
+	GamePaused = true;//GamePaused ? false : true;
+	UGameplayStatics::SetGamePaused(GetWorld(), GamePaused);
+	UUserWidget* GameOverWidget = CreateWidget<UUserWidget>(GetWorld(), GameOverClass);
+	GameOverWidget->AddToViewport();
 
 	APlayerController* MyController = GetWorld()->GetFirstPlayerController();
 
@@ -252,8 +293,13 @@ void Aprepro2Character::TouchUpdate(const ETouchIndex::Type FingerIndex, const F
 }
 float Aprepro2Character::TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
 {
-	FString message= TEXT("Player took Damage ")+ FString::FromInt(static_cast<int>(DamageAmount));
+	mHealth -= DamageAmount;
+	FString message= TEXT("Player took Damage. Remaing HP: ")+ FString::FromInt(static_cast<int>(mHealth));
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, message);
+	if (mHealth <= 0)
+	{
+		GameOver();
+	}
 	return DamageAmount;
 }
 //float Aprepro2Character::InternalTakeRadialDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
@@ -269,17 +315,14 @@ void Aprepro2Character::MoveForward(float Value)
 		// add movement in that direction
 		AddMovementInput(GetActorForwardVector(), Value);
 
+		float SoundMultiplier = GetCharacterMovement()->MaxWalkSpeed == sprintSpeed ? 1.0f : .2f;
 		if (bIsCrouched)
 		{
-			return;
+			SoundMultiplier = 0.05f;
+			//return;
 		}
-		float SoundMultiplier = 0.2f;
-		if (GetCharacterMovement()->MaxWalkSpeed == sprintSpeed)
-		{
-			SoundMultiplier = 1.0f;
-		}
-		UAISense_Hearing::ReportNoiseEvent(this, GetActorLocation(), SoundMultiplier, this, 2000.f);
 
+		UAISense_Hearing::ReportNoiseEvent(this, GetActorLocation(), SoundMultiplier, this, 2000.f);
 	}
 }
 
@@ -290,17 +333,14 @@ void Aprepro2Character::MoveRight(float Value)
 		// add movement in that direction
 		AddMovementInput(GetActorRightVector(), Value);
 
+		float SoundMultiplier = GetCharacterMovement()->MaxWalkSpeed == sprintSpeed ? 1.0f : .2f;
 		if (bIsCrouched)
 		{
-			return;
+			SoundMultiplier = 0.05f;
+		//	return;
 		}
-		float SoundMultiplier=0.2f;
-		if (GetCharacterMovement()->MaxWalkSpeed == sprintSpeed)
-		{
-			SoundMultiplier = 1.0f;
-		}
+
 		UAISense_Hearing::ReportNoiseEvent(this, GetActorLocation(), SoundMultiplier, this, 2000.f);
-			
 	}
 }
 
@@ -335,29 +375,34 @@ bool Aprepro2Character::EnableTouchscreenMovement(class UInputComponent* InputCo
 void Aprepro2Character::ToggleXray()
 {
 	//GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, XrayOn ? "True" : "False");
+	/*
 	if (UseXray)
 	{
 		*XrayOn = !*XrayOn;
-	//if (*XrayOn )
-	//{
-	//	*XrayOn = false;
-	//}
-	//else
-	//{
-	//	*XrayOn = true;
-	//}
+		FLinearColor Tint = *XrayOn ? FColor::Black : FLinearColor::White;
+		
+		FirstPersonCameraComponent->PostProcessSettings.SceneColorTint.R = Tint.R;
+		FirstPersonCameraComponent->PostProcessSettings.SceneColorTint.G = Tint.G;
+		FirstPersonCameraComponent->PostProcessSettings.SceneColorTint.B = Tint.B;
+		FirstPersonCameraComponent->PostProcessSettings.SceneColorTint.A=Tint.A;
+		
+
+		//FirstPersonCameraComponent->PostProcessSettings.SceneColorTint.Transparent;
 	}
-
-
+	*/
+	*XrayOn = !*XrayOn;
+	Light->ToggleVisibility();
+	Target->SetActive(*XrayOn);
 }
 
 void Aprepro2Character::BombPulse()
 {
 	if (mBombSelected != -1)
 	{
-		if (mBombs[mBombSelected]->IsPlanted())
+		if (mBombs[mBombSelected]->IsPlanted() && PulseRecharge >= PulseCooldown)
 		{
 			mBombs[mBombSelected]->PingNoise();
+			PulseRecharge = 0;
 		}
 	}
 }
@@ -367,10 +412,15 @@ void Aprepro2Character::Bomb()
 	int curr = mBombsPlanted;
 	mBombs[curr]->SetActive(true);
 	mBombs[curr]->Plant();
+
+	mBombs[curr]->Trigger(); //makes bombs auto arm with timer
+
 	mBombSelected = curr;
 	const FRotator SpawnRotation = GetControlRotation();
 	// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
-	const FVector SpawnLocation = GetActorLocation() + SpawnRotation.RotateVector(GunOffset);
+	FVector Offset(25, 0, 0);
+	FVector SpawnLocation = GetActorLocation() +SpawnRotation.RotateVector(Offset);
+	//SpawnLocation.Z = 1100;
 	mBombs[mBombSelected]->SetActorLocation(SpawnLocation);
 	if (mBombsPlanted > 0)
 	{
@@ -429,26 +479,37 @@ void Aprepro2Character::BeginPlay()
 	mProgressBars->AddToViewport(0);
 	VisionBar = VisionBarMax;
 	InitBombs();
+	UWorld* const World = GetWorld();
+	const FVector tempLocation = GetActorLocation();
+	const FRotator tempRotation = { 0, 0, 0 };
+	Target = World->SpawnActor<ALightDetector>(LightDetectionClass, tempLocation, tempRotation);
+	Target->SetActive(false);
 	//UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, UAISenseConfig_Sight::GetSenseImplementation(),)
 	UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, UAISense_Sight::StaticClass(),this);
 	UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, UAISense_Hearing::StaticClass(), this);
-
+	*XrayOn = false;
 	
 
 }
 
+
 // Called every frame
 void Aprepro2Character::Tick(float DeltaTime)
 {
-
-	//*XrayOn = Globals::XrayOn;
+	//if (PulseRecharge < PulseCooldown)
+	{
+		PulseRecharge += DeltaTime;
+	}
 
 	//GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, FString::FromInt(VisionBar));
+
+	 // Xray Regeneration
 	if (VisionBar < VisionBarMax && !*XrayOn)
 	{
-		VisionBar+=DeltaTime;
+		VisionBar+= XrayRegen*DeltaTime;
 	}
 	else if (*XrayOn)
+	
 	{
 		VisionBar-=DeltaTime;
 		if (VisionBar <= 0)
@@ -456,6 +517,7 @@ void Aprepro2Character::Tick(float DeltaTime)
 			ToggleXray();
 		}
 	}
+
 
 	if (!Sprinting && SprintBar<SprintBarMax)
 	{
@@ -468,9 +530,9 @@ void Aprepro2Character::Tick(float DeltaTime)
 		{
 			StopSprint();
 		}
-	}
+	}	
 
-	if (PlantingBomb)
+	if (PlantingBomb )
 	{
 		PlantProgress += DeltaTime;
 		mProgressBars->mBombPlantPercentage = PlantProgress / PlantTime;
@@ -486,9 +548,60 @@ void Aprepro2Character::Tick(float DeltaTime)
 
 	mProgressBars->mSprintBarPercentage = SprintBar / SprintBarMax;
 	mProgressBars->mXrayPercentage = VisionBar / VisionBarMax;
+	if (bIsCrouched)
+	{
+		FootStepTimer -= DeltaTime*0.5;
+	}
+	else
+	FootStepTimer -= Sprinting ? DeltaTime * 2 : DeltaTime;
 
+	if (FootStepTimer <= 0)
+	{
+		FootStepNoise();
+	}
 	
-	
+	if (*XrayOn)
+	{
+		FVector CamLoc;
+		FRotator CamRot;
+
+		Controller->GetPlayerViewPoint(CamLoc, CamRot); // Get the camera position and rotation
+		const FVector StartTrace = CamLoc; // trace start is the camera location
+		const FVector Direction = CamRot.Vector();
+		const FVector EndTrace = StartTrace + Direction * RayCastDistance;
+		FCollisionQueryParams TraceParams(FName(TEXT("WeaponTrace")), true, this);
+		TraceParams.bTraceAsyncScene = true;
+		TraceParams.bReturnPhysicalMaterial = true;
+		FHitResult Hit(ForceInit);
+		float length = RayCastDistance;
+		GetWorld()->LineTraceSingle(Hit, StartTrace, EndTrace, ECollisionChannel::ECC_Camera, TraceParams); // simple trace function
+		if (Hit.bBlockingHit)
+		{
+			Target->SetActorLocation(Hit.Location);
+			length = FVector::Dist(Hit.Location, StartTrace);
+		}
+		else
+		{
+			Target->SetActorLocation(EndTrace);
+		}
+		//DrawDebugSphere(GetWorld(), Target->GetActorLocation(), 100.f, 20, FColor::Red);
+	}
+}
+
+void Aprepro2Character::FootStepNoise()
+{
+	//if (!bIsCrouched)
+	{
+		if (GetVelocity().Size() > 0)//is moving
+		{
+			float volume = Sprinting ? 2 : 1;
+			volume = bIsCrouched ? 0.5f:volume;
+			FootStepAudio->SetVolumeMultiplier(volume);
+			FootStepAudio->Play();
+			
+			FootStepTimer = footStepDelay;
+		}
+	}
 }
 
 void Aprepro2Character::DetonateAllBombs()
@@ -505,7 +618,7 @@ void Aprepro2Character::DetonateAllBombs()
 
 void Aprepro2Character::DetonateBomb()
 {
-	if (mBombSelected != -1)
+	if (mBombSelected != -1 && mBombs[mBombSelected]->IsPlanted())
 	{
 		mBombs[mBombSelected]->Explode();
 		mBombs.RemoveAt(mBombSelected);
@@ -530,4 +643,16 @@ void Aprepro2Character::SelectBomb()
 			mBombSelected = (mBombSelected + 1 == mBombsPlanted) ? 0 : mBombSelected + 1;
 		mBombs[mBombSelected]->XRayBomb(true);
 	}
+}
+
+void Aprepro2Character::PickUpBomb(ADetonateBomb* bomb)
+{
+	mBombs.Add(bomb);
+	bomb->SetActive(false);
+	mNumBombs++;
+}
+
+void Aprepro2Character::PickUpVisionBoost(float boost)
+{
+	VisionBar = (VisionBar + boost > VisionBarMax) ? VisionBarMax : VisionBar + boost;
 }

@@ -46,6 +46,11 @@ void UXrayMode::TickComponent( float DeltaTime, ELevelTick TickType, FActorCompo
 				mXrayOn = true;
 			}
 			}
+			else if (mXrayOn)
+			{
+				mParentMesh->SetRenderCustomDepth(false);
+				mXrayOn = false;
+			}
 		}
 		else if(mXrayOn)
 		{
