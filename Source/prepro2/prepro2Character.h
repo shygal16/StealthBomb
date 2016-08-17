@@ -222,32 +222,35 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)
 		TSubclassOf<UUserWidget> GameOverClass;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)
-	bool Keycard = false;
+		bool Keycard = false;
+
 private:
-	bool* XrayOn;
+	//Bombs
 	TArray<ADetonateBomb*> mBombs;
 	int mBombsPlanted;
 	int mBombSelected;
+	float PlantProgress=0;
+	bool PlantingBomb=false;
 	void InitBombs();
-	float VisionBar;
-	void GameOver();
-	bool GamePaused;
-
 	void BombPlant();
 	void BombStopPlant();
-	bool PlantingBomb=false;
-	float PlantProgress=0;
 
+	//Flashlight
+	float VisionBar;
+	bool* XrayOn;
+
+	//Extra Menus
+	bool GamePaused;
+	void GameOver();
+
+	//Movement
 	float SprintBar;
 	bool Sprinting;
 	float sprintSpeed;
 	float WalkSpeed;
 
+	//Misc
 	float PulseRecharge=100;
-
 	bool mInsideTriggerBox;
-	
-
-	
 };
 
