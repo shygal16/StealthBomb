@@ -3,6 +3,7 @@
 #include "GameFramework/HUD.h"
 #include "prepro2Character.h"
 #include "Runtime/Engine/Classes/Engine/Font.h"
+#include "Enemy_RealTest.h"
 #include "prepro2HUD.generated.h"
 
 UCLASS()
@@ -25,11 +26,15 @@ private:
 	class UTexture2D* mBombUsed;
 	class UTexture2D* mBombUnused;
 	class UTexture2D* mBombSelected;
+	
+	class UTexture2D* mCompass;
 
 	UFont* mFont;
 
 	float mBombTextureWidth;
-
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemies")
+		AEnemy_RealTest* mEnemy;
 	
 };
 

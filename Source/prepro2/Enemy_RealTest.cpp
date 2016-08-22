@@ -88,6 +88,15 @@ void AEnemy_RealTest::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	}
 	
+	if (Screeched)
+	{
+		mScreechDelay -= DeltaTime;
+		if (mScreechDelay < 0)
+		{
+			Screeched = false;
+			mScreechDelay = 2.f;
+		}
+	}
 
 	/*isAlive = true;
 	float dist;
