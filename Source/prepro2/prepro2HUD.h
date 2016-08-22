@@ -29,6 +29,8 @@ private:
 	
 	class UTexture2D* mCompass;
 
+	class UTexture2D* mQuadrant;
+
 	UFont* mFont;
 
 	float mBombTextureWidth;

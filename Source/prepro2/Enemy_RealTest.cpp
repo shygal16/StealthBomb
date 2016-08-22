@@ -94,7 +94,7 @@ void AEnemy_RealTest::Tick(float DeltaTime)
 		if (mScreechDelay < 0)
 		{
 			Screeched = false;
-			mScreechDelay = 2.f;
+			mScreechDelay = 0.5f;
 		}
 	}
 
