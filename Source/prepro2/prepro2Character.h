@@ -30,9 +30,15 @@ public:
 	void Sprint();
 	void StopSprint();
 
+	void PlayHeadBob();
+	void PlayFootStep();
+
 	UPROPERTY(EditAnywhere)
 	ALightDetector* Target;
 	//ADetectionDummy* LightDetection;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = CharacterInfo)
+		TSubclassOf <UCameraShake> CameraShaker;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio Component")
 		UAudioComponent* FootStepAudio;

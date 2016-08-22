@@ -312,9 +312,11 @@ void Aprepro2Character::MoveForward(float Value)
 {
 	if (Value != 0.0f && !PlantingBomb)
 	{
+		
 		// add movement in that direction
+		GetWorld()->GetFirstPlayerController()->ClientPlayCameraShake(CameraShaker, 1);
 		AddMovementInput(GetActorForwardVector(), Value);
-
+		
 		float SoundMultiplier = GetCharacterMovement()->MaxWalkSpeed == sprintSpeed ? 1.0f : .2f;
 		if (bIsCrouched)
 		{
@@ -488,7 +490,6 @@ void Aprepro2Character::BeginPlay()
 	UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, UAISense_Sight::StaticClass(),this);
 	UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, UAISense_Hearing::StaticClass(), this);
 	*XrayOn = false;
-	
 
 }
 
