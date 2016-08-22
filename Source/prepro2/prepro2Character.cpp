@@ -113,6 +113,7 @@ void Aprepro2Character::SetupPlayerInputComponent(class UInputComponent* InputCo
 	InputComponent->BindAction("Sprint", IE_Released, this, &Aprepro2Character::StopSprint);
 
 	InputComponent->BindAction("Xray", IE_Pressed, this, &Aprepro2Character::ToggleXray);
+	InputComponent->BindAction("Xray", IE_Released, this, &Aprepro2Character::ToggleXray);
 
 	InputComponent->BindAction("Pulse", IE_Pressed, this, &Aprepro2Character::BombPulse);
 	
@@ -308,13 +309,21 @@ float Aprepro2Character::TakeDamage(float DamageAmount, struct FDamageEvent cons
 //	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, message);
 //	return DamageAmount;
 //}
+
+void Aprepro2Character::PlayFootStep()
+{
+	GetWorld()->GetFirstPlayerController()->ClientPlayCameraShake(CameraShaker, 1);
+	//FootStepAudio->Play();
+	//FootStepAudio->SetPitchMultiplier
+}
+
 void Aprepro2Character::MoveForward(float Value)
 {
 	if (Value != 0.0f && !PlantingBomb)
 	{
 		
 		// add movement in that direction
-		GetWorld()->GetFirstPlayerController()->ClientPlayCameraShake(CameraShaker, 1);
+		PlayFootStep();
 		AddMovementInput(GetActorForwardVector(), Value);
 		
 		float SoundMultiplier = GetCharacterMovement()->MaxWalkSpeed == sprintSpeed ? 1.0f : .2f;
@@ -332,6 +341,7 @@ void Aprepro2Character::MoveRight(float Value)
 {
 	if (Value != 0.0f && !PlantingBomb)
 	{
+		PlayFootStep();
 		// add movement in that direction
 		AddMovementInput(GetActorRightVector(), Value);
 
