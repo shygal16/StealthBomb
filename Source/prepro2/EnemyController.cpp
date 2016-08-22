@@ -130,7 +130,7 @@ void AEnemyController::SetTargetEnemy(APawn* Target)
 					// Player entered the sight
 					if (info.LastSensedStimuli[i].WasSuccessfullySensed() )
 					{
-						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, "Player Detected. Following him");
+						//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, "Player Detected. Following him");
 						mBlackboard->SetValue<UBlackboardKeyType_Object>(PlayerID, Target);									
 					}
 					// Player exited the sight
@@ -138,7 +138,7 @@ void AEnemyController::SetTargetEnemy(APawn* Target)
 					{
 						if (info.LastSensedStimuli[i].GetAge() == 0)
 						{
-							GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Player Lost. Updating its last seen Location");
+							//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Player Lost. Updating its last seen Location");
 							mBlackboard->ClearValue(PlayerID);					
 							if (mBlackboard->IsVectorValueSet(PlayerHeardLocationID))
 							{
@@ -157,7 +157,7 @@ void AEnemyController::SetTargetEnemy(APawn* Target)
 				// Checking if it was detected by sound
 				else if (info.LastSensedStimuli[i].Type.Name == "Default__AISense_Hearing" && info.LastSensedStimuli[i].GetAge() == 0.f)
 				{
-					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, "Player Heard. Updating its last Heard Location");
+					//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, "Player Heard. Updating its last Heard Location");
 					mBlackboard->SetValue<UBlackboardKeyType_Vector>(PlayerHeardLocationID, Target->GetActorLocation());
 					info.LastSensedStimuli[i].AgeStimulus(1.f);
 					if(mBlackboard->IsVectorValueSet(PlayerLastSeenLocationID))
@@ -185,7 +185,7 @@ void AEnemyController::SetTargetEnemy(APawn* Target)
 				// Checking if it was detected by sound
 				/*else*/ if (info.LastSensedStimuli[i].Type.Name == "Default__AISense_Sight")
 				{
-					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Bomb Heard. Updating its last Heard Location");
+					//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Bomb Heard. Updating its last Heard Location");
 					if (mBlackboard->IsVectorValueSet(PlayerHeardLocationID))
 					{
 						mBlackboard->ClearValue(PlayerHeardLocationID);
