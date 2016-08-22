@@ -46,8 +46,12 @@ public:
 
 //	UFUNCTION()
 //	void OnHearPlayer(APawn* pawn, const FVector &Location, float Volume);
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Screeching")
+		bool Screeched = false;
+
 private:
 	float mWalkSpeed;
+	float mScreechDelay = 2.f;
 
 	//Reference to level
 	AMyLevelScriptActor* mLevel;

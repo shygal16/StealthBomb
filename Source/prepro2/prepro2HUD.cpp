@@ -11,6 +11,13 @@ Aprepro2HUD::Aprepro2HUD()
 	// Set the crosshair texture
 	static ConstructorHelpers::FObjectFinder<UTexture2D> CrosshiarTexObj(TEXT("/Game/FirstPerson/Textures/FirstPersonCrosshair"));
 	CrosshairTex = CrosshiarTexObj.Object;
+
+	// Texture for Compass
+	static ConstructorHelpers::FObjectFinder<UTexture2D> CompassObj(TEXT("/Game/FirstPerson/Textures/compass"));
+	if (CompassObj.Succeeded())
+	{
+		mCompass = CompassObj.Object;
+	}
 	
 	//bomb used
 	static ConstructorHelpers::FObjectFinder<UTexture2D> mBombUsedObj(TEXT("/Game/FirstPerson/Textures/bomb_used"));
@@ -104,6 +111,59 @@ void Aprepro2HUD::DrawHUD()
 	{
 		Canvas->SetDrawColor(255, 0, 0);
 		Canvas->DrawText(mFont, "Press Y to Pick Up Item", Canvas->ClipX * 0.5f - 175.f, Canvas->ClipY - 100.f, 2.f,2.f);
+	}
+
+
+			FVector2D startPos(100.f, Canvas->ClipY - 100.f);
+			
+			TileItem.Position = FVector2D(startPos.X - 64 , startPos.Y - 64 );
+			TileItem.Texture = mCompass->Resource;
+			TileItem.Size = FVector2D(128, 128);
+			Canvas->DrawItem(TileItem);
+
+	if (mEnemy->Screeched)
+	{
+		FVector2D dir = (FVector2D)mEnemy->GetActorLocation() - (FVector2D)player->GetActorLocation();
+		FVector2D forward = (FVector2D)player->GetFirstPersonCameraComponent()->GetForwardVector();
+		dir.Normalize();
+
+		float angle = FMath::Acos(FVector2D::DotProduct(dir, forward));
+		FVector2D compassDir(0, -1);
+
+		angle = FVector2D::CrossProduct(dir, forward) > 0 ? 2 * 3.141592 - angle : angle;
+
+		float S, C;
+		FMath::SinCos(&S, &C, angle);
+
+		compassDir = FVector2D((C * compassDir.X - S * compassDir.Y), S * compassDir.X + C * compassDir.Y);
+		compassDir.Normalize();
+
+		Canvas->K2_DrawLine(startPos, startPos + compassDir * 60, 1.f, FColor::Red);
+	}
+
+	else if (mEnemy->GetVelocity().DistSquaredXY > 0)
+	{
+		float dist = FVector::DistSquared(mEnemy->GetActorLocation() , player->GetActorLocation());
+		if (dist < 5000 * 700)
+		{
+			
+			FVector2D dir = (FVector2D)mEnemy->GetActorLocation() - (FVector2D)player->GetActorLocation();
+			FVector2D forward = (FVector2D)player->GetFirstPersonCameraComponent()->GetForwardVector();
+			dir.Normalize();
+
+			float angle = FMath::Acos(FVector2D::DotProduct(dir,forward));
+			FVector2D compassDir(0, -1);
+
+			angle = FVector2D::CrossProduct(dir, forward) > 0 ? 2 * 3.141592 - angle : angle;
+
+			float S, C;
+			FMath::SinCos(&S, &C, angle);
+
+			compassDir = FVector2D((C * compassDir.X - S * compassDir.Y), S * compassDir.X + C * compassDir.Y);
+			compassDir.Normalize();
+
+			Canvas->K2_DrawLine(startPos, startPos + compassDir * 60, 1.f, FColor::Red);
+		}
 	}
 }
    
