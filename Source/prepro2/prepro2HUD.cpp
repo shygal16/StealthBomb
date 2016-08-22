@@ -18,6 +18,12 @@ Aprepro2HUD::Aprepro2HUD()
 	{
 		mCompass = CompassObj.Object;
 	}
+
+	static ConstructorHelpers::FObjectFinder<UTexture2D> QuadrantObj(TEXT("/Game/FirstPerson/Textures/quadrant"));
+	if (QuadrantObj.Succeeded())
+	{
+		mQuadrant = QuadrantObj.Object;
+	}
 	
 	//bomb used
 	static ConstructorHelpers::FObjectFinder<UTexture2D> mBombUsedObj(TEXT("/Game/FirstPerson/Textures/bomb_used"));
@@ -110,7 +116,7 @@ void Aprepro2HUD::DrawHUD()
 	if (player->IsPickUpTriggerActivated())
 	{
 		Canvas->SetDrawColor(255, 0, 0);
-		Canvas->DrawText(mFont, "Press Y to Pick Up Item", Canvas->ClipX * 0.5f - 175.f, Canvas->ClipY - 100.f, 2.f,2.f);
+		Canvas->DrawText(mFont, "Press E to Pick Up Item", Canvas->ClipX * 0.5f - 175.f, Canvas->ClipY - 100.f, 2.f,2.f);
 	}
 
 
@@ -127,32 +133,71 @@ void Aprepro2HUD::DrawHUD()
 		{
 			FVector2D dir = (FVector2D)mEnemy->GetActorLocation() - (FVector2D)player->GetActorLocation();
 			FVector2D forward = (FVector2D)player->GetFirstPersonCameraComponent()->GetForwardVector();
+			FVector2D side = (FVector2D)player->GetFirstPersonCameraComponent()->GetRightVector();
 			dir.Normalize();
 
-			float angle = FMath::Acos(FVector2D::DotProduct(dir, forward));
-			FVector2D compassDir(0, -1);
+			int quadrant = 0;
 
-			angle = FVector2D::CrossProduct(dir, forward) > 0 ? 2 * 3.141592 - angle : angle;
+			quadrant += FVector2D::DotProduct(dir, side) < 0 ? 0 : 1;
+			quadrant += FVector2D::DotProduct(dir, forward) > 0 ? 0 : 2;
 
-			float S, C;
-			FMath::SinCos(&S, &C, angle);
+			TileItem.Texture = mQuadrant->Resource;
+			TileItem.Size = FVector2D(64, 64);
+			TileItem.Position += FVector2D(64, 64);
 
-			compassDir = FVector2D((C * compassDir.X - S * compassDir.Y), S * compassDir.X + C * compassDir.Y);
-			compassDir.Normalize();
-
-			Canvas->K2_DrawLine(startPos, startPos + compassDir * 60, 1.f, FColor::Red);
+			switch (quadrant)
+			{
+			case 0: TileItem.Rotation = FRotator(0, 180, 0);
+				Canvas->DrawItem(TileItem);
+				break;
+			case 1: TileItem.Rotation = FRotator(0, 270, 0);
+				Canvas->DrawItem(TileItem);
+				break;
+			case 2: TileItem.Rotation = FRotator(0, 90, 0);
+				Canvas->DrawItem(TileItem);
+				break;
+			case 3: TileItem.Rotation = FRotator(0, 0, 0);
+				Canvas->DrawItem(TileItem);
+				break;
+			}
 		}
 		else if (mEnemy->GetVelocity().DistSquaredXY > 0)
 		{
 			float dist = FVector::DistSquared(mEnemy->GetActorLocation() , player->GetActorLocation());
 			if (dist < 5000 * 700)
-			{
-				
+			{				
 				FVector2D dir = (FVector2D)mEnemy->GetActorLocation() - (FVector2D)player->GetActorLocation();
 				FVector2D forward = (FVector2D)player->GetFirstPersonCameraComponent()->GetForwardVector();
+				FVector2D side = (FVector2D)player->GetFirstPersonCameraComponent()->GetRightVector();
 				dir.Normalize();
 
-				float angle = FMath::Acos(FVector2D::DotProduct(dir,forward));
+				int quadrant = 0;
+
+				quadrant += FVector2D::DotProduct(dir, side) < 0 ? 0 : 1;
+				quadrant += FVector2D::DotProduct(dir, forward) > 0 ? 0 : 2;
+
+				TileItem.Texture = mQuadrant->Resource;
+				TileItem.Size = FVector2D(64, 64);
+				TileItem.Position += FVector2D(64,64);
+
+				switch (quadrant)
+				{
+					case 0: TileItem.Rotation = FRotator(0, 180, 0);
+							Canvas->DrawItem(TileItem);
+							break;
+					case 1: TileItem.Rotation = FRotator(0, 270, 0);
+							Canvas->DrawItem(TileItem);
+							break;
+					case 2: TileItem.Rotation = FRotator(0, 90, 0);
+							Canvas->DrawItem(TileItem);
+							break;
+					case 3: TileItem.Rotation = FRotator(0, 0, 0);
+							Canvas->DrawItem(TileItem);
+							break;
+				}
+
+
+				/*float angle = FMath::Acos(FVector2D::DotProduct(dir,forward));
 				FVector2D compassDir(0, -1);
 
 				angle = FVector2D::CrossProduct(dir, forward) > 0 ? 2 * 3.141592 - angle : angle;
@@ -163,7 +208,7 @@ void Aprepro2HUD::DrawHUD()
 				compassDir = FVector2D((C * compassDir.X - S * compassDir.Y), S * compassDir.X + C * compassDir.Y);
 				compassDir.Normalize();
 
-				Canvas->K2_DrawLine(startPos, startPos + compassDir * 60, 1.f, FColor::Red);
+				Canvas->K2_DrawLine(startPos, startPos + compassDir * 60, 1.f, FColor::Red);*/
 			}
 		}
 	}
