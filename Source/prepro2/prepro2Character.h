@@ -82,8 +82,9 @@ public:
 	float VisionBarMax = 5;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Custom)
-		float footStepDelay = 0.5f;
-	float FootStepTimer=0;
+		float footStepDelay = 0.27f;
+	float FootStepTimer=1;
+	float FootstepPitch=1;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Custom)
 	float SprintBarMax = 5;
 
@@ -104,7 +105,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool UseXray=true;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		bool Hiding = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float XrayRegen = 0.1;
 
@@ -153,7 +155,11 @@ protected:
 	/** Fires a projectile. */
 	void OnFire();
 	void TogglePause();
-	void ToggleXray();
+	void ToggleXray(bool on);
+	void TurnXrayOff();
+	void TurnXrayOn();
+
+
 	//Throw a bomb
 	void Bomb();
 

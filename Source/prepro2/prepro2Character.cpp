@@ -112,8 +112,8 @@ void Aprepro2Character::SetupPlayerInputComponent(class UInputComponent* InputCo
 	InputComponent->BindAction("Sprint", IE_Pressed, this, &Aprepro2Character::Sprint);
 	InputComponent->BindAction("Sprint", IE_Released, this, &Aprepro2Character::StopSprint);
 
-	InputComponent->BindAction("Xray", IE_Pressed, this, &Aprepro2Character::ToggleXray);
-	InputComponent->BindAction("Xray", IE_Released, this, &Aprepro2Character::ToggleXray);
+	InputComponent->BindAction("Xray", IE_Pressed, this, &Aprepro2Character::TurnXrayOn);
+	InputComponent->BindAction("Xray", IE_Released, this, &Aprepro2Character::TurnXrayOff);
 
 	InputComponent->BindAction("Pulse", IE_Pressed, this, &Aprepro2Character::BombPulse);
 	
@@ -313,8 +313,6 @@ float Aprepro2Character::TakeDamage(float DamageAmount, struct FDamageEvent cons
 void Aprepro2Character::PlayFootStep()
 {
 	GetWorld()->GetFirstPlayerController()->ClientPlayCameraShake(CameraShaker, 1);
-	//FootStepAudio->Play();
-	//FootStepAudio->SetPitchMultiplier
 }
 
 void Aprepro2Character::MoveForward(float Value)
@@ -384,7 +382,15 @@ bool Aprepro2Character::EnableTouchscreenMovement(class UInputComponent* InputCo
 	}
 	return bResult;
 }
-void Aprepro2Character::ToggleXray()
+void Aprepro2Character::TurnXrayOn()
+{
+	ToggleXray(true);
+}
+void Aprepro2Character::TurnXrayOff()
+{
+	ToggleXray(false);
+}
+void Aprepro2Character::ToggleXray(bool on)
 {
 	//GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, XrayOn ? "True" : "False");
 	/*
@@ -402,6 +408,10 @@ void Aprepro2Character::ToggleXray()
 		//FirstPersonCameraComponent->PostProcessSettings.SceneColorTint.Transparent;
 	}
 	*/
+	if (*XrayOn == on)
+	{
+		return;
+	}
 	*XrayOn = !*XrayOn;
 	Light->ToggleVisibility();
 	Target->SetActive(*XrayOn);
@@ -509,7 +519,7 @@ void Aprepro2Character::Tick(float DeltaTime)
 {
 	//if (PulseRecharge < PulseCooldown)
 	{
-		PulseRecharge += DeltaTime;
+		//PulseRecharge += DeltaTime;
 	}
 
 	//GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, FString::FromInt(VisionBar));
@@ -525,7 +535,7 @@ void Aprepro2Character::Tick(float DeltaTime)
 		VisionBar-=DeltaTime;
 		if (VisionBar <= 0)
 		{
-			ToggleXray();
+			TurnXrayOff();
 		}
 	}
 
@@ -559,16 +569,21 @@ void Aprepro2Character::Tick(float DeltaTime)
 
 	mProgressBars->mSprintBarPercentage = SprintBar / SprintBarMax;
 	mProgressBars->mXrayPercentage = VisionBar / VisionBarMax;
+	
+	
 	if (bIsCrouched)
 	{
-		FootStepTimer -= DeltaTime*0.5;
+		FootStepTimer -= DeltaTime*0.75;
 	}
 	else
 	FootStepTimer -= Sprinting ? DeltaTime * 2 : DeltaTime;
 
 	if (FootStepTimer <= 0)
 	{
+		if (!CharacterMovement->IsFalling())
+		{
 		FootStepNoise();
+		}
 	}
 	
 	if (*XrayOn)
@@ -608,7 +623,10 @@ void Aprepro2Character::FootStepNoise()
 			float volume = Sprinting ? 2 : 1;
 			volume = bIsCrouched ? 0.5f:volume;
 			FootStepAudio->SetVolumeMultiplier(volume);
+			FootstepPitch= FootstepPitch>1 ? FootstepPitch - 0.25f : FootstepPitch + 0.25f;
+			FootStepAudio->PitchMultiplier = FootstepPitch;
 			FootStepAudio->Play();
+			
 			
 			FootStepTimer = footStepDelay;
 		}
