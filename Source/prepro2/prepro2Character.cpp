@@ -120,6 +120,8 @@ void Aprepro2Character::SetupPlayerInputComponent(class UInputComponent* InputCo
 	InputComponent->BindAction("Crouch", IE_Pressed, this, &Aprepro2Character::StartCrouch);
     InputComponent->BindAction("Crouch", IE_Released, this, &Aprepro2Character::EndCrouch);
 
+	InputComponent->BindAction("ToggleCompass", IE_Pressed, this, &Aprepro2Character::ToggleCompass);
+
 	//InputComponent->BindAction("PickUpItem", IE_Pressed, this, &Aprepro2Character::PickUpBomb);
 
 	//InputComponent->BindTouch(EInputEvent::IE_Pressed, this, &Aprepro2Character::TouchStarted);
@@ -417,6 +419,14 @@ void Aprepro2Character::ToggleXray(bool on)
 	Target->SetActive(*XrayOn);
 }
 
+void Aprepro2Character::ToggleCompass()
+{
+	if (VisionBar > 0.f)
+	{
+		CompassToggled = !CompassToggled;
+	}
+}
+
 void Aprepro2Character::BombPulse()
 {
 	if (mBombSelected != -1)
@@ -539,6 +549,14 @@ void Aprepro2Character::Tick(float DeltaTime)
 		}
 	}
 
+	if (CompassToggled)
+	{
+		VisionBar -= DeltaTime;
+		if (VisionBar <= 0)
+		{
+			ToggleCompass();
+		}
+	}
 
 	if (!Sprinting && SprintBar<SprintBarMax)
 	{

@@ -171,6 +171,10 @@ protected:
 
 	void SelectBomb();
 
+	// Compass
+	void ToggleCompass();
+	bool CompassToggled = false;
+
 	/** Handles moving forward/backward */
 	void MoveForward(float Val);
 
@@ -264,5 +268,6 @@ private:
 	//Misc
 	float PulseRecharge=100;
 	bool mInsideTriggerBox;
+
 };
 
