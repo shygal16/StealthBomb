@@ -489,7 +489,7 @@ void Aprepro2Character::BeginPlay()
 	Super::BeginPlay();
 	mProgressBars = CreateWidget<UProgressBarWidget>(GetWorld(), mProgressBarsClass);
 	mProgressBars->AddToViewport(0);
-	VisionBar = VisionBarMax;
+	VisionBar = VisionBarMax/2;
 	InitBombs();
 	UWorld* const World = GetWorld();
 	const FVector tempLocation = GetActorLocation();
