@@ -17,6 +17,15 @@ class PREPRO2_API UProgressBarWidget : public UUserWidget
 
 public:
 
+	UENUM(BlueprintType)
+	enum class CompassState : uint8
+	{
+		Hidden,
+		Visible,
+		Entering,
+		Leaving
+	};
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SprintBar Widget")
 		float mSprintBarPercentage;
 
@@ -28,5 +37,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SprintBar Widget")
 		bool mBombPlantVisible;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Enum)
+		CompassState mCompassState;
 
 };

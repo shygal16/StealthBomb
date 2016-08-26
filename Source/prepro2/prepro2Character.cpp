@@ -421,8 +421,14 @@ void Aprepro2Character::ToggleXray(bool on)
 
 void Aprepro2Character::ToggleCompass()
 {
-	if (VisionBar > 0.f)
+	if (mProgressBars->mCompassState == UProgressBarWidget::CompassState::Visible)
 	{
+		mProgressBars->mCompassState = UProgressBarWidget::CompassState::Leaving;
+		CompassToggled = !CompassToggled;
+	}
+	else if (VisionBar > 0.f && mProgressBars->mCompassState == UProgressBarWidget::CompassState::Hidden)
+	{
+		mProgressBars->mCompassState = UProgressBarWidget::CompassState::Entering;
 		CompassToggled = !CompassToggled;
 	}
 }
@@ -509,6 +515,7 @@ void Aprepro2Character::BeginPlay()
 	Super::BeginPlay();
 	mProgressBars = CreateWidget<UProgressBarWidget>(GetWorld(), mProgressBarsClass);
 	mProgressBars->AddToViewport(0);
+	mProgressBars->mCompassState = UProgressBarWidget::CompassState::Hidden;
 	VisionBar = VisionBarMax/2;
 	InitBombs();
 	UWorld* const World = GetWorld();
@@ -549,9 +556,9 @@ void Aprepro2Character::Tick(float DeltaTime)
 		}
 	}
 
-	if (CompassToggled)
+	if (mProgressBars->mCompassState == UProgressBarWidget::CompassState::Visible)
 	{
-		VisionBar -= DeltaTime;
+		VisionBar -= DeltaTime * 0.5f;
 		if (VisionBar <= 0)
 		{
 			ToggleCompass();
