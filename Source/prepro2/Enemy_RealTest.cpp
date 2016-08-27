@@ -23,6 +23,7 @@ AEnemy_RealTest::AEnemy_RealTest()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	mWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
+	GrowlSound = nullptr;
 //	PawnSense = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensingComp"));
 //	PawnSense->SetPeripheralVisionAngle(90.f);
 	//AIControllerClass = AEnemyController::StaticClass();
@@ -47,7 +48,7 @@ void AEnemy_RealTest::OnSeePlayer(APawn* pawn)
 void AEnemy_RealTest::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	/*sightConfig->SightRadius = 3000.0f;
 	sightConfig->LoseSightRadius = 3500.f;
 	sightConfig->PeripheralVisionAngleDegrees = 90.0f;
@@ -98,6 +99,16 @@ void AEnemy_RealTest::Tick(float DeltaTime)
 		}
 	}
 
+		mGrowlDelay -= DeltaTime;
+		if (mGrowlDelay < 0)
+		{
+			if (GrowlSound)
+			{
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), GrowlSound,GetActorLocation());
+			}
+			mGrowlDelay = GrowlFrequency;
+			
+		}
 	/*isAlive = true;
 	float dist;
 	Aprepro2Character* player = Cast<Aprepro2Character>(GetWorld()->GetFirstPlayerController()->GetPawn());

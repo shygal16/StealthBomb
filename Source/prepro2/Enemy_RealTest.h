@@ -48,10 +48,17 @@ public:
 //	void OnHearPlayer(APawn* pawn, const FVector &Location, float Volume);
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Screeching")
 		bool Screeched = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Screeching")
+		bool Growled = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Screeching")
+		float GrowlFrequency = 30;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Screeching")
+	USoundBase* GrowlSound;
 private:
 	float mWalkSpeed;
-	float mScreechDelay = 0.5f;
+	float mScreechDelay = 0.5f;	
+	float mGrowlDelay = 0.5f;
 
 	//Reference to level
 	AMyLevelScriptActor* mLevel;
