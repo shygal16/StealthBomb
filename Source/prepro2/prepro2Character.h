@@ -230,6 +230,7 @@ public:
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<class UProgressBarWidget> mProgressBarsClass;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)
 	class UProgressBarWidget* mProgressBars;
 	
 	float TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;

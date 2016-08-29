@@ -11,19 +11,6 @@ Aprepro2HUD::Aprepro2HUD()
 	// Set the crosshair texture
 	static ConstructorHelpers::FObjectFinder<UTexture2D> CrosshiarTexObj(TEXT("/Game/FirstPerson/Textures/FirstPersonCrosshair"));
 	CrosshairTex = CrosshiarTexObj.Object;
-
-	// Texture for Compass
-	static ConstructorHelpers::FObjectFinder<UTexture2D> CompassObj(TEXT("/Game/FirstPerson/Textures/compass"));
-	if (CompassObj.Succeeded())
-	{
-		mCompass = CompassObj.Object;
-	}
-
-	static ConstructorHelpers::FObjectFinder<UTexture2D> QuadrantObj(TEXT("/Game/FirstPerson/Textures/quadrant"));
-	if (QuadrantObj.Succeeded())
-	{
-		mQuadrant = QuadrantObj.Object;
-	}
 	
 	//bomb used
 	static ConstructorHelpers::FObjectFinder<UTexture2D> mBombUsedObj(TEXT("/Game/FirstPerson/Textures/bomb_used"));
@@ -120,82 +107,6 @@ void Aprepro2HUD::DrawHUD()
 	}
 
 
-	FVector2D startPos(100.f, Canvas->ClipY - 100.f);
-	
-	TileItem.Position = FVector2D(startPos.X - 64 , startPos.Y - 64 );
-	TileItem.Texture = mCompass->Resource;
-	TileItem.Size = FVector2D(128, 128);
-	Canvas->DrawItem(TileItem);
-
-	if(mEnemy)
-	{
-		if (mEnemy->Screeched)
-		{
-			FVector2D dir = (FVector2D)mEnemy->GetActorLocation() - (FVector2D)player->GetActorLocation();
-			FVector2D forward = (FVector2D)player->GetFirstPersonCameraComponent()->GetForwardVector();
-			FVector2D side = (FVector2D)player->GetFirstPersonCameraComponent()->GetRightVector();
-			dir.Normalize();
-
-			int quadrant = 0;
-
-			quadrant += FVector2D::DotProduct(dir, side) < 0 ? 0 : 1;
-			quadrant += FVector2D::DotProduct(dir, forward) > 0 ? 0 : 2;
-
-			TileItem.Texture = mQuadrant->Resource;
-			TileItem.Size = FVector2D(64, 64);
-			TileItem.Position += FVector2D(64, 64);
-
-			switch (quadrant)
-			{
-			case 0: TileItem.Rotation = FRotator(0, 180, 0);
-				Canvas->DrawItem(TileItem);
-				break;
-			case 1: TileItem.Rotation = FRotator(0, 270, 0);
-				Canvas->DrawItem(TileItem);
-				break;
-			case 2: TileItem.Rotation = FRotator(0, 90, 0);
-				Canvas->DrawItem(TileItem);
-				break;
-			case 3: TileItem.Rotation = FRotator(0, 0, 0);
-				Canvas->DrawItem(TileItem);
-				break;
-			}
-		}
-		else if (mEnemy->GetVelocity().DistSquaredXY > 0)
-		{
-			float dist = FVector::DistSquared(mEnemy->GetActorLocation() , player->GetActorLocation());
-			if (dist < 5000 * 700)
-			{				
-				FVector2D dir = (FVector2D)mEnemy->GetActorLocation() - (FVector2D)player->GetActorLocation();
-				FVector2D forward = (FVector2D)player->GetFirstPersonCameraComponent()->GetForwardVector();
-				FVector2D side = (FVector2D)player->GetFirstPersonCameraComponent()->GetRightVector();
-				dir.Normalize();
-
-				int quadrant = 0;
-
-				quadrant += FVector2D::DotProduct(dir, side) < 0 ? 0 : 1;
-				quadrant += FVector2D::DotProduct(dir, forward) > 0 ? 0 : 2;
-
-				TileItem.Texture = mQuadrant->Resource;
-				TileItem.Size = FVector2D(64, 64);
-				TileItem.Position += FVector2D(64,64);
-
-				switch (quadrant)
-				{
-					case 0: TileItem.Rotation = FRotator(0, 180, 0);
-							Canvas->DrawItem(TileItem);
-							break;
-					case 1: TileItem.Rotation = FRotator(0, 270, 0);
-							Canvas->DrawItem(TileItem);
-							break;
-					case 2: TileItem.Rotation = FRotator(0, 90, 0);
-							Canvas->DrawItem(TileItem);
-							break;
-					case 3: TileItem.Rotation = FRotator(0, 0, 0);
-							Canvas->DrawItem(TileItem);
-							break;
-				}
-
 
 				/*float angle = FMath::Acos(FVector2D::DotProduct(dir,forward));
 				FVector2D compassDir(0, -1);
@@ -206,11 +117,6 @@ void Aprepro2HUD::DrawHUD()
 				FMath::SinCos(&S, &C, angle);
 
 				compassDir = FVector2D((C * compassDir.X - S * compassDir.Y), S * compassDir.X + C * compassDir.Y);
-				compassDir.Normalize();
-
-				Canvas->K2_DrawLine(startPos, startPos + compassDir * 60, 1.f, FColor::Red);*/
-			}
-		}
-	}
+				compassDir.Normalize();*/
 }
    

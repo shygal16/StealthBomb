@@ -27,16 +27,10 @@ private:
 	class UTexture2D* mBombUnused;
 	class UTexture2D* mBombSelected;
 	
-	class UTexture2D* mCompass;
-
-	class UTexture2D* mQuadrant;
-
 	UFont* mFont;
 
 	float mBombTextureWidth;
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemies")
-		AEnemy_RealTest* mEnemy;
 	
 };
 

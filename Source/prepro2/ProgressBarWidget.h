@@ -6,6 +6,7 @@
 #include"Runtime/SlateCore/Public/Layout/Visibility.h"
 #include "ProgressBarWidget.generated.h"
 
+class AEnemy_RealTest;
 /**
 *
 */
@@ -40,5 +41,17 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Enum)
 		CompassState mCompassState;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemies")
+		float mAngle;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemies")
+		AEnemy_RealTest* mEnemy;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemies")
+		bool mEnemyHeard = false;
+
+	UFUNCTION(BlueprintCallable, category = "Enemies")
+	void GetQuadrant();
 
 };
