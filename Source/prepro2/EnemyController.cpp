@@ -130,8 +130,11 @@ void AEnemyController::SetTargetEnemy(APawn* Target)
 					// Player entered the sight
 					if (info.LastSensedStimuli[i].WasSuccessfullySensed() )
 					{
+						if (!static_cast<Aprepro2Character*>(Target)->Hiding)
+						{
 						//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, "Player Detected. Following him");
 						mBlackboard->SetValue<UBlackboardKeyType_Object>(PlayerID, Target);									
+						}
 					}
 					// Player exited the sight
 					else
