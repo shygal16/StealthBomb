@@ -18,6 +18,7 @@ public:
 		XrayOn = false;
 	}
 	static bool XrayOn;
-};
+}; 
+
 
 #endif
