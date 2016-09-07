@@ -26,6 +26,7 @@ Aprepro2Character::Aprepro2Character()
 	, mInsideTriggerBox(false)
 	, FootStepAudio(CreateDefaultSubobject<UAudioComponent>(TEXT("Footstep Audio Comp")))
 	, Light(CreateDefaultSubobject<USpotLightComponent>(TEXT("FlashLight Comp")))
+	//, mCompassWidget(CreateDefaultSubobject<UCompassWidget>(TEXT("Compass Widget")))
 {
 	
 	XrayOn = &Globals::XrayOn;
@@ -421,14 +422,14 @@ void Aprepro2Character::ToggleXray(bool on)
 
 void Aprepro2Character::ToggleCompass()
 {
-	if (mProgressBars->mCompassState == UProgressBarWidget::CompassState::Visible)
+	if (mCompassWidget->mCompassState == UCompassWidget::CompassState::Visible)
 	{
-		mProgressBars->mCompassState = UProgressBarWidget::CompassState::Leaving;
+		mCompassWidget->mCompassState = UCompassWidget::CompassState::Leaving;
 		CompassToggled = !CompassToggled;
 	}
-	else if (VisionBar > 0.f && mProgressBars->mCompassState == UProgressBarWidget::CompassState::Hidden)
+	else if (VisionBar > 0.f && mCompassWidget->mCompassState == UCompassWidget::CompassState::Hidden)
 	{
-		mProgressBars->mCompassState = UProgressBarWidget::CompassState::Entering;
+		mCompassWidget->mCompassState = UCompassWidget::CompassState::Entering;
 		CompassToggled = !CompassToggled;
 	}
 }
@@ -514,11 +515,19 @@ void Aprepro2Character::BeginPlay()
 {
 	Super::BeginPlay();
 	mProgressBars = CreateWidget<UProgressBarWidget>(GetWorld(), mProgressBarsClass);
+	mCompassWidget = CreateWidget<UCompassWidget>(GetWorld(), mCompassWidgetClass);
 	mProgressBars->AddToViewport(0);
-	mProgressBars->mCompassState = UProgressBarWidget::CompassState::Hidden;
+	UWorld* const World = GetWorld();
+	mCompass = World->SpawnActor<ACompass>(mCompassClass, GetActorLocation(), FRotator());
+
+	mCompass->mWidgetComp->SetWidget((UUserWidget*) mCompassWidget);
+
+	mCompass->mBody->bCastDynamicShadow = false;
+	mCompass->mBody->CastShadow = false;
+	mCompass->mBody->AttachTo(Mesh1P, TEXT("GripPoint"), EAttachLocation::KeepRelativeOffset, true);
+
 	VisionBar = VisionBarMax/2;
 	InitBombs();
-	UWorld* const World = GetWorld();
 	const FVector tempLocation = GetActorLocation();
 	const FRotator tempRotation = { 0, 0, 0 };
 	Target = World->SpawnActor<ALightDetector>(LightDetectionClass, tempLocation, tempRotation);
@@ -556,7 +565,7 @@ void Aprepro2Character::Tick(float DeltaTime)
 		}
 	}
 
-	if (mProgressBars->mCompassState == UProgressBarWidget::CompassState::Visible)
+	if (mCompassWidget->mCompassState == UCompassWidget::CompassState::Visible)
 	{
 		VisionBar -= DeltaTime * 0.5f;
 		if (VisionBar <= 0)

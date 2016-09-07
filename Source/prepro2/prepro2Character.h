@@ -3,6 +3,8 @@
 #include "GameFramework/Character.h"
 #include "DetonateBomb.h"
 #include "ProgressBarWidget.h"
+#include "Compass.h"
+#include "CompassWidget.h"
 #include "LightDetector.h"
 #include "prepro2Character.generated.h"
 
@@ -232,6 +234,18 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)
 	class UProgressBarWidget* mProgressBars;
+
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<class ACompass> mCompassClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)
+		class ACompass* mCompass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)
+	class UCompassWidget* mCompassWidget;
+
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<class UCompassWidget> mCompassWidgetClass;
 	
 	float TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)
