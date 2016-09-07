@@ -152,7 +152,10 @@ void AEnemyController::SetTargetEnemy(APawn* Target)
 								mBlackboard->ClearValue(BombHeardLocationID);
 							}
 						}
+						if (!static_cast<Aprepro2Character*>(Target)->Hiding)
+						{
 						mBlackboard->SetValue<UBlackboardKeyType_Vector>(PlayerLastSeenLocationID, Target->GetActorLocation());
+						}
 						info.LastSensedStimuli[i].AgeStimulus(1.f);
 					}
 				}
