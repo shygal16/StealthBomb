@@ -240,12 +240,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)
 		class ACompass* mCompass;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)
-	class UCompassWidget* mCompassWidget;
-
-	UPROPERTY(EditAnywhere)
-		TSubclassOf<class UCompassWidget> mCompassWidgetClass;
 	
 	float TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)

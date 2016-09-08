@@ -422,14 +422,15 @@ void Aprepro2Character::ToggleXray(bool on)
 
 void Aprepro2Character::ToggleCompass()
 {
-	if (mCompassWidget->mCompassState == UCompassWidget::CompassState::Visible)
+	if (mCompass->mCompassState == ACompass::CompassState::Visible)
 	{
-		mCompassWidget->mCompassState = UCompassWidget::CompassState::Leaving;
+		mCompass->mCompassState = ACompass::CompassState::Hidden;		
 		CompassToggled = !CompassToggled;
 	}
-	else if (VisionBar > 0.f && mCompassWidget->mCompassState == UCompassWidget::CompassState::Hidden)
+	else if (VisionBar > 0.f && mCompass->mCompassState == ACompass::CompassState::Hidden)
 	{
-		mCompassWidget->mCompassState = UCompassWidget::CompassState::Entering;
+		//mCompass->mCompassState = ACompass::CompassState::Entering;
+		mCompass->mCompassState = ACompass::CompassState::Visible;
 		CompassToggled = !CompassToggled;
 	}
 }
@@ -515,21 +516,18 @@ void Aprepro2Character::BeginPlay()
 {
 	Super::BeginPlay();
 	mProgressBars = CreateWidget<UProgressBarWidget>(GetWorld(), mProgressBarsClass);
-	mCompassWidget = CreateWidget<UCompassWidget>(GetWorld(), mCompassWidgetClass);
 	mProgressBars->AddToViewport(0);
 	UWorld* const World = GetWorld();
-	mCompass = World->SpawnActor<ACompass>(mCompassClass, GetActorLocation(), FRotator());
 
-	mCompass->mWidgetComp->SetWidget((UUserWidget*) mCompassWidget);
-
+	const FVector tempLocation = GetActorLocation();
+	const FRotator tempRotation = { 0, 0, 0 };
+	mCompass = World->SpawnActor<ACompass>(mCompassClass, tempLocation, tempRotation);
 	mCompass->mBody->bCastDynamicShadow = false;
 	mCompass->mBody->CastShadow = false;
 	mCompass->mBody->AttachTo(Mesh1P, TEXT("GripPoint"), EAttachLocation::KeepRelativeOffset, true);
 
 	VisionBar = VisionBarMax/2;
 	InitBombs();
-	const FVector tempLocation = GetActorLocation();
-	const FRotator tempRotation = { 0, 0, 0 };
 	Target = World->SpawnActor<ALightDetector>(LightDetectionClass, tempLocation, tempRotation);
 	Target->SetActive(false);
 	//UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, UAISenseConfig_Sight::GetSenseImplementation(),)
@@ -565,7 +563,7 @@ void Aprepro2Character::Tick(float DeltaTime)
 		}
 	}
 
-	if (mCompassWidget->mCompassState == UCompassWidget::CompassState::Visible)
+	if (mCompass->mCompassState == ACompass::CompassState::Visible)
 	{
 		VisionBar -= DeltaTime * 0.5f;
 		if (VisionBar <= 0)
