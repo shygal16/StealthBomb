@@ -16,20 +16,24 @@ public:
 
 	/** Primary draw call for the HUD */
 	virtual void DrawHUD() override;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+	bool DisplayPopup=false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+	class UTexture2D* GivenTexture;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+	bool FirstPickup=true;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+		float Fade = 1;
 private:
-	/** Crosshair asset pointer */
-	class UTexture2D* CrosshairTex;
-
 	void BeginPlay() override;
 
-	class UTexture2D* mBombUsed;
-	class UTexture2D* mBombUnused;
-	class UTexture2D* mBombSelected;
-	
-	UFont* mFont;
+	class UTexture2D* EButtonPrompt;
+	class UTexture2D* EButtonPromptFirst;
 
-	float mBombTextureWidth;
+
+
+	UFont* mFont;
 public:
 	
 };
