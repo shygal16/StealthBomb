@@ -30,17 +30,8 @@ public:
 
 	UStaticMeshComponent* mEmpty;;
 
-	UENUM(BlueprintType)
-		enum class CompassState : uint8
-	{
-		Hidden,
-		Visible,
-		Entering,
-		Leaving
-	};
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Enum)
-		CompassState mCompassState = CompassState::Hidden;
+		bool mCompassShown = false;
 
 	void UpdateState();
 
