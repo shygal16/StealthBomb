@@ -58,7 +58,7 @@ public:
 private:
 	float mWalkSpeed;
 	float mScreechDelay = 0.5f;	
-	float mGrowlDelay = 0.5f;
+	float mGrowlDelay = 35.f;
 
 	//Reference to level
 	AMyLevelScriptActor* mLevel;
