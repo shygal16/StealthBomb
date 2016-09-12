@@ -44,7 +44,7 @@ void Aprepro2HUD::DrawHUD()
 	// draw the crosshair
 	FCanvasTileItem TileItem( Center, EButtonPrompt->Resource, FLinearColor::White);
 	TileItem.BlendMode = SE_BLEND_Translucent;
-
+	
 
 	Aprepro2Character* player = Cast<Aprepro2Character>(UGameplayStatics::GetPlayerPawn(this, 0));
 	
@@ -72,6 +72,7 @@ void Aprepro2HUD::DrawHUD()
 		float ratioY = GivenTexture->GetSurfaceWidth() / GivenTexture->GetSurfaceHeight();
 		FVector2D canvasSize = FVector2D(Canvas->ClipY * ratioY, Canvas->ClipY);
 		TileItem.Size = canvasSize;
+		//TileItem.SetColor(FLinearColor::Green);
 		TileItem.Position = FVector2D(Canvas->ClipX * 0.05, 0);
 		Canvas->DrawItem(TileItem);
 	}

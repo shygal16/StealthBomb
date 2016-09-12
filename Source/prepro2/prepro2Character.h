@@ -44,6 +44,14 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio Component")
 		UAudioComponent* FootStepAudio;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio Component")
+		USoundCue* FootStepSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio Component")
+		USoundCue* LightOn;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio Component")
+		USoundCue* LightOff;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Light")
 		USpotLightComponent* Light;

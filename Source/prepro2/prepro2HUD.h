@@ -23,6 +23,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 	bool FirstPickup=true;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+		float Fade = 1;
 private:
 	void BeginPlay() override;
 

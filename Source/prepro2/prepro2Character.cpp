@@ -25,6 +25,7 @@ Aprepro2Character::Aprepro2Character()
 	, mBombsPlanted(0)
 	, mInsideTriggerBox(false)
 	, FootStepAudio(CreateDefaultSubobject<UAudioComponent>(TEXT("Footstep Audio Comp")))
+	//, FootStepSound(CreateDefaultSubobject<USoundCue>(TEXT("Footstep sound Comp")))
 	, Light(CreateDefaultSubobject<USpotLightComponent>(TEXT("FlashLight Comp")))
 	//, mCompassWidget(CreateDefaultSubobject<UCompassWidget>(TEXT("Compass Widget")))
 {
@@ -78,7 +79,7 @@ Aprepro2Character::Aprepro2Character()
 	{
 		FootStepAudio->AttachParent = RootComponent;
 	}
-
+	
 	if (Light)
 	{
 		Light->AttachParent = FirstPersonCameraComponent;
@@ -387,10 +388,13 @@ bool Aprepro2Character::EnableTouchscreenMovement(class UInputComponent* InputCo
 }
 void Aprepro2Character::TurnXrayOn()
 {
+	
+	UGameplayStatics::PlaySound2D(GetWorld(), LightOn);
 	ToggleXray(true);
 }
 void Aprepro2Character::TurnXrayOff()
 {
+	UGameplayStatics::PlaySound2D(GetWorld(), LightOff);
 	ToggleXray(false);
 }
 void Aprepro2Character::ToggleXray(bool on)
@@ -416,6 +420,10 @@ void Aprepro2Character::ToggleXray(bool on)
 		return;
 	}
 	*XrayOn = !*XrayOn;
+	if (*XrayOn)
+	{
+
+	}
 	Light->ToggleVisibility();
 	Target->SetActive(*XrayOn);
 }
@@ -654,10 +662,15 @@ void Aprepro2Character::FootStepNoise()
 		{
 			float volume = Sprinting ? 2 : 1;
 			volume = bIsCrouched ? 0.5f:volume;
-			FootStepAudio->SetVolumeMultiplier(volume);
+			FootStepSound->VolumeMultiplier = volume;
+
 			FootstepPitch= FootstepPitch>1 ? FootstepPitch - 0.25f : FootstepPitch + 0.25f;
-			FootStepAudio->PitchMultiplier = FootstepPitch;
-			FootStepAudio->Play();
+			FootStepSound->PitchMultiplier = FootstepPitch;
+			UGameplayStatics::PlaySound2D(GetWorld(), FootStepSound);
+
+			//FootStepAudio->SetVolumeMultiplier(volume);
+			//FootStepAudio->PitchMultiplier = FootstepPitch;
+			//FootStepAudio->Play();
 			
 			
 			FootStepTimer = footStepDelay;
