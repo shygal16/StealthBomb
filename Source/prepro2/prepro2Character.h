@@ -126,6 +126,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		uint8 mNumBombs;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "multiplier")
+		float CompassMultiplier = 0.5f;
+
 	UFUNCTION(BlueprintCallable, category = "pickup")
 		void PickUpBomb(ADetonateBomb* bomb);
 

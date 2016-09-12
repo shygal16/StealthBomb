@@ -430,17 +430,10 @@ void Aprepro2Character::ToggleXray(bool on)
 
 void Aprepro2Character::ToggleCompass()
 {
-	if (mCompass->mCompassState == ACompass::CompassState::Visible)
-	{
-		mCompass->mCompassState = ACompass::CompassState::Hidden;		
-		CompassToggled = !CompassToggled;
-	}
-	else if (VisionBar > 0.f && mCompass->mCompassState == ACompass::CompassState::Hidden)
-	{
-		//mCompass->mCompassState = ACompass::CompassState::Entering;
-		mCompass->mCompassState = ACompass::CompassState::Visible;
-		CompassToggled = !CompassToggled;
-	}
+	mCompass->mCompassShown = !mCompass->mCompassShown;
+	if (VisionBar < 0.f)
+		mCompass->mCompassShown = false;
+	CompassToggled = mCompass->mCompassShown;
 }
 
 void Aprepro2Character::BombPulse()
@@ -532,7 +525,7 @@ void Aprepro2Character::BeginPlay()
 	mCompass = World->SpawnActor<ACompass>(mCompassClass, tempLocation, tempRotation);
 	mCompass->mBody->bCastDynamicShadow = false;
 	mCompass->mBody->CastShadow = false;
-	mCompass->mBody->AttachTo(Mesh1P, TEXT("GripPoint"), EAttachLocation::KeepRelativeOffset, true);
+	mCompass->mBody->AttachTo(Mesh1P, TEXT("Compass"), EAttachLocation::KeepRelativeOffset, true);
 
 	VisionBar = VisionBarMax/2;
 	InitBombs();
@@ -571,9 +564,9 @@ void Aprepro2Character::Tick(float DeltaTime)
 		}
 	}
 
-	if (mCompass->mCompassState == ACompass::CompassState::Visible)
+	if (mCompass->mCompassShown)
 	{
-		VisionBar -= DeltaTime * 0.5f;
+		VisionBar -= DeltaTime * CompassMultiplier;
 		if (VisionBar <= 0)
 		{
 			ToggleCompass();
