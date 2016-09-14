@@ -613,7 +613,7 @@ void Aprepro2Character::Tick(float DeltaTime)
 
 	if (FootStepTimer <= 0)
 	{
-		if (!CharacterMovement->IsFalling())
+		if (!GetCharacterMovement()->IsFalling())
 		{
 		FootStepNoise();
 		}
@@ -633,7 +633,7 @@ void Aprepro2Character::Tick(float DeltaTime)
 		TraceParams.bReturnPhysicalMaterial = true;
 		FHitResult Hit(ForceInit);
 		float length = RayCastDistance;
-		GetWorld()->LineTraceSingle(Hit, StartTrace, EndTrace, ECollisionChannel::ECC_Camera, TraceParams); // simple trace function
+		GetWorld()->LineTraceSingleByChannel(Hit, StartTrace, EndTrace, ECollisionChannel::ECC_Camera, TraceParams); // simple trace function
 		if (Hit.bBlockingHit)
 		{
 			Target->SetActorLocation(Hit.Location);

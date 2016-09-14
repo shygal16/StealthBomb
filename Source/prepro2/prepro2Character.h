@@ -142,6 +142,9 @@ public:
 	UFUNCTION(BlueprintCallable, category = "pickup")
 		void SetTriggerActive(bool val) { mInsideTriggerBox = val; }
 
+	UFUNCTION(BlueprintCallable, category = "COmpass")
+		bool GetCompassShown() { if (mCompass) { return mCompass->mCompassShown; } return false; }
+
 	
 	/*UPROPERTY(EditAnywhere)
 		static const int mMaxBombs;*/

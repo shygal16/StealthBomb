@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "WidgetBlueprint.h"
 #include "CompassWidget.generated.h"
 
 

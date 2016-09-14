@@ -92,6 +92,7 @@ void AEnemyController::Possess(APawn* InPawn)
 	mBlackboard->SetValue<UBlackboardKeyType_Vector>(PatrolLocationID, mOwner->GetActorLocation());
 	mBlackboard->SetValue<UBlackboardKeyType_Int>(PatrolIndexID, 0);
 	mBlackboard->SetValue<UBlackboardKeyType_Bool>(AlertedID, false);
+	mBlackboard->SetValue<UBlackboardKeyType_Bool>(isAliveID, false);
 
 	// start behavior
 	//if (Enemy)
