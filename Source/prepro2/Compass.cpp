@@ -26,16 +26,16 @@ ACompass::ACompass()
 void ACompass::BeginPlay()
 {
 	Super::BeginPlay();	
+	mBlinkTimer = mBlinkRate;
 }
 
 // Called every frame
 void ACompass::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
-	mEnemyHeard = false;
 	if (mCompassShown)
 	{
-		GetQuadrant();
+		GetQuadrant(DeltaTime);
 	}
 	UpdateState();
 }
@@ -46,7 +46,7 @@ void ACompass::UpdateState()
 	CallFunctionByNameWithArguments(TEXT("UpdateWidget"), ar, NULL, true);
 }
 
-void ACompass::GetQuadrant()
+void ACompass::GetQuadrant(float DeltaTime)
 {
 	Aprepro2Character* player = Cast<Aprepro2Character>(UGameplayStatics::GetPlayerPawn(this, 0));
 
@@ -86,6 +86,27 @@ void ACompass::GetQuadrant()
 			}
 
 			mAngle = -mAngle;
+
+			float dist = FVector::DistSquared(mEnemy->GetActorLocation(), player->GetActorLocation());
+			if (dist < (mBlinkDistance*mBlinkDistance))
+			{
+				mBlinkRate += sign * DeltaTime;
+				if (mBlinkRate < 0.f)
+				{
+					mBlinkVisible = true;
+					sign = 1.f;
+				}
+				else if (mBlinkRate > mBlinkTimer)
+				{
+					mBlinkVisible = false;
+					sign = -1.f;
+				}
+			}
+			else
+			{
+				mBlinkVisible = true;
+				mBlinkTimer = mBlinkRate;
+			}
 		
 	}
 

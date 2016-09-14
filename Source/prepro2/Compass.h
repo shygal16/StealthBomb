@@ -30,7 +30,7 @@ public:
 
 	UStaticMeshComponent* mEmpty;;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Enum)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Compass")
 		bool mCompassShown = false;
 
 	void UpdateState();
@@ -43,8 +43,18 @@ public:
 		float mAngle;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemies")
-		bool mEnemyHeard = false;
+		float mBlinkRate = 1.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Blink")
+		bool mBlinkVisible = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Blink")
+		float mBlinkDistance = 2000.f;
 
 	UFUNCTION(BlueprintCallable, category = "Enemies")
-		void GetQuadrant();
+		void GetQuadrant(float DeltaTime);
+
+	float sign = 1.f;
+
+	float mBlinkTimer = 1.f;
 };
