@@ -28,13 +28,13 @@ ADetonateBomb::ADetonateBomb()
 
 	if (ExplosionAudioComp)
 	{
-		ExplosionAudioComp->AttachParent = RootComponent;
+		ExplosionAudioComp->AttachTo(RootComponent);
 		ExplosionAudioComp->bAutoActivate = false; // with this true the sounds play at spawn (game starts)
 		ExplosionAudioComp->bStopWhenOwnerDestroyed = false;
 	}
 	if (TickAudioComp)
 	{	
-		TickAudioComp->AttachParent = RootComponent;
+		TickAudioComp->AttachTo(RootComponent);
 		TickAudioComp->bAutoActivate = false; // with this true the sounds play at spawn (game starts)
 		//TickAudioComp->bStopWhenOwnerDestroyed = false;
 	}
