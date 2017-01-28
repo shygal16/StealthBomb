@@ -82,6 +82,7 @@ Temporary Items
 *.opensdf
 *.sdf
 *.sln
+*.VC
 
 # Precompiled Assets
 SourceArt/**/*.png
@@ -102,6 +103,7 @@ Saved/*
 # Compiled source files for the engine to use
 Intermediate/*
 
+Content/StarterContent/*
 
 # Cache files for the editor to use
 DerivedDataCache/*
