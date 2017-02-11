@@ -44,14 +44,14 @@ Aprepro2Character::Aprepro2Character()
 
 	// Create a CameraComponent	
 	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
-	FirstPersonCameraComponent->AttachTo(GetCapsuleComponent());
+	FirstPersonCameraComponent->AttachToComponent(GetCapsuleComponent(), FAttachmentTransformRules::SnapToTargetIncludingScale);
 	FirstPersonCameraComponent->RelativeLocation = FVector(0, 0, 64.f); // Position the camera
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
 
 	// Create a mesh component that will be used when being viewed from a '1st person' view (when controlling this pawn)
 	Mesh1P = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh1P"));
 	Mesh1P->SetOnlyOwnerSee(true);
-	Mesh1P->AttachTo(FirstPersonCameraComponent);
+	Mesh1P->AttachToComponent(FirstPersonCameraComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
 	Mesh1P->bCastDynamicShadow = false;
 	Mesh1P->CastShadow = false;
 
@@ -67,7 +67,7 @@ Aprepro2Character::Aprepro2Character()
 	FP_Gun->SetOnlyOwnerSee(true);			// only the owning player will see this mesh
 	FP_Gun->bCastDynamicShadow = false;
 	FP_Gun->CastShadow = false;
-	FP_Gun->AttachTo(Mesh1P, TEXT("GripPoint"), EAttachLocation::SnapToTargetIncludingScale, true);
+	FP_Gun->AttachToComponent(Mesh1P, FAttachmentTransformRules::SnapToTargetIncludingScale, TEXT("GripPoint"));
 
 
 	// Default offset from the character location for projectiles to spawn
@@ -77,12 +77,12 @@ Aprepro2Character::Aprepro2Character()
 	
 	if (FootStepAudio)
 	{
-		FootStepAudio->AttachTo(RootComponent);
+		FootStepAudio->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
 	}
 	
 	if (Light)
 	{
-		Light->AttachTo(FirstPersonCameraComponent);
+		Light->AttachToComponent(FirstPersonCameraComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
 		Light->ToggleVisibility();
 	}
 
@@ -537,7 +537,7 @@ void Aprepro2Character::BeginPlay()
 	mCompass = World->SpawnActor<ACompass>(mCompassClass, tempLocation, tempRotation);
 	mCompass->mBody->bCastDynamicShadow = false;
 	mCompass->mBody->CastShadow = false;
-	mCompass->mBody->AttachTo(Mesh1P, TEXT("Compass"), EAttachLocation::KeepRelativeOffset, true);
+	mCompass->mBody->AttachToComponent(Mesh1P, FAttachmentTransformRules::KeepRelativeTransform, TEXT("Compass"));
 
 	VisionBar = VisionBarMax/2;
 	InitBombs();

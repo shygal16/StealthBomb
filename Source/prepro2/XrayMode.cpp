@@ -36,7 +36,7 @@ void UXrayMode::TickComponent( float DeltaTime, ELevelTick TickType, FActorCompo
 			if(mXrayOn==false) 
 			{
 				mParentMesh->SetRenderCustomDepth(true);
-				mParentMesh->CustomDepthStencilValue = 100;
+				//mParentMesh->CustomDepthStencilValue = 100;
 				mXrayOn = true;
 			}
 		}
