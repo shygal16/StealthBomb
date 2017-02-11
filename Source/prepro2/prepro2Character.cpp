@@ -114,15 +114,16 @@ void Aprepro2Character::SetupPlayerInputComponent(class UInputComponent* InputCo
 	InputComponent->BindAction("Sprint", IE_Pressed, this, &Aprepro2Character::Sprint);
 	InputComponent->BindAction("Sprint", IE_Released, this, &Aprepro2Character::StopSprint);
 
-	InputComponent->BindAction("Xray", IE_Pressed, this, &Aprepro2Character::TurnXrayOn);
-	InputComponent->BindAction("Xray", IE_Released, this, &Aprepro2Character::TurnXrayOff);
+	InputComponent->BindAction("Xray", IE_Pressed, this, &Aprepro2Character::ToggleXray);
+	//InputComponent->BindAction("Xray", IE_Released, this, &Aprepro2Character::TurnXrayOff);
 
 	InputComponent->BindAction("Pulse", IE_Pressed, this, &Aprepro2Character::BombPulse);
 	
 	InputComponent->BindAction("Crouch", IE_Pressed, this, &Aprepro2Character::StartCrouch);
     InputComponent->BindAction("Crouch", IE_Released, this, &Aprepro2Character::EndCrouch);
 
-	InputComponent->BindAction("ToggleCompass", IE_Pressed, this, &Aprepro2Character::ToggleCompass);
+	InputComponent->BindAction("FlashLight", IE_Pressed, this, &Aprepro2Character::TurnFlashLightOn);
+	InputComponent->BindAction("FlashLight", IE_Released, this, &Aprepro2Character::TurnFlashLightOff);
 
 	//InputComponent->BindAction("PickUpItem", IE_Pressed, this, &Aprepro2Character::PickUpBomb);
 
@@ -386,24 +387,29 @@ bool Aprepro2Character::EnableTouchscreenMovement(class UInputComponent* InputCo
 	}
 	return bResult;
 }
-void Aprepro2Character::TurnXrayOn()
+
+void Aprepro2Character::TurnFlashLightOn()
 {
-	
+	Light->ToggleVisibility();
+	Target->SetActive(Light->IsVisible());
 	UGameplayStatics::PlaySound2D(GetWorld(), LightOn);
-	ToggleXray(true);
+	//ToggleXray(true);
 }
-void Aprepro2Character::TurnXrayOff()
+void Aprepro2Character::TurnFlashLightOff()
 {
+	Light->ToggleVisibility();
+	Target->SetActive(Light->IsVisible());
 	UGameplayStatics::PlaySound2D(GetWorld(), LightOff);
-	ToggleXray(false);
+	//ToggleXray(false);
 }
-void Aprepro2Character::ToggleXray(bool on)
+
+void Aprepro2Character::ToggleXray()
 {
 	//GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, XrayOn ? "True" : "False");
-	if (*XrayOn == on)
+	/*if (*XrayOn == on)
 	{
 		return;
-	}
+	}*/
 	
 	if (UseXray)
 	{
@@ -427,6 +433,7 @@ void Aprepro2Character::ToggleXray(bool on)
 
 }
 
+/*
 void Aprepro2Character::ToggleCompass()
 {
 	Light->ToggleVisibility();
@@ -436,8 +443,10 @@ void Aprepro2Character::ToggleCompass()
 	if (VisionBar < 0.f)
 		mCompass->mCompassShown = false;
 	CompassToggled = mCompass->mCompassShown;
-	*/
+	
 }
+*/
+
 
 void Aprepro2Character::BombPulse()
 {
@@ -558,23 +567,24 @@ void Aprepro2Character::Tick(float DeltaTime)
 		VisionBar+= XrayRegen*DeltaTime;
 	}
 	else if (*XrayOn)
-	
 	{
 		VisionBar-=DeltaTime;
 		if (VisionBar <= 0)
 		{
-			TurnXrayOff();
+			//TurnXrayOff();
+			if (*XrayOn == true)
+				ToggleXray();
 		}
 	}
 
-	if (mCompass->mCompassShown)
+	/*if (mCompass->mCompassShown)
 	{
 		VisionBar -= DeltaTime * CompassMultiplier;
 		if (VisionBar <= 0)
 		{
 			ToggleCompass();
 		}
-	}
+	}*/
 
 	if (!Sprinting && SprintBar<SprintBarMax)
 	{

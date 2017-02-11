@@ -171,9 +171,9 @@ protected:
 	/** Fires a projectile. */
 	void OnFire();
 	void TogglePause();
-	void ToggleXray(bool on);
-	void TurnXrayOff();
-	void TurnXrayOn();
+	void ToggleXray();
+	void TurnFlashLightOff();
+	void TurnFlashLightOn();
 
 
 	//Throw a bomb
@@ -188,7 +188,7 @@ protected:
 	void SelectBomb();
 
 	// Compass
-	void ToggleCompass();
+	//void ToggleCompass();
 	bool CompassToggled = false;
 
 	/** Handles moving forward/backward */
