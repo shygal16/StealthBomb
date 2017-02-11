@@ -32,20 +32,12 @@ void UXrayMode::TickComponent( float DeltaTime, ELevelTick TickType, FActorCompo
 
 		if(Globals::XrayOn)//GetOwner()->GetVelocity().Size() == 0)
 		{
-			if (GetOwner()->GetVelocity().Size() > 0)
-			{
-
+			//if (GetOwner()->GetVelocity().Size() > 0)
 			if(mXrayOn==false) 
 			{
 				mParentMesh->SetRenderCustomDepth(true);
 				mParentMesh->CustomDepthStencilValue = 100;
 				mXrayOn = true;
-			}
-			}
-			else if (mXrayOn)
-			{
-				mParentMesh->SetRenderCustomDepth(false);
-				mXrayOn = false;
 			}
 		}
 		else if(mXrayOn)

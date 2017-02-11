@@ -400,7 +400,11 @@ void Aprepro2Character::TurnXrayOff()
 void Aprepro2Character::ToggleXray(bool on)
 {
 	//GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, XrayOn ? "True" : "False");
-	/*
+	if (*XrayOn == on)
+	{
+		return;
+	}
+	
 	if (UseXray)
 	{
 		*XrayOn = !*XrayOn;
@@ -414,26 +418,25 @@ void Aprepro2Character::ToggleXray(bool on)
 
 		//FirstPersonCameraComponent->PostProcessSettings.SceneColorTint.Transparent;
 	}
-	*/
-	if (*XrayOn == on)
-	{
-		return;
-	}
-	*XrayOn = !*XrayOn;
-	if (*XrayOn)
-	{
+	
+//	*XrayOn = !*XrayOn;
+//	if (*XrayOn)
+//	{
+//
+//	}
 
-	}
-	Light->ToggleVisibility();
-	Target->SetActive(*XrayOn);
 }
 
 void Aprepro2Character::ToggleCompass()
 {
+	Light->ToggleVisibility();
+	Target->SetActive(Light->IsVisible());
+	/*
 	mCompass->mCompassShown = !mCompass->mCompassShown;
 	if (VisionBar < 0.f)
 		mCompass->mCompassShown = false;
 	CompassToggled = mCompass->mCompassShown;
+	*/
 }
 
 void Aprepro2Character::BombPulse()
