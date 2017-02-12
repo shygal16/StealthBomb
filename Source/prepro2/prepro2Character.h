@@ -261,7 +261,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)
 		TSubclassOf<UUserWidget> GameOverClass;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)
-		bool Keycard = false;
+		int Keycard = 0;
 
 private:
 	//Bombs
