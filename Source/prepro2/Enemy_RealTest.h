@@ -36,30 +36,33 @@ public:
 	
 	UPROPERTY(EditAnywhere, Category=Behavior)
 	class UBehaviorTree* BehaviorTree;	
-//	UFUNCTION()
-//	void OnSeePlayer(APawn* pawn);
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Alive")
 	bool isAlive = true;
 
-	UFUNCTION(BlueprintCallable, category = "Level")
-	void SetLevel(AMyLevelScriptActor* level) { mLevel = level; }
-
-//	UFUNCTION()
-//	void OnHearPlayer(APawn* pawn, const FVector &Location, float Volume);
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Screeching")
 		bool Screeched = false;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Screeching")
 		bool Growled = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Screeching")
 		float GrowlFrequency = 30;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Screeching")
 	USoundBase* GrowlSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Patrol")
+		TArray<FVector> patrolPoints;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Patrol")
+		int patrolIndex;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Patrol")
+		bool isPatrolRandom;
+
 private:
 	float mWalkSpeed;
 	float mScreechDelay = 0.5f;	
 	float mGrowlDelay = 35.f;
-
-	//Reference to level
-	AMyLevelScriptActor* mLevel;
 };

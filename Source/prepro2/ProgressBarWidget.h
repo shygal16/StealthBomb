@@ -17,12 +17,6 @@ class PREPRO2_API UProgressBarWidget : public UUserWidget
 
 
 public:
-
-
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SprintBar Widget")
-		float mSprintBarPercentage;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SprintBar Widget")
 		float mXrayPercentage;
 

@@ -27,7 +27,6 @@ Aprepro2Character::Aprepro2Character()
 	, FootStepAudio(CreateDefaultSubobject<UAudioComponent>(TEXT("Footstep Audio Comp")))
 	//, FootStepSound(CreateDefaultSubobject<USoundCue>(TEXT("Footstep sound Comp")))
 	, Light(CreateDefaultSubobject<USpotLightComponent>(TEXT("FlashLight Comp")))
-	//, mCompassWidget(CreateDefaultSubobject<UCompassWidget>(TEXT("Compass Widget")))
 {
 	
 	XrayOn = &Globals::XrayOn;
@@ -433,20 +432,6 @@ void Aprepro2Character::ToggleXray()
 
 }
 
-/*
-void Aprepro2Character::ToggleCompass()
-{
-	Light->ToggleVisibility();
-	Target->SetActive(Light->IsVisible());
-	/*
-	mCompass->mCompassShown = !mCompass->mCompassShown;
-	if (VisionBar < 0.f)
-		mCompass->mCompassShown = false;
-	CompassToggled = mCompass->mCompassShown;
-	
-}
-*/
-
 
 void Aprepro2Character::BombPulse()
 {
@@ -534,10 +519,6 @@ void Aprepro2Character::BeginPlay()
 
 	const FVector tempLocation = GetActorLocation();
 	const FRotator tempRotation = { 0, 0, 0 };
-	mCompass = World->SpawnActor<ACompass>(mCompassClass, tempLocation, tempRotation);
-	mCompass->mBody->bCastDynamicShadow = false;
-	mCompass->mBody->CastShadow = false;
-	mCompass->mBody->AttachToComponent(Mesh1P, FAttachmentTransformRules::KeepRelativeTransform, TEXT("Compass"));
 
 	VisionBar = VisionBarMax/2;
 	InitBombs();
@@ -577,15 +558,6 @@ void Aprepro2Character::Tick(float DeltaTime)
 		}
 	}
 
-	/*if (mCompass->mCompassShown)
-	{
-		VisionBar -= DeltaTime * CompassMultiplier;
-		if (VisionBar <= 0)
-		{
-			ToggleCompass();
-		}
-	}*/
-
 	if (!Sprinting && SprintBar<SprintBarMax)
 	{
 		SprintBar += DeltaTime;
@@ -612,8 +584,6 @@ void Aprepro2Character::Tick(float DeltaTime)
 		}
 	}
 	//GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, FString::FromInt(VisionBar));
-
-	mProgressBars->mSprintBarPercentage = SprintBar / SprintBarMax;
 	mProgressBars->mXrayPercentage = VisionBar / VisionBarMax;
 	
 	

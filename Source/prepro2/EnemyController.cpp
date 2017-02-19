@@ -89,7 +89,7 @@ void AEnemyController::Possess(APawn* InPawn)
 	
 	mPerceptionComponent->ConfigureSense(*soundConfig);
 
-	mBlackboard->SetValue<UBlackboardKeyType_Vector>(PatrolLocationID, mOwner->GetActorLocation());
+	mBlackboard->SetValue<UBlackboardKeyType_Vector>(PatrolLocationID, mOwner->patrolPoints[0]);
 	mBlackboard->SetValue<UBlackboardKeyType_Int>(PatrolIndexID, 0);
 	mBlackboard->SetValue<UBlackboardKeyType_Bool>(AlertedID, false);
 	mBlackboard->SetValue<UBlackboardKeyType_Bool>(isAliveID, false);
@@ -260,6 +260,6 @@ void AEnemyController::UpdateStatus()
 {
 	if (mOwner)
 	{
-	mBlackboard->SetValue<UBlackboardKeyType_Bool>(isAliveID, mOwner->isAlive);
+		mBlackboard->SetValue<UBlackboardKeyType_Bool>(isAliveID, mOwner->isAlive);
 	}
 }

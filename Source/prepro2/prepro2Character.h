@@ -3,8 +3,6 @@
 #include "GameFramework/Character.h"
 #include "DetonateBomb.h"
 #include "ProgressBarWidget.h"
-#include "Compass.h"
-#include "CompassWidget.h"
 #include "LightDetector.h"
 #include "prepro2Character.generated.h"
 
@@ -126,9 +124,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		uint8 mNumBombs;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "multiplier")
-		float CompassMultiplier = 0.5f;
-
 	UFUNCTION(BlueprintCallable, category = "pickup")
 		void PickUpBomb(ADetonateBomb* bomb);
 
@@ -142,10 +137,6 @@ public:
 	UFUNCTION(BlueprintCallable, category = "pickup")
 		void SetTriggerActive(bool val) { mInsideTriggerBox = val; }
 
-	UFUNCTION(BlueprintCallable, category = "COmpass")
-		bool GetCompassShown() { if (mCompass) { return mCompass->mCompassShown; } return false; }
-
-	
 	/*UPROPERTY(EditAnywhere)
 		static const int mMaxBombs;*/
 
@@ -186,10 +177,6 @@ protected:
 	void BombPulse();
 
 	void SelectBomb();
-
-	// Compass
-	//void ToggleCompass();
-	bool CompassToggled = false;
 
 	/** Handles moving forward/backward */
 	void MoveForward(float Val);
@@ -248,12 +235,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)
 	class UProgressBarWidget* mProgressBars;
-
-	UPROPERTY(EditAnywhere)
-		TSubclassOf<class ACompass> mCompassClass;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)
-		class ACompass* mCompass;
 	
 	float TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)
