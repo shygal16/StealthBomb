@@ -147,6 +147,8 @@ public:
 	UFUNCTION(BlueprintCallable, category = "XRAY")
 		bool GetXray() { return *XrayOn; }
 
+	UFUNCTION(BlueprintCallable, category = "GameState")
+		void GameExit();
 	// Called every frame
 	virtual void Tick(float DeltaSeconds) override;
 
@@ -241,6 +243,8 @@ public:
 		TSubclassOf<UUserWidget> PauseWidgetClass;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)
 		TSubclassOf<UUserWidget> GameOverClass;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)
+		TSubclassOf<UUserWidget> GameWinClass;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)
 		int Keycard = 0;
 

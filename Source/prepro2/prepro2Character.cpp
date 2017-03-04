@@ -706,3 +706,17 @@ void Aprepro2Character::PickUpVisionBoost(float boost)
 {
 	VisionBar = (VisionBar + boost > VisionBarMax) ? VisionBarMax : VisionBar + boost;
 }
+
+void Aprepro2Character::GameExit()
+{
+	GamePaused = true;//GamePaused ? false : true;
+	UGameplayStatics::SetGamePaused(GetWorld(), GamePaused);
+	UUserWidget* GameOverWidget = CreateWidget<UUserWidget>(GetWorld(), GameWinClass);
+	GameOverWidget->AddToViewport();
+
+	APlayerController* MyController = GetWorld()->GetFirstPlayerController();
+
+	MyController->bShowMouseCursor = GamePaused;
+	MyController->bEnableClickEvents = GamePaused;
+	MyController->bEnableMouseOverEvents = GamePaused;
+}
