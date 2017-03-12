@@ -20,8 +20,10 @@ public:
 	
 	// Called every frame
 	virtual void Tick( float DeltaSeconds ) override;
+	//dummy that the enemy sees
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* mDummy;
+
 	void SetActive(bool active) { mActive = active; }
 	bool IsActive() { return mActive; }
 private:

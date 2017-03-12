@@ -28,7 +28,8 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
-
+	
+	//Controls AI taking damage
 	float TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController* EventInstigator, AActor* DamageCauser);
 	
 	UPROPERTY(EditAnywhere, Category = Combat)

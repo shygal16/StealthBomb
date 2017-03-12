@@ -14,16 +14,12 @@ DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
 //////////////////////////////////////////////////////////////////////////
 // Aprepro2Character
-
+//local declaration of the global tracker of xray mode
 bool Globals::XrayOn;
 
 
 Aprepro2Character::Aprepro2Character()
-	: mMaxBombs(5)
-	, mBombSelected(0)
-	, mNumBombs(3)
-	, mBombsPlanted(0)
-	, mInsideTriggerBox(false)
+	: mInsideTriggerBox(false)
 	, FootStepAudio(CreateDefaultSubobject<UAudioComponent>(TEXT("Footstep Audio Comp")))
 	//, FootStepSound(CreateDefaultSubobject<USoundCue>(TEXT("Footstep sound Comp")))
 	, Light(CreateDefaultSubobject<USpotLightComponent>(TEXT("FlashLight Comp")))
@@ -100,37 +96,25 @@ void Aprepro2Character::SetupPlayerInputComponent(class UInputComponent* InputCo
 	InputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	InputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
-	InputComponent->BindAction("Bomb", IE_Pressed, this, &Aprepro2Character::BombPlant);
-	InputComponent->BindAction("Bomb", IE_Released, this, &Aprepro2Character::BombStopPlant);
 
-	InputComponent->BindAction("DetonateAllBombs", IE_Pressed, this, &Aprepro2Character::DetonateAllBombs);
 
 	InputComponent->BindAction("PauseGame", IE_Pressed, this, &Aprepro2Character::TogglePause);//.bExecuteWhenPaused = true;
 
-	InputComponent->BindAction("DetonateBomb", IE_Pressed, this, &Aprepro2Character::DetonateBomb);
-	InputComponent->BindAction("SelectBomb", IE_Pressed, this, &Aprepro2Character::SelectBomb);
-	
 	InputComponent->BindAction("Sprint", IE_Pressed, this, &Aprepro2Character::Sprint);
 	InputComponent->BindAction("Sprint", IE_Released, this, &Aprepro2Character::StopSprint);
 
 	InputComponent->BindAction("Xray", IE_Pressed, this, &Aprepro2Character::ToggleXray);
 	//InputComponent->BindAction("Xray", IE_Released, this, &Aprepro2Character::TurnXrayOff);
 
-	InputComponent->BindAction("Pulse", IE_Pressed, this, &Aprepro2Character::BombPulse);
-	
+
 	InputComponent->BindAction("Crouch", IE_Pressed, this, &Aprepro2Character::StartCrouch);
     InputComponent->BindAction("Crouch", IE_Released, this, &Aprepro2Character::EndCrouch);
 
 	InputComponent->BindAction("FlashLight", IE_Pressed, this, &Aprepro2Character::TurnFlashLightOn);
 	InputComponent->BindAction("FlashLight", IE_Released, this, &Aprepro2Character::TurnFlashLightOff);
 
-	//InputComponent->BindAction("PickUpItem", IE_Pressed, this, &Aprepro2Character::PickUpBomb);
 
-	//InputComponent->BindTouch(EInputEvent::IE_Pressed, this, &Aprepro2Character::TouchStarted);
-	if( EnableTouchscreenMovement(InputComponent) == false )
-	{
-		InputComponent->BindAction("Fire", IE_Pressed, this, &Aprepro2Character::OnFire);
-	}
+
 	
 	InputComponent->BindAxis("MoveForward", this, &Aprepro2Character::MoveForward);
 
@@ -145,49 +129,10 @@ void Aprepro2Character::SetupPlayerInputComponent(class UInputComponent* InputCo
 	InputComponent->BindAxis("LookUpRate", this, &Aprepro2Character::LookUpAtRate);
 }
 
-void Aprepro2Character::OnFire()
-{ 
-	/*
-	
-	// try and fire a projectile
-	if (ProjectileClass != NULL)
-	{
-		const FRotator SpawnRotation = GetControlRotation();
-		// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
-		const FVector SpawnLocation = GetActorLocation() + SpawnRotation.RotateVector(GunOffset);
-
-		UWorld* const World = GetWorld();
-		if (World != NULL)
-		{
-			// spawn the projectile at the muzzle
-			World->SpawnActor<Aprepro2Projectile>(ProjectileClass, SpawnLocation, SpawnRotation);
-		}
-			//mBombs[0]->SetActive(true);
-			//mBombs[0]->SetActorLocation(SpawnLocation);
-	}
-
-	// try and play the sound if specified
-	if (FireSound != NULL)
-	{
-		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
-	}
-
-	// try and play a firing animation if specified
-	if(FireAnimation != NULL)
-	{
-		// Get the animation object for the arms mesh
-		UAnimInstance* AnimInstance = Mesh1P->GetAnimInstance();
-		if(AnimInstance != NULL)
-		{
-			AnimInstance->Montage_Play(FireAnimation, 1.f);
-		}
-	}
-
-	*/
-}
 
 void Aprepro2Character::TogglePause()
 {
+	//pauses the game and pins the pause screen widget to the screen
 	GamePaused = true;//GamePaused ? false : true;
 	UGameplayStatics::SetGamePaused(GetWorld(), GamePaused);
 	UUserWidget* PauseWidget = CreateWidget<UUserWidget>(GetWorld(),PauseWidgetClass);
@@ -198,12 +143,11 @@ void Aprepro2Character::TogglePause()
 	MyController->bShowMouseCursor = GamePaused;
 	MyController->bEnableClickEvents = GamePaused;
 	MyController->bEnableMouseOverEvents = GamePaused;
-	//ConstructorHelpers::FClassFinder("StealthBomb\Content\FirstPersonCPP\Blueprints",)
-	//UObject* reference = StaticLoadObject(UObject::StaticClass(), nullptr, "PauseMenu", "StealthBomb\Content\FirstPersonCPP\Blueprints");
-	//SWidget* Widget = dynamic_cast<SWidget*>(UWidgetBlueprintLibrary::Create(GetWorld(), WidgetTemplate, GetWorld()->GetFirstPlayerController()));
+	
 }
 void Aprepro2Character::GameOver()
 {
+	//pauses the game and pins the Game Over screen widget to the widget
 	GamePaused = true;//GamePaused ? false : true;
 	UGameplayStatics::SetGamePaused(GetWorld(), GamePaused);
 	UUserWidget* GameOverWidget = CreateWidget<UUserWidget>(GetWorld(), GameOverClass);
@@ -214,9 +158,7 @@ void Aprepro2Character::GameOver()
 	MyController->bShowMouseCursor = GamePaused;
 	MyController->bEnableClickEvents = GamePaused;
 	MyController->bEnableMouseOverEvents = GamePaused;
-	//ConstructorHelpers::FClassFinder("StealthBomb\Content\FirstPersonCPP\Blueprints",)
-	//UObject* reference = StaticLoadObject(UObject::StaticClass(), nullptr, "PauseMenu", "StealthBomb\Content\FirstPersonCPP\Blueprints");
-	//SWidget* Widget = dynamic_cast<SWidget*>(UWidgetBlueprintLibrary::Create(GetWorld(), WidgetTemplate, GetWorld()->GetFirstPlayerController()));
+	
 }
 
 void Aprepro2Character::Sprint()
@@ -230,74 +172,18 @@ void Aprepro2Character::StopSprint()
 	GetCharacterMovement()->MaxWalkSpeed=WalkSpeed;
 }
 void Aprepro2Character::StartCrouch()
-{
+{//used to action map crouching
 	Crouch();
 }
 void Aprepro2Character::EndCrouch()
-{
+{//used to action map stop crouching
 	UnCrouch();
 }
-void Aprepro2Character::BeginTouch(const ETouchIndex::Type FingerIndex, const FVector Location)
-{
-	if( TouchItem.bIsPressed == true )
-	{
-		return;
-	}
-	TouchItem.bIsPressed = true;
-	TouchItem.FingerIndex = FingerIndex;
-	TouchItem.Location = Location;
-	TouchItem.bMoved = false;
-}
 
-void Aprepro2Character::EndTouch(const ETouchIndex::Type FingerIndex, const FVector Location)
-{
-	if (TouchItem.bIsPressed == false)
-	{
-		return;
-	}
-	if( ( FingerIndex == TouchItem.FingerIndex ) && (TouchItem.bMoved == false) )
-	{
-		OnFire();
-	}
-	TouchItem.bIsPressed = false;
-}
 
-void Aprepro2Character::TouchUpdate(const ETouchIndex::Type FingerIndex, const FVector Location)
-{
-	if ((TouchItem.bIsPressed == true) && ( TouchItem.FingerIndex==FingerIndex))
-	{
-		if (TouchItem.bIsPressed)
-		{
-			if (GetWorld() != nullptr)
-			{
-				UGameViewportClient* ViewportClient = GetWorld()->GetGameViewport();
-				if (ViewportClient != nullptr)
-				{
-					FVector MoveDelta = Location - TouchItem.Location;
-					FVector2D ScreenSize;
-					ViewportClient->GetViewportSize(ScreenSize);
-					FVector2D ScaledDelta = FVector2D( MoveDelta.X, MoveDelta.Y) / ScreenSize;									
-					if (ScaledDelta.X != 0.0f)
-					{
-						TouchItem.bMoved = true;
-						float Value = ScaledDelta.X * BaseTurnRate;
-						AddControllerYawInput(Value);
-					}
-					if (ScaledDelta.Y != 0.0f)
-					{
-						TouchItem.bMoved = true;
-						float Value = ScaledDelta.Y* BaseTurnRate;
-						AddControllerPitchInput(Value);
-					}
-					TouchItem.Location = Location;
-				}
-				TouchItem.Location = Location;
-			}
-		}
-	}
-}
 float Aprepro2Character::TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
 {
+	//When you take damage from enemy dealing damage
 	mHealth -= DamageAmount;
 	FString message= TEXT("Player took Damage. Remaing HP: ")+ FString::FromInt(static_cast<int>(mHealth));
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, message);
@@ -307,21 +193,16 @@ float Aprepro2Character::TakeDamage(float DamageAmount, struct FDamageEvent cons
 	}
 	return DamageAmount;
 }
-//float Aprepro2Character::InternalTakeRadialDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
-//{
-//	FString message = TEXT("Player took Radial Damage ") + FString::FromInt(static_cast<int>(DamageAmount));
-//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, message);
-//	return DamageAmount;
-//}
+
 
 void Aprepro2Character::PlayFootStep()
-{
+{//shakes the camera for for headbob of a footstep
 	GetWorld()->GetFirstPlayerController()->ClientPlayCameraShake(CameraShaker, 1);
 }
 
 void Aprepro2Character::MoveForward(float Value)
 {
-	if (Value != 0.0f && !PlantingBomb)
+	if (Value != 0.0f)
 	{
 		
 		// add movement in that direction
@@ -341,7 +222,7 @@ void Aprepro2Character::MoveForward(float Value)
 
 void Aprepro2Character::MoveRight(float Value)
 {
-	if (Value != 0.0f && !PlantingBomb)
+	if (Value != 0.0f)
 	{
 		PlayFootStep();
 		// add movement in that direction
@@ -361,55 +242,37 @@ void Aprepro2Character::MoveRight(float Value)
 void Aprepro2Character::TurnAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
-	float ModifiedTurn = PlantingBomb ? 0 : BaseTurnRate;
-	AddControllerYawInput(Rate * ModifiedTurn * GetWorld()->GetDeltaSeconds());
+	AddControllerYawInput(Rate * BaseTurnRate * GetWorld()->GetDeltaSeconds());
 	
 }
 
 void Aprepro2Character::LookUpAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
-	float ModifiedTurn = PlantingBomb ? 0 : BaseTurnRate;
-		AddControllerPitchInput(Rate * ModifiedTurn * GetWorld()->GetDeltaSeconds());
+		AddControllerPitchInput(Rate * BaseTurnRate * GetWorld()->GetDeltaSeconds());
 	
 }
 
-bool Aprepro2Character::EnableTouchscreenMovement(class UInputComponent* InputComponent)
-{
-	bool bResult = false;
-	if(FPlatformMisc::GetUseVirtualJoysticks() || GetDefault<UInputSettings>()->bUseMouseForTouch )
-	{
-		bResult = true;
-		InputComponent->BindTouch(EInputEvent::IE_Pressed, this, &Aprepro2Character::BeginTouch);
-		InputComponent->BindTouch(EInputEvent::IE_Released, this, &Aprepro2Character::EndTouch);
-		InputComponent->BindTouch(EInputEvent::IE_Repeat, this, &Aprepro2Character::TouchUpdate);
-	}
-	return bResult;
-}
+
 
 void Aprepro2Character::TurnFlashLightOn()
-{
+{	//clicks the flash light on
 	Light->ToggleVisibility();
 	Target->SetActive(Light->IsVisible());
 	UGameplayStatics::PlaySound2D(GetWorld(), LightOn);
-	//ToggleXray(true);
+	FlashLightOn = true;
 }
 void Aprepro2Character::TurnFlashLightOff()
-{
+{	//clicks the flash light off
 	Light->ToggleVisibility();
 	Target->SetActive(Light->IsVisible());
 	UGameplayStatics::PlaySound2D(GetWorld(), LightOff);
-	//ToggleXray(false);
+	FlashLightOn = false;
 }
 
 void Aprepro2Character::ToggleXray()
 {
-	//GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, XrayOn ? "True" : "False");
-	/*if (*XrayOn == on)
-	{
-		return;
-	}*/
-	
+	//if able to use xray, flips on and off, and changes the screen tint color
 	if (UseXray)
 	{
 		*XrayOn = !*XrayOn;
@@ -420,95 +283,11 @@ void Aprepro2Character::ToggleXray()
 		FirstPersonCameraComponent->PostProcessSettings.SceneColorTint.B = Tint.B;
 		FirstPersonCameraComponent->PostProcessSettings.SceneColorTint.A=Tint.A;
 		
-
-		//FirstPersonCameraComponent->PostProcessSettings.SceneColorTint.Transparent;
 	}
 	
-//	*XrayOn = !*XrayOn;
-//	if (*XrayOn)
-//	{
-//
-//	}
-
 }
 
 
-void Aprepro2Character::BombPulse()
-{
-	if (mBombSelected != -1)
-	{
-		if (mBombs[mBombSelected]->IsPlanted() && PulseRecharge >= PulseCooldown)
-		{
-			mBombs[mBombSelected]->PingNoise();
-			PulseRecharge = 0;
-		}
-	}
-}
-
-void Aprepro2Character::Bomb()
-{
-	int curr = mBombsPlanted;
-	mBombs[curr]->SetActive(true);
-	mBombs[curr]->Plant();
-
-	mBombs[curr]->Trigger(); //makes bombs auto arm with timer
-
-	mBombSelected = curr;
-	const FRotator SpawnRotation = GetControlRotation();
-	// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
-	FVector Offset(25, 0, 0);
-	FVector SpawnLocation = GetActorLocation() +SpawnRotation.RotateVector(Offset);
-	//SpawnLocation.Z = 1100;
-	mBombs[mBombSelected]->SetActorLocation(SpawnLocation);
-	if (mBombsPlanted > 0)
-	{
-		mBombs[mBombSelected - 1]->XRayBomb(false);
-	}
-	
-	mBombsPlanted++;
-	mBombs[mBombSelected]->XRayBomb(true);
-
-}
-
-void Aprepro2Character::BombPlant()
-{
-	if (mNumBombs !=0 && mNumBombs > mBombsPlanted)
-	{
-		PlantingBomb = true;
-		mProgressBars->mBombPlantVisible = true;
-		StartCrouch();
-	}
-}
-void Aprepro2Character::BombStopPlant()
-{
-	mProgressBars->mBombPlantVisible = false;
-	PlantingBomb = false;
-	PlantProgress = 0;
-	EndCrouch();
-}
-
-void Aprepro2Character::InitBombs()
-{
-	mBombs.Reserve(mNumBombs + 5);
-
-	const FVector tempLocation = GetActorLocation();
-	const FRotator tempRotation = { 0, 0, 0 };
-	verify(BombClass != NULL && "bomb class doesnt exist");
-	for (int i = 0; i < mNumBombs; i++)
-	{
-
-		UWorld* const World = GetWorld();
-		if (World != NULL)
-		{
-			
-			// spawn the projectile at the muzzle
-			mBombs.Add(World->SpawnActor<ADetonateBomb>(BombClass, tempLocation, tempRotation));
-			
-			mBombs[i]->SetActive(false);
-	
-		}
-	}
-}
 
 void Aprepro2Character::BeginPlay()
 {
@@ -521,27 +300,19 @@ void Aprepro2Character::BeginPlay()
 	const FRotator tempRotation = { 0, 0, 0 };
 
 	VisionBar = VisionBarMax/2;
-	InitBombs();
 	Target = World->SpawnActor<ALightDetector>(LightDetectionClass, tempLocation, tempRotation);
 	Target->SetActive(false);
 	//UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, UAISenseConfig_Sight::GetSenseImplementation(),)
 	UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, UAISense_Sight::StaticClass(),this);
 	UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, UAISense_Hearing::StaticClass(), this);
 	*XrayOn = false;
-
+	FlashLightOn = false;
 }
 
 
 // Called every frame
 void Aprepro2Character::Tick(float DeltaTime)
 {
-	//if (PulseRecharge < PulseCooldown)
-	{
-		//PulseRecharge += DeltaTime;
-	}
-
-	//GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, FString::FromInt(VisionBar));
-
 	 // Xray Regeneration
 	if (VisionBar < VisionBarMax && !*XrayOn)
 	{
@@ -558,6 +329,7 @@ void Aprepro2Character::Tick(float DeltaTime)
 		}
 	}
 
+	//sprint regeneration
 	if (!Sprinting && SprintBar<SprintBarMax)
 	{
 		SprintBar += DeltaTime;
@@ -570,30 +342,17 @@ void Aprepro2Character::Tick(float DeltaTime)
 			StopSprint();
 		}
 	}	
-
-	if (PlantingBomb )
-	{
-		PlantProgress += DeltaTime;
-		mProgressBars->mBombPlantPercentage = PlantProgress / PlantTime;
-		if (PlantProgress >= PlantTime)
-		{
-			Bomb();
-			PlantingBomb = false;
-			EndCrouch();
-			PlantProgress = 0;
-		}
-	}
-	//GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, FString::FromInt(VisionBar));
+	//updates the energy bar
 	mProgressBars->mXrayPercentage = VisionBar / VisionBarMax;
 	
-	
+	//footstep noises
 	if (bIsCrouched)
 	{
 		FootStepTimer -= DeltaTime*0.75;
 	}
 	else
 	FootStepTimer -= Sprinting ? DeltaTime * 2 : DeltaTime;
-
+	//plays footstep sound
 	if (FootStepTimer <= 0)
 	{
 		if (!GetCharacterMovement()->IsFalling())
@@ -601,8 +360,8 @@ void Aprepro2Character::Tick(float DeltaTime)
 		FootStepNoise();
 		}
 	}
-	
-	if (*XrayOn)
+	//casts a target at the end of the flashlight to attract the monsters attention
+	if (FlashLightOn)
 	{
 		FVector CamLoc;
 		FRotator CamRot;
@@ -632,8 +391,7 @@ void Aprepro2Character::Tick(float DeltaTime)
 
 void Aprepro2Character::FootStepNoise()
 {
-	//if (!bIsCrouched)
-	{
+	//playing the actual noise for the footsteps
 		if (GetVelocity().Size() > 0)//is moving
 		{
 			float volume = Sprinting ? 2 : 1;
@@ -643,67 +401,15 @@ void Aprepro2Character::FootStepNoise()
 			FootstepPitch= FootstepPitch>1 ? FootstepPitch - 0.25f : FootstepPitch + 0.25f;
 			FootStepSound->PitchMultiplier = FootstepPitch;
 			UGameplayStatics::PlaySound2D(GetWorld(), FootStepSound);
-
-			//FootStepAudio->SetVolumeMultiplier(volume);
-			//FootStepAudio->PitchMultiplier = FootstepPitch;
-			//FootStepAudio->Play();
 			
 			
 			FootStepTimer = footStepDelay;
 		}
-	}
 }
 
-void Aprepro2Character::DetonateAllBombs()
-{
-	for (int i = 0; i < mNumBombs; ++i)
-	{
-			mBombs[i]->Explode();
-			mBombs.Empty();
-			mNumBombs = 0;
-			mBombsPlanted = 0;
-			mBombSelected = -1;
-	}
-}
-
-void Aprepro2Character::DetonateBomb()
-{
-	if (mBombSelected != -1 && mBombs[mBombSelected]->IsPlanted())
-	{
-		mBombs[mBombSelected]->Explode();
-		mBombs.RemoveAt(mBombSelected);
-		mNumBombs--;
-		mBombsPlanted--;
-		if (mNumBombs > 0)
-		{
-			mBombSelected = 0;
-		}
-		else
-		{
-			mBombSelected = -1;
-		}
-	}
-}
-
-void Aprepro2Character::SelectBomb()
-{
-	if (mBombsPlanted != 0)
-	{
-		mBombs[mBombSelected]->XRayBomb(false);
-			mBombSelected = (mBombSelected + 1 == mBombsPlanted) ? 0 : mBombSelected + 1;
-		mBombs[mBombSelected]->XRayBomb(true);
-	}
-}
-
-void Aprepro2Character::PickUpBomb(ADetonateBomb* bomb)
-{
-	mBombs.Add(bomb);
-	bomb->SetActive(false);
-	mNumBombs++;
-}
 
 void Aprepro2Character::PickUpVisionBoost(float boost)
-{
+{//Picking up a xray bar battery
 	VisionBar = (VisionBar + boost > VisionBarMax) ? VisionBarMax : VisionBar + boost;
 }
 

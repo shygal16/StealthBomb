@@ -26,7 +26,6 @@ void ALightDetector::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
 	//if(mActive)
-	//DrawDebugSphere(GetWorld(), GetActorLocation(), 100, 20, FColor::Red);
-	
+	//DrawDebugSphere(GetWorld(), GetActorLocation(), 100, 20, FColor::Red);	
 }
 

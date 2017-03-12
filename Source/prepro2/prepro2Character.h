@@ -1,7 +1,6 @@
 // Copyright 1998-2015 Epic Games, Inc. All Rights Reserved.
 #pragma once
 #include "GameFramework/Character.h"
-#include "DetonateBomb.h"
 #include "ProgressBarWidget.h"
 #include "LightDetector.h"
 #include "prepro2Character.generated.h"
@@ -30,7 +29,6 @@ public:
 	void Sprint();
 	void StopSprint();
 
-	void PlayHeadBob();
 	void PlayFootStep();
 
 	UPROPERTY(EditAnywhere)
@@ -65,10 +63,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
 	FVector GunOffset;
 
-	/** Projectile class to spawn */
-	UPROPERTY(EditDefaultsOnly, Category=Projectile)
-	TSubclassOf<class Aprepro2Projectile> ProjectileClass;
-
 
 
 	/** Sound to play each time we fire */
@@ -79,9 +73,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	class UAnimMontage* FireAnimation;
 
-	/** Bomb class to spawn */
-	UPROPERTY(EditAnywhere, Category = Bomb)
-		TSubclassOf<class ADetonateBomb> BombClass;
+
 
 	UPROPERTY(EditAnywhere, Category = Perception)
 		TSubclassOf<class ALightDetector> LightDetectionClass;
@@ -118,16 +110,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float XrayRegen = 0.1;
 
-	UPROPERTY(EditFixedSize)
-	uint8 mMaxBombs;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		uint8 mNumBombs;
-
-	UFUNCTION(BlueprintCallable, category = "pickup")
-		void PickUpBomb(ADetonateBomb* bomb);
-
-
+	
 	UFUNCTION(BlueprintCallable, category = "pickup")
 		void PickUpVisionBoost(float boost);
 
@@ -137,8 +120,7 @@ public:
 	UFUNCTION(BlueprintCallable, category = "pickup")
 		void SetTriggerActive(bool val) { mInsideTriggerBox = val; }
 
-	/*UPROPERTY(EditAnywhere)
-		static const int mMaxBombs;*/
+
 
 public: 
 	// Called when the game starts or when spawned
@@ -152,33 +134,20 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaSeconds) override;
 
-	uint8 GetNumBombs() const		{ return mNumBombs;     }
-	int GetBombPlanted() const		{ return mBombsPlanted;   }
-	int GetBombSelected() const		{ return mBombSelected; }
 
 	//float InternalTakeRadialDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController* EventInstigator, AActor* DamageCauser);
 
 protected:
+	
 	void StartCrouch();
 	void EndCrouch();
-	/** Fires a projectile. */
-	void OnFire();
+
 	void TogglePause();
 	void ToggleXray();
+
 	void TurnFlashLightOff();
 	void TurnFlashLightOn();
 
-
-	//Throw a bomb
-	void Bomb();
-
-	void DetonateAllBombs();
-
-	void DetonateBomb();
-
-	void BombPulse();
-
-	void SelectBomb();
 
 	/** Handles moving forward/backward */
 	void MoveForward(float Val);
@@ -200,31 +169,13 @@ protected:
 	 */
 	void LookUpAtRate(float Rate);
 
-	struct TouchData
-	{
-		TouchData() { bIsPressed = false;Location=FVector::ZeroVector;}
-		bool bIsPressed;
-		ETouchIndex::Type FingerIndex;
-		FVector Location;
-		bool bMoved;
-	};
-	void BeginTouch(const ETouchIndex::Type FingerIndex, const FVector Location);
-	void EndTouch(const ETouchIndex::Type FingerIndex, const FVector Location);
-	void TouchUpdate(const ETouchIndex::Type FingerIndex, const FVector Location);
-	TouchData	TouchItem;
+	
 	
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 	// End of APawn interface
 
-	/* 
-	 * Configures input for touchscreen devices if there is a valid touch interface for doing so 
-	 *
-	 * @param	InputComponent	The input component pointer to bind controls to
-	 * @returns true if touch controls were enabled.
-	 */
-	bool EnableTouchscreenMovement(UInputComponent* InputComponent);
 
 public:
 	/** Returns Mesh1P subobject **/
@@ -249,20 +200,12 @@ public:
 		int Keycard = 0;
 
 private:
-	//Bombs
-	TArray<ADetonateBomb*> mBombs;
-	int mBombsPlanted;
-	int mBombSelected;
-	float PlantProgress=0;
-	bool PlantingBomb=false;
-	void InitBombs();
-	void BombPlant();
-	void BombStopPlant();
+
 
 	//Flashlight
 	float VisionBar;
 	bool* XrayOn;
-
+	bool FlashLightOn;
 	//Extra Menus
 	bool GamePaused;
 	void GameOver();

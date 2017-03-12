@@ -14,7 +14,7 @@
 #include "LightDetector.h"
 #include "EnemyController.h"
 #include "prepro2Character.h"
-//#include "Runtime/Engine/Classes/GameFramework/Controller.h"
+
 
 
 
@@ -24,41 +24,26 @@ AEnemy_RealTest::AEnemy_RealTest()
 	PrimaryActorTick.bCanEverTick = true;
 	mWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
 	GrowlSound = nullptr;
-//	PawnSense = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensingComp"));
-//	PawnSense->SetPeripheralVisionAngle(90.f);
-	//AIControllerClass = AEnemyController::StaticClass();
+
 	
 }
 
-/*
-void AEnemy_RealTest::OnSeePlayer(APawn* pawn)
-{
-	AEnemyController* AIControll = Cast<AEnemyController>(GetController());
-	if (AIControll)
-	{
-		age = 0;
-		cleared = false;
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, "I see you using Pawn Sense!");
-		AIControll->SetTargetEnemy(pawn);
-	}
-}
-*/
 
 // Called when the game starts or when spawned
 void AEnemy_RealTest::BeginPlay()
 {
 	Super::BeginPlay();
 }
+
 // Called every frame
-
-
 void AEnemy_RealTest::Tick(float DeltaTime)
 {
 	//if (mHealth > 0)
 	{
-	Super::Tick(DeltaTime);
+	Super::Tick(DeltaTime); 
 	}
 	
+	//screeches every so often
 	if (Screeched)
 	{
 		mScreechDelay -= DeltaTime;
@@ -68,7 +53,7 @@ void AEnemy_RealTest::Tick(float DeltaTime)
 			mScreechDelay = 0.5f;
 		}
 	}
-
+		//plays a growling 3d sound
 		mGrowlDelay -= DeltaTime;
 		if (mGrowlDelay < 0)
 		{

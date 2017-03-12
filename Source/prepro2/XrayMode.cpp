@@ -30,9 +30,8 @@ void UXrayMode::TickComponent( float DeltaTime, ELevelTick TickType, FActorCompo
 	Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
 	
 
-		if(Globals::XrayOn)//GetOwner()->GetVelocity().Size() == 0)
+		if(Globals::XrayOn)
 		{
-			//if (GetOwner()->GetVelocity().Size() > 0)
 			if(mXrayOn==false) 
 			{
 				mParentMesh->SetRenderCustomDepth(true);
