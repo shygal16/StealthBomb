@@ -1,4 +1,4 @@
-// Copyright 1998-2015 Epic Games, Inc. All Rights Reserved.
+ // Copyright 1998-2015 Epic Games, Inc. All Rights Reserved.
 
 #include "prepro2.h"
 #include "prepro2HUD.h"
@@ -32,6 +32,7 @@ Aprepro2HUD::Aprepro2HUD()
 void Aprepro2HUD::BeginPlay()
 {
 	
+
 }
 
 void Aprepro2HUD::DrawHUD()
@@ -75,17 +76,6 @@ void Aprepro2HUD::DrawHUD()
 		//TileItem.SetColor(FLinearColor::Green);
 		TileItem.Position = FVector2D(Canvas->ClipX * 0.05, 0);
 		Canvas->DrawItem(TileItem);
-	}
-
-				/*float angle = FMath::Acos(FVector2D::DotProduct(dir,forward));
-				FVector2D compassDir(0, -1);
-
-				angle = FVector2D::CrossProduct(dir, forward) > 0 ? 2 * 3.141592 - angle : angle;
-
-				float S, C;
-				FMath::SinCos(&S, &C, angle);
-
-				compassDir = FVector2D((C * compassDir.X - S * compassDir.Y), S * compassDir.X + C * compassDir.Y);
-				compassDir.Normalize();*/
+	}	
 }
    
