@@ -14,7 +14,6 @@
 #include "Perception/AISense_Sight.h"
 #include "Perception/AISense_Hearing.h"
 #include "prepro2Character.h"
-#include "DetonateBomb.h"
 #include "EnemyController.h"
 
 
@@ -244,15 +243,7 @@ void AEnemyController::SenseStuff(TArray<AActor*> testActors)
 			}
 		}
 
-		//if (actors->GetClass()->IsChildOf(ADetonateBomb::StaticClass()))
-		//{
-		//	//Checking if Bomb is active
-		//	ADetonateBomb* temp = (ADetonateBomb*)actors;
-		//	if (!temp->IsPlanted())
-		//	{
-		//		return;
-		//	}
-		//}
+
 		SetTargetEnemy(Cast<APawn>(actors));
 	}
 }

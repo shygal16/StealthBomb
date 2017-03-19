@@ -8,7 +8,7 @@
 UXrayMode::UXrayMode()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  
-	bWantsBeginPlay = true;
+	//bWantsBeginPlay = true;
 	PrimaryComponentTick.bCanEverTick = true;
 }
 

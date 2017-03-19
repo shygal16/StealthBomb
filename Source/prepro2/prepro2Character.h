@@ -138,7 +138,6 @@ public:
 	//float InternalTakeRadialDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController* EventInstigator, AActor* DamageCauser);
 
 protected:
-	
 	void StartCrouch();
 	void EndCrouch();
 

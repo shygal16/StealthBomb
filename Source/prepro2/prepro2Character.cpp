@@ -26,7 +26,7 @@ Aprepro2Character::Aprepro2Character()
 {
 	
 	XrayOn = &Globals::XrayOn;
-	
+	FlashLightOn = false;
 	SprintBar = SprintBarMax;
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -39,14 +39,14 @@ Aprepro2Character::Aprepro2Character()
 
 	// Create a CameraComponent	
 	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
-	FirstPersonCameraComponent->AttachToComponent(GetCapsuleComponent(), FAttachmentTransformRules::SnapToTargetIncludingScale);
+
 	FirstPersonCameraComponent->RelativeLocation = FVector(0, 0, 64.f); // Position the camera
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
 
 	// Create a mesh component that will be used when being viewed from a '1st person' view (when controlling this pawn)
 	Mesh1P = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh1P"));
 	Mesh1P->SetOnlyOwnerSee(true);
-	Mesh1P->AttachToComponent(FirstPersonCameraComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
+
 	Mesh1P->bCastDynamicShadow = false;
 	Mesh1P->CastShadow = false;
 
@@ -62,7 +62,7 @@ Aprepro2Character::Aprepro2Character()
 	FP_Gun->SetOnlyOwnerSee(true);			// only the owning player will see this mesh
 	FP_Gun->bCastDynamicShadow = false;
 	FP_Gun->CastShadow = false;
-	FP_Gun->AttachToComponent(Mesh1P, FAttachmentTransformRules::SnapToTargetIncludingScale, TEXT("GripPoint"));
+
 
 
 	// Default offset from the character location for projectiles to spawn
@@ -70,17 +70,13 @@ Aprepro2Character::Aprepro2Character()
 
 	PrimaryActorTick.bCanEverTick = true;
 	
-	if (FootStepAudio)
-	{
-		FootStepAudio->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
-	}
+	
 	
 	if (Light)
 	{
-		Light->AttachToComponent(FirstPersonCameraComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
+		
 		Light->ToggleVisibility();
 	}
-
 	// Note: The ProjectileClass and the skeletal mesh/anim blueprints for Mesh1P are set in the
 	// derived blueprint asset named MyCharacter (to avoid direct content references in C++)
 }
@@ -88,45 +84,46 @@ Aprepro2Character::Aprepro2Character()
 //////////////////////////////////////////////////////////////////////////
 // Input
 
-void Aprepro2Character::SetupPlayerInputComponent(class UInputComponent* InputComponent)
+
+void Aprepro2Character::SetupPlayerInputComponent(class UInputComponent* inputComponent)
 {
 	// set up gameplay key bindings
-	check(InputComponent);
+	check(inputComponent);
 
-	InputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
-	InputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
+	inputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
+	inputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
 
 
-	InputComponent->BindAction("PauseGame", IE_Pressed, this, &Aprepro2Character::TogglePause);//.bExecuteWhenPaused = true;
+	inputComponent->BindAction("PauseGame", IE_Pressed, this, &Aprepro2Character::TogglePause);//.bExecuteWhenPaused = true;
 
-	InputComponent->BindAction("Sprint", IE_Pressed, this, &Aprepro2Character::Sprint);
-	InputComponent->BindAction("Sprint", IE_Released, this, &Aprepro2Character::StopSprint);
+	inputComponent->BindAction("Sprint", IE_Pressed, this, &Aprepro2Character::Sprint);
+	inputComponent->BindAction("Sprint", IE_Released, this, &Aprepro2Character::StopSprint);
 
-	InputComponent->BindAction("Xray", IE_Pressed, this, &Aprepro2Character::ToggleXray);
+	inputComponent->BindAction("Xray", IE_Pressed, this, &Aprepro2Character::ToggleXray);
 	//InputComponent->BindAction("Xray", IE_Released, this, &Aprepro2Character::TurnXrayOff);
 
 
-	InputComponent->BindAction("Crouch", IE_Pressed, this, &Aprepro2Character::StartCrouch);
-    InputComponent->BindAction("Crouch", IE_Released, this, &Aprepro2Character::EndCrouch);
+	inputComponent->BindAction("Crouch", IE_Pressed, this, &Aprepro2Character::StartCrouch);
+	inputComponent->BindAction("Crouch", IE_Released, this, &Aprepro2Character::EndCrouch);
 
-	InputComponent->BindAction("FlashLight", IE_Pressed, this, &Aprepro2Character::TurnFlashLightOn);
-	InputComponent->BindAction("FlashLight", IE_Released, this, &Aprepro2Character::TurnFlashLightOff);
+	inputComponent->BindAction("FlashLight", IE_Pressed, this, &Aprepro2Character::TurnFlashLightOn);
+	inputComponent->BindAction("FlashLight", IE_Released, this, &Aprepro2Character::TurnFlashLightOff);
 
 
 
 	
-	InputComponent->BindAxis("MoveForward", this, &Aprepro2Character::MoveForward);
+	inputComponent->BindAxis("MoveForward", this, &Aprepro2Character::MoveForward);
 
-	InputComponent->BindAxis("MoveRight", this, &Aprepro2Character::MoveRight);
+	inputComponent->BindAxis("MoveRight", this, &Aprepro2Character::MoveRight);
 	
 	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
 	// "turn" handles devices that provide an absolute delta, such as a mouse.
 	// "turnrate" is for devices that we choose to treat as a rate of change, such as an analog joystick
-	InputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
-	InputComponent->BindAxis("TurnRate", this, &Aprepro2Character::TurnAtRate);
-	InputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
-	InputComponent->BindAxis("LookUpRate", this, &Aprepro2Character::LookUpAtRate);
+	inputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
+	inputComponent->BindAxis("TurnRate", this, &Aprepro2Character::TurnAtRate);
+	inputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
+	inputComponent->BindAxis("LookUpRate", this, &Aprepro2Character::LookUpAtRate);
 }
 
 
@@ -307,6 +304,14 @@ void Aprepro2Character::BeginPlay()
 	UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, UAISense_Hearing::StaticClass(), this);
 	*XrayOn = false;
 	FlashLightOn = false;
+
+	FirstPersonCameraComponent->AttachToComponent(GetCapsuleComponent(), FAttachmentTransformRules::SnapToTargetIncludingScale);
+	Mesh1P->AttachToComponent(FirstPersonCameraComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
+	FP_Gun->AttachToComponent(Mesh1P, FAttachmentTransformRules::SnapToTargetIncludingScale, TEXT("GripPoint"));
+
+	FootStepAudio->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
+	Light->AttachToComponent(FirstPersonCameraComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
+
 }
 
 

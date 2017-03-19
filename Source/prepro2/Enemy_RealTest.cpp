@@ -9,7 +9,6 @@
 #include "BehaviorTree/BehaviorTree.h"
 #include "Perception/PawnSensingComponent.h"
 #include "MyLevelScriptActor.h"
-#include "DetonateBomb.h"
 #include "prepro2Character.h"
 #include "LightDetector.h"
 #include "EnemyController.h"
@@ -86,7 +85,9 @@ float AEnemy_RealTest::TakeDamage(float DamageAmount, struct FDamageEvent const 
 	return DamageAmount;
 }
 // Called to bind functionality to input
+/*
 void AEnemy_RealTest::SetupPlayerInputComponent(class UInputComponent* InputComponent)
 {
 	Super::SetupPlayerInputComponent(InputComponent);
 }
+*/
