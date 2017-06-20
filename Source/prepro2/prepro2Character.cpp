@@ -182,8 +182,6 @@ float Aprepro2Character::TakeDamage(float DamageAmount, struct FDamageEvent cons
 {
 	//When you take damage from enemy dealing damage
 	mHealth -= DamageAmount;
-	FString message= TEXT("Player took Damage. Remaing HP: ")+ FString::FromInt(static_cast<int>(mHealth));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, message);
 	if (mHealth <= 0)
 	{
 		GameOver();
